@@ -488,13 +488,11 @@ function updateProfileDisplay() {
   if (!STATE.user) return;
 
   const user = STATE.user;
-  document.getElementById('profileName').textContent =
-    `${user.first_name || ''} ${user.last_name || ''}`.trim() || t('profileDefaultName');
-  document.getElementById('profileUsername').textContent =
-    user.username ? `@${user.username}` : '';
-
-  const avatarUrl = user.photo_url || generateAvatarUrl(user.first_name);
-  document.getElementById('profileAvatar').src = avatarUrl;
+  document.getElementById('profileName').textContent = user.first_name || 'Foydalanuvchi';
+  document.getElementById('profileUsername').textContent = user.username ? `@${user.username}` : '';
+  
+  const avatarHtml = generateAvatarHTML(user.first_name, user.photo_url);
+  document.getElementById('profileAvatar').innerHTML = avatarHtml;
 
   document.getElementById('profileCount').textContent = formatNumber(user.count || 0);
   document.getElementById('profileTotal').textContent = formatNumber(user.total_all_time || 0);
@@ -552,14 +550,12 @@ async function updateLeaderboard() {
     const num = i + 1;
     const user = users[i];
 
-    if (user) {
-      const name = `${user.first_name || ''} ${user.last_name || ''}`.trim() || t('profileDefaultName');
-      document.getElementById(`podiumName${num}`).textContent = name;
-      document.getElementById(`podiumScore${num}`).textContent = formatNumber(user.total_all_time);
-
-      const avatar = user.photo_url || generateAvatarUrl(user.first_name);
-      document.getElementById(`podiumAvatar${num}`).src = avatar;
-    }
+    if (user && user.count > 0) {
+      document.getElementById(`podiumName${num}`).textContent = user.first_name;
+      document.getElementById(`podiumScore${num}`).textContent = formatNumber(user.count);
+      const avatarHtml = generateAvatarHTML(user.first_name, user.photo_url);
+      document.getElementById(`podiumAvatar${num}`).innerHTML = avatarHtml;
+    } else { }
   }
 
   // List (4th place and below)
@@ -568,18 +564,17 @@ async function updateLeaderboard() {
 
   users.slice(3).forEach((user, index) => {
     const rank = index + 4;
-    const name = `${user.first_name || ''} ${user.last_name || ''}`.trim() || t('profileDefaultName');
+    const name = user.first_name || 'Noma\'lum';
     const isMe = user.telegram_id === STATE.telegramId;
-
+    const avatarHtml = generateAvatarHTML(name, user.photo_url);
+    
     const item = document.createElement('div');
     item.className = `lb-item${isMe ? ' is-me' : ''}`;
     item.style.animationDelay = `${index * 0.05}s`;
 
-    const avatarUrl = user.photo_url || generateAvatarUrl(user.first_name);
-
     item.innerHTML = `
       <span class="lb-rank">${rank}</span>
-      <img class="lb-avatar" src="${avatarUrl}" alt="${name}" onerror="this.src='${generateAvatarUrl(user.first_name)}'">
+      <div class="lb-avatar">${avatarHtml}</div>
       <div class="lb-info">
         <div class="lb-name">${name}${isMe ? ' ' + t('youLabel') : ''}</div>
         <div class="lb-username">${user.username ? '@' + user.username : ''}</div>
@@ -768,19 +763,20 @@ function formatDate(dateStr) {
   }
 }
 
-function generateAvatarUrl(name) {
+function generateAvatarHTML(name, photo_url) {
   const tg = window.Telegram?.WebApp;
-  if (tg?.initDataUnsafe?.user?.photo_url && (!name || name === tg.initDataUnsafe.user.first_name)) {
-    return tg.initDataUnsafe.user.photo_url;
+  let p_url = photo_url;
+  if (!p_url && tg?.initDataUnsafe?.user?.photo_url && (!name || name === tg.initDataUnsafe.user.first_name)) {
+    p_url = tg.initDataUnsafe.user.photo_url;
   }
+  
+  if (p_url) {
+    return `<img src="${p_url}" alt="${name || ''}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+  }
+  
   const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
   const hue = (initial.charCodeAt(0) * 37) % 360;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="hsl(${hue},45%,35%)"/><text x="50" y="52" font-family="sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${initial}</text></svg>`;
-  try {
-    return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-  } catch (e) {
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
+  return `<div style="width:100%; height:100%; background-color:hsl(${hue},45%,35%); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.5em; border-radius:50%;">${initial}</div>`;
 }
 
 // ============================================
@@ -1071,16 +1067,24 @@ function registerServiceWorker() {
 // ============================================
 // EVENT HANDLERS
 // ============================================
+let lastTapTime = 0;
 function handleTap() {
+  const now = Date.now();
+  if (now - lastTapTime < 80) return; // limit to ~12 taps per second
+  lastTapTime = now;
+
   // Increment locally for instant feedback
   STATE.count++;
   STATE.totalAllTime++;
 
-  updateCounterDisplay();
-  playClickSound();
-  triggerVibration();
-  createRipple();
-  triggerTapPulse();
+  // RequestAnimationFrame for smoother UI updates
+  requestAnimationFrame(() => {
+    updateCounterDisplay();
+    playClickSound();
+    triggerVibration();
+    createRipple();
+    triggerTapPulse();
+  });
 
   // Check if target reached
   if (STATE.target > 0 && STATE.count % STATE.target === 0 && STATE.count > 0) {

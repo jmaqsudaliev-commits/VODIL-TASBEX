@@ -400,9 +400,19 @@
           <div style="margin-top:16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
             <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
               <input type="checkbox" id="ptBroadcast" style="width:18px; height:18px;">
-              <span style="font-size:0.9rem;">Barcha guruh/kanallarga yuborish</span>
+              <span style="font-size:0.9rem; font-weight:bold;">Namoz vaqtlarini tarqatish</span>
             </label>
-            <input type="text" class="input" id="ptBroadcastText" placeholder="Qo'shimcha matn yozishingiz mumkin" style="margin-top:8px; font-size:0.85rem; padding: 8px;">
+            
+            <div id="ptBroadcastOptions" style="display:none; margin-top: 12px; padding-left: 26px;">
+              <div style="display:flex; gap:12px; margin-bottom: 8px;">
+                <label style="font-size:0.85rem; cursor:pointer;"><input type="radio" name="ptTargetType" value="all" checked> Barchaga</label>
+                <label style="font-size:0.85rem; cursor:pointer;"><input type="radio" name="ptTargetType" value="selected"> Tanlab yuborish</label>
+              </div>
+              <div id="ptChatList" style="display:none; max-height:150px; overflow-y:auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+                <div style="font-size:0.8rem; color:#aaa;">Yuklanmoqda...</div>
+              </div>
+              <input type="text" class="input" id="ptBroadcastText" placeholder="Qo'shimcha matn (ixtiyoriy)" style="font-size:0.85rem; padding: 8px;">
+            </div>
           </div>
           
           <button class="btn-primary" style="width:100%;margin-top:16px" id="savePrayerBtn">✅ Saqlash</button>
@@ -425,7 +435,7 @@
     <div class="modal">
       <div class="modal-handle"></div>
       <div class="modal-header">
-        <img class="modal-avatar" id="mAvatar" src="" alt="">
+        <div class="modal-avatar" id="mAvatar" style="width:70px; height:70px;"></div>
         <div class="modal-name" id="mName">—</div>
         <div class="modal-username" id="mUsername">—</div>
       </div>
@@ -489,12 +499,11 @@
 
     // ---- Format ----
     function fmt(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return (n/1e3).toFixed(1)+'K'; return n.toString(); }
-    function genAvatar(name) {
+    function genAvatarHTML(name, photoUrl, className) {
+      if (photoUrl) return `<img src="${photoUrl}" class="${className || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
       const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
       const hue = (initial.charCodeAt(0) * 37) % 360;
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="hsl(${hue},45%,35%)"/><text x="50" y="52" font-family="sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${initial}</text></svg>`;
-      try { return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg))); } 
-      catch (e) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+      return `<div class="${className || ''}" style="width:100%;height:100%;background:hsl(${hue},45%,35%);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:50%;">${initial}</div>`;
     }
     const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
 
@@ -525,9 +534,8 @@
         if (!users.length) { c.innerHTML = '<div class="empty"><span class="empty-icon">👥</span><div class="empty-text">Foydalanuvchilar topilmadi</div></div>'; return; }
         c.innerHTML = users.map((u,i) => {
           const nm = `${u.first_name||''} ${u.last_name||''}`.trim() || 'Noma\'lum';
-          const av = u.photo_url || genAvatar(u.first_name);
           return `<div class="card ${u.blocked?'blocked':''}" onclick="openUserModal(${u.telegram_id})">
-            <img class="avatar" src="${av}" alt="" onerror="this.src='${genAvatar(u.first_name)}'">
+            <div style="width:42px;height:42px;flex-shrink:0;">${genAvatarHTML(u.first_name, u.photo_url, 'avatar')}</div>
             <div class="info">
               <div class="name">${u.blocked?'🚫 ':''}${nm}</div>
               <div class="meta"><span>📿 ${fmt(u.total_all_time||0)}</span><span>🔥 ${u.streak_days||0}d</span><span>${LANG_FLAGS[u.language]||'🇺🇿'}</span></div>
@@ -549,8 +557,7 @@
       if (!u) return;
       selectedUser = u;
       const nm = `${u.first_name||''} ${u.last_name||''}`.trim() || 'Noma\'lum';
-      const av = u.photo_url || genAvatar(u.first_name);
-      document.getElementById('mAvatar').src = av;
+      document.getElementById('mAvatar').innerHTML = genAvatarHTML(u.first_name, u.photo_url, 'modal-avatar-content');
       document.getElementById('mName').textContent = nm;
       document.getElementById('mUsername').textContent = u.username ? `@${u.username}` : '';
       document.getElementById('mCount').textContent = fmt(u.count||0);
@@ -647,9 +654,8 @@
 
       c.innerHTML = d.admins.map(a => {
         const nm = `${a.first_name||''} ${a.last_name||''}`.trim() || 'Noma\'lum';
-        const av = genAvatar(a.first_name);
         return `<div class="card ${a.is_super?'highlight':''}">
-          <img class="avatar" src="${av}" alt="">
+          <div style="width:42px;height:42px;flex-shrink:0;">${genAvatarHTML(a.first_name, a.photo_url, 'avatar')}</div>
           <div class="info">
             <div class="name">${nm}${a.is_super?' <span class="crown">👑 Super</span>':''}</div>
             <div class="meta"><span>${a.username?'@'+a.username:''}</span></div>
@@ -680,10 +686,9 @@
           const medals = ['🥇','🥈','🥉'];
           td.innerHTML = stats.top_donors.map((d,i) => {
             const nm = `${d.first_name||''} ${d.last_name||''}`.trim() || 'Noma\'lum';
-            const av = d.photo_url || genAvatar(d.first_name);
             return `<div class="don-card">
               <span style="font-size:1.1rem;min-width:24px">${medals[i]||(i+1)+'.'}</span>
-              <img class="avatar sm" src="${av}" alt="" onerror="this.src='${genAvatar(d.first_name)}'">
+              <div style="width:36px;height:36px;flex-shrink:0;">${genAvatarHTML(d.first_name, d.photo_url, 'avatar sm')}</div>
               <div class="info"><div class="name">${nm}</div><div class="uid">ID: ${d.telegram_id}</div></div>
               <div class="don-amount">${d.total_donated||0} ⭐</div>
             </div>`;
@@ -804,6 +809,33 @@
       }
     }
 
+    let allChats = {};
+    function renderChatList() {
+      const chatListEl = document.getElementById('ptChatList');
+      if (!chatListEl) return;
+      
+      const chatIds = Object.keys(allChats);
+      if (chatIds.length === 0) {
+        chatListEl.innerHTML = '<div style="font-size:0.8rem; color:#aaa;">Ular yo\'q. Botni kanal/guruhga qo\'shing.</div>';
+        return;
+      }
+      
+      chatListEl.innerHTML = chatIds.map(id => {
+        const title = allChats[id].title || id;
+        return `<label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; margin-bottom:4px; cursor:pointer;"><input type="checkbox" class="chat-checkbox" value="${id}" checked> ${title}</label>`;
+      }).join('');
+    }
+
+    document.getElementById('ptBroadcast')?.addEventListener('change', (e) => {
+      document.getElementById('ptBroadcastOptions').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('input[name="ptTargetType"]').forEach(r => {
+      r.addEventListener('change', (e) => {
+        document.getElementById('ptChatList').style.display = e.target.value === 'selected' ? 'block' : 'none';
+      });
+    });
+
     function updateCardPreview() {
       const num = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
       const holder = document.getElementById('cardHolder').value || '—';
@@ -828,6 +860,11 @@
         document.getElementById('ptShom').value = d.times.shom || '';
         document.getElementById('ptXufton').value = d.times.xufton || '';
       }
+      const chatsRes = await api('/api/admin/chats');
+      if (chatsRes && chatsRes.chats) {
+        allChats = chatsRes.chats;
+        renderChatList();
+      }
     }
 
     document.getElementById('prayerToggle').addEventListener('click', () => {
@@ -850,11 +887,24 @@
       
       const broadcast = document.getElementById('ptBroadcast')?.checked;
       const broadcast_text = document.getElementById('ptBroadcastText')?.value.trim();
+      let broadcast_targets = 'all';
+      
+      if (document.querySelector('input[name="ptTargetType"]:checked')?.value === 'selected') {
+        const checkboxes = document.querySelectorAll('.chat-checkbox:checked');
+        broadcast_targets = Array.from(checkboxes).map(cb => cb.value);
+        if (broadcast_targets.length === 0 && broadcast) {
+          toast('Kamida 1 ta guruh tanlang yoki "Barchaga" ni tanlang');
+          return;
+        }
+      }
 
-      const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text });
+      const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets });
       if (r && r.success) {
         toast(r.broadcastCount > 0 ? `✅ Saqlandi va ${r.broadcastCount} ta guruhga yuborildi` : '✅ Namoz vaqtlari saqlandi');
-        if (document.getElementById('ptBroadcast')) document.getElementById('ptBroadcast').checked = false;
+        if (document.getElementById('ptBroadcast')) {
+          document.getElementById('ptBroadcast').checked = false;
+          document.getElementById('ptBroadcastOptions').style.display = 'none';
+        }
         if (document.getElementById('ptBroadcastText')) document.getElementById('ptBroadcastText').value = '';
       }
     });

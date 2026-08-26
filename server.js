@@ -1660,9 +1660,15 @@ app.get('/api/admin/prayer-times', adminMiddleware, (req, res) => {
   res.json(db.settings.prayer_times || { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } });
 });
 
+// Admin: Get tracked chats (groups/channels)
+app.get('/api/admin/chats', adminMiddleware, (req, res) => {
+  const db = loadDB();
+  res.json({ chats: db.chats || {} });
+});
+
 // Admin: Update prayer times settings
 app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
-  const { enabled, location, mosque, notify_before, times, broadcast, broadcast_text } = req.body;
+  const { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets } = req.body;
   const db = loadDB();
   db.settings.prayer_times = {
     enabled: enabled !== undefined ? enabled : false,
@@ -1688,8 +1694,15 @@ app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
       msg += `\n\n_${broadcast_text}_`;
     }
     
+    let targetChatIds = Object.keys(db.chats);
+    if (broadcast_targets && broadcast_targets !== 'all') {
+      if (Array.isArray(broadcast_targets)) {
+        targetChatIds = targetChatIds.filter(id => broadcast_targets.includes(id));
+      }
+    }
+
     let sentCount = 0;
-    for (const chatId of Object.keys(db.chats)) {
+    for (const chatId of targetChatIds) {
       try {
         await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
         sentCount++;
