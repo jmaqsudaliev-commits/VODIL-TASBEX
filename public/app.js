@@ -769,18 +769,8 @@ function formatDate(dateStr) {
 }
 
 function generateAvatarUrl(name) {
-  try {
-    const initial = Array.from(name || '?')[0].toUpperCase();
-    const hue = (initial.charCodeAt(0) * 37) % 360;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-      <rect width="100" height="100" rx="50" fill="hsl(${hue}, 45%, 35%)"/>
-      <text x="50" y="55" text-anchor="middle" dy=".1em" fill="white" font-size="42" font-family="Inter,sans-serif" font-weight="700">${initial}</text>
-    </svg>`;
-    const b64 = btoa(encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)));
-    return `data:image/svg+xml;base64,${b64}`;
-  } catch (e) {
-    return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjUwIiBmaWxsPSIjNjY2Ii8+PHRleHQgeD0iNTAiIHk9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjFlbSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSI0MiIgZm9udC1mYW1pbHk9IkludGVyLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiPj88L3RleHQ+PC9zdmc+';
-  }
+  const n = encodeURIComponent((name || '?').trim());
+  return `https://ui-avatars.com/api/?name=${n}&background=random&color=fff&size=100&bold=true`;
 }
 
 // ============================================

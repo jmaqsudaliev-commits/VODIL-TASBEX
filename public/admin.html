@@ -482,15 +482,8 @@
     // ---- Format ----
     function fmt(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return (n/1e3).toFixed(1)+'K'; return n.toString(); }
     function genAvatar(name) {
-      try {
-        const i = Array.from(name || '?')[0].toUpperCase();
-        const h = (i.charCodeAt(0) * 37) % 360;
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="50" fill="hsl(${h},45%,35%)"/><text x="50" y="55" text-anchor="middle" dy=".1em" fill="#fff" font-size="42" font-family="Inter,sans-serif" font-weight="700">${i}</text></svg>`;
-        const b64 = btoa(encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)));
-        return `data:image/svg+xml;base64,${b64}`;
-      } catch (e) {
-        return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjUwIiBmaWxsPSIjNjY2Ii8+PHRleHQgeD0iNTAiIHk9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjFlbSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSI0MiIgZm9udC1mYW1pbHk9IkludGVyLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiPj88L3RleHQ+PC9zdmc+';
-      }
+      const n = encodeURIComponent((name || '?').trim());
+      return `https://ui-avatars.com/api/?name=${n}&background=random&color=fff&size=100&bold=true`;
     }
     const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
 
@@ -615,9 +608,19 @@
     }
 
     async function doRemoveAdmin(tid) {
-      if (!confirm('Adminlikdan olib tashlansinmi?')) return;
+      if (!confirm('Adminlikdan olinadimi?')) return;
       const r = await api('/api/admin/admins', 'DELETE', { telegram_id: tid });
-      if (r?.success) { toast('✅ Adminlikdan olib tashlandi'); closeModal(); loadAdmins(); loadStats(); }
+      if (r?.success) { toast('⬇️ Adminlikdan olindi'); closeModal(); loadUsers(); loadAdmins(); }
+    }
+
+    // ---- Channels ----
+    async function deleteChannel(chName) {
+      if (!confirm(`${chName} kanalini o'chirasizmi?`)) return;
+      const r = await api('/api/admin/channels', 'DELETE', { channel: chName });
+      if (r?.success) { 
+        toast('🗑 Kanal o\'chirildi');
+        loadChannels();
+      }
     }
 
     // ---- Load Admins ----
@@ -707,7 +710,7 @@
       if (!d.channels.length) { c.innerHTML = '<div class="empty"><span class="empty-icon">📢</span><div class="empty-text">Kanallar yo\'q</div></div>'; return; }
       c.innerHTML = d.channels.map(ch => `<div class="ch-card">
         <span class="ch-name">📢 ${ch}</span>
-        <button class="btn btn-red" onclick="doRemoveCh('${ch}')">🗑 O'chirish</button>
+        <button class="btn btn-red" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
       </div>`).join('');
     }
 
