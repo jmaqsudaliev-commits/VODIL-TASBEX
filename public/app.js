@@ -766,6 +766,8 @@ function formatDate(dateStr) {
   } catch {
     return dateStr;
   }
+}
+
 function generateAvatarUrl(name) {
   try {
     const canvas = document.createElement('canvas');
