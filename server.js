@@ -1241,10 +1241,13 @@ if (BOT_TOKEN) {
   // ==========================================
   // PRAYER TIME NOTIFICATION SCHEDULER
   // ==========================================
+  // ==========================================
+  // PRAYER TIME NOTIFICATION SCHEDULER
+  // ==========================================
   const PRAYER_NAMES = {
-    uz: { bomdod: 'Bomdod', peshin: 'Peshin', asr: 'Asr', shom: 'Shom', xufton: 'Xufton' },
-    ru: { bomdod: 'Фаджр', peshin: 'Зухр', asr: 'Аср', shom: 'Магриб', xufton: 'Иша' },
-    en: { bomdod: 'Fajr', peshin: 'Dhuhr', asr: 'Asr', shom: 'Maghrib', xufton: 'Isha' },
+    uz: { tong: 'Tong/Quyosh', bomdod: 'Bomdod', peshin: 'Peshin', asr: 'Asr', shom: 'Shom', xufton: 'Xufton' },
+    ru: { tong: 'Восход', bomdod: 'Фаджр', peshin: 'Зухр', asr: 'Аср', shom: 'Магриб', xufton: 'Иша' },
+    en: { tong: 'Sunrise', bomdod: 'Fajr', peshin: 'Dhuhr', asr: 'Asr', shom: 'Maghrib', xufton: 'Isha' },
   };
 
   let lastNotifiedPrayer = ''; // Track to avoid duplicate notifications
@@ -1261,13 +1264,17 @@ if (BOT_TOKEN) {
       const notifyBefore = pt.notify_before || 10;
 
       // Check each prayer time
-      const prayerKeys = ['bomdod', 'peshin', 'asr', 'shom', 'xufton'];
+      const prayerKeys = ['tong', 'bomdod', 'peshin', 'asr', 'shom', 'xufton'];
       for (const key of prayerKeys) {
-        const timeStr = pt.times[key];
-        if (!timeStr) continue;
+        const timeStrRaw = pt.times[key];
+        if (!timeStrRaw) continue;
 
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        if (isNaN(hours) || isNaN(minutes)) continue;
+        // "04:30 05:00" kabi erkin yozilgan matndan birinchi soat formatini qidirib topamiz
+        const match = timeStrRaw.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
+        if (!match) continue;
+        
+        const hours = Number(match[1]);
+        const minutes = Number(match[2]);
 
         // Calculate prayer time in minutes from midnight
         const prayerMinutes = hours * 60 + minutes;
@@ -1295,7 +1302,7 @@ if (BOT_TOKEN) {
             const mosque = pt.mosque || '';
 
             let message = `🕌  <b>${prayerName} namozi</b>\n\n`;
-            message += `⏰ Vaqti: <b>${timeStr}</b>\n`;
+            message += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
             if (location) message += `📍 ${location}\n`;
             if (mosque) message += `🕌 ${mosque}\n`;
             message += `\n⏳ ${notifyBefore} daqiqadan so'ng namoz vaqti kiradi!\n`;
@@ -1693,7 +1700,8 @@ app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
     location: location || '',
     mosque: mosque || '',
     notify_before: notify_before || 10,
-    times: times || { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' },
+    times: times || { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' },
+    footer_text: broadcast_text || '' // doimiy tavsif uchun saqlaymiz
   };
   saveDB(db);
   
@@ -1702,6 +1710,7 @@ app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
     let msg = `🕌 *${pt.mosque || 'Masjid'}* namoz vaqtlari yangilandi!
 📍 Hudud: *${pt.location || 'Noma\'lum'}*
 
+🌅 Tong/Quyosh: *${pt.times.tong || '-'}*
 🌅 Bomdod: *${pt.times.bomdod || '-'}*
 ☀️ Peshin: *${pt.times.peshin || '-'}*
 🌇 Asr: *${pt.times.asr || '-'}*

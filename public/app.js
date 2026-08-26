@@ -832,8 +832,18 @@ async function loadPrayerTimes() {
     
     if (data.times) {
       const p = data.times;
-      el.innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
+      let html = `
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">`;
+      
+      if (p.tong) {
+        html += `
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Tong/Quyosh</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.tong}</span>
+          </div>`;
+      }
+
+      html += `
           <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
             <span style="font-weight:600;color:var(--text-2)">Bomdod</span>
             <span style="font-weight:800;color:var(--text-1)">${p.bomdod || '-'}</span>
@@ -856,6 +866,12 @@ async function loadPrayerTimes() {
           </div>
         </div>
       `;
+
+      if (data.footer_text) {
+        html += `<div style="margin-top:20px; text-align:center; color:var(--text-3); font-style:italic; font-size:0.9rem; padding: 0 16px;">${data.footer_text.replace(/\n/g, '<br>')}</div>`;
+      }
+
+      el.innerHTML = html;
     }
   } catch (e) {
     document.getElementById('prayerContent').innerHTML = '<div style="color:var(--red-400);text-align:center;">Xatolik yuz berdi</div>';
