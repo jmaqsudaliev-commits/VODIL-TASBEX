@@ -26,8 +26,8 @@ const BOT_LANG = {
     unblockedNotify: '✅ Hisobingiz blokdan ochildi! /start buyruqini bering.',
     subRequired: '⚠️  <b>OBUNA TALAB QILINADI</b>',
     subText: 'Botdan foydalanish uchun quyidagi\nkanallarga obuna bo\'ling:',
-    subAfter: '✅ Obuna bo\'lgach "Tekshirish" ni bosing.',
-    subCheck: '✅ Tekshirish',
+    subAfter: '✅ Obuna bo\'lgach, pastdagi "A\'zo bo\'ldim" tugmasini bosing.',
+    subCheck: '✅ A\'zo bo\'ldim',
     subConfirmed: '✅ Obuna tasdiqlandi!',
     subNotYet: '❌ Hali barcha kanallarga obuna bolmagansiz!',
     subOpen: '✅ Obuna tasdiqlandi!\n\n📿 Tasbihni ochish uchun tugmani bosing 👇',
@@ -94,8 +94,8 @@ const BOT_LANG = {
     unblockedNotify: '✅ Ваш аккаунт разблокирован! Введите /start.',
     subRequired: '⚠️  <b>ТРЕБУЕТСЯ ПОДПИСКА</b>',
     subText: 'Для использования бота подпишитесь\nна следующие каналы:',
-    subAfter: '✅ После подписки нажмите "Проверить".',
-    subCheck: '✅ Проверить',
+    subAfter: '✅ После подписки нажмите кнопку "Я подписался".',
+    subCheck: '✅ Я подписался',
     subConfirmed: '✅ Подписка подтверждена!',
     subNotYet: '❌ Вы ещё не подписались на все каналы!',
     subOpen: '✅ Подписка подтверждена!\n\n📿 Нажмите кнопку чтобы открыть тасбих 👇',
@@ -162,8 +162,8 @@ const BOT_LANG = {
     unblockedNotify: '✅ Your account has been unblocked! Type /start.',
     subRequired: '⚠️  <b>SUBSCRIPTION REQUIRED</b>',
     subText: 'Please subscribe to the following\nchannels to use the bot:',
-    subAfter: '✅ After subscribing, press "Check".',
-    subCheck: '✅ Check',
+    subAfter: '✅ After subscribing, press "I subscribed".',
+    subCheck: '✅ I subscribed',
     subConfirmed: '✅ Subscription confirmed!',
     subNotYet: '❌ You haven\'t subscribed to all channels yet!',
     subOpen: '✅ Subscription confirmed!\n\n📿 Press the button to open tasbih 👇',
@@ -672,6 +672,7 @@ if (BOT_TOKEN) {
         }
       } catch (e) {
         console.error(`Cannot check ${channel}:`, e.message);
+        unsubscribed.push(channel);
       }
     }
     return { subscribed: unsubscribed.length === 0, channels: unsubscribed };
