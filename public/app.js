@@ -1068,9 +1068,27 @@ function registerServiceWorker() {
 // EVENT HANDLERS
 // ============================================
 let lastTapTime = 0;
+let fastTapWarnings = 0;
 function handleTap() {
   const now = Date.now();
-  if (now - lastTapTime < 80) return; // limit to ~12 taps per second
+  
+  if (now - lastTapTime < 60) {
+    fastTapWarnings++;
+    if (fastTapWarnings >= 5) {
+      apiCall('/api/abuse-lock', 'POST', { telegram_id: STATE.telegramId });
+      STATE.isBlocked = true;
+      showBlockedOverlay();
+      return;
+    }
+    toast(`Juda tez bosyapsiz! Yana ${5 - fastTapWarnings} marta takrorlansa bloklanasiz!`, 'warn');
+    return;
+  }
+  
+  // Yaxshi vaqt o'tgan bo'lsa, ogohlantirishni biroz yumshatamiz
+  if (now - lastTapTime > 2000) {
+    if (fastTapWarnings > 0) fastTapWarnings--;
+  }
+
   lastTapTime = now;
 
   // Increment locally for instant feedback

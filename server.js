@@ -1448,6 +1448,19 @@ app.post('/api/reset', (req, res) => {
   res.json(user);
 });
 
+app.post('/api/abuse-lock', (req, res) => {
+  const { telegram_id } = req.body;
+  if (!telegram_id) return res.status(400).json({ error: 'telegram_id is required' });
+  const db = loadDB();
+  const idStr = telegram_id.toString();
+  if (db.users[idStr]) {
+    db.users[idStr].blocked = true;
+    saveDB(db);
+    return res.json({ success: true, message: 'User blocked due to abuse' });
+  }
+  res.status(404).json({ error: 'User not found' });
+});
+
 app.get('/api/leaderboard', (req, res) => {
   res.json(getLeaderboard(50));
 });
