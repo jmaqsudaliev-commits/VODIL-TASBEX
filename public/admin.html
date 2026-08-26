@@ -402,6 +402,7 @@
               <input type="checkbox" id="ptBroadcast" style="width:18px; height:18px;">
               <span style="font-size:0.9rem;">Barcha guruh/kanallarga yuborish</span>
             </label>
+            <input type="text" class="input" id="ptBroadcastText" placeholder="Qo'shimcha matn yozishingiz mumkin" style="margin-top:8px; font-size:0.85rem; padding: 8px;">
           </div>
           
           <button class="btn-primary" style="width:100%;margin-top:16px" id="savePrayerBtn">✅ Saqlash</button>
@@ -846,12 +847,15 @@
         shom: document.getElementById('ptShom').value,
         xufton: document.getElementById('ptXufton').value
       };
+      
       const broadcast = document.getElementById('ptBroadcast')?.checked;
+      const broadcast_text = document.getElementById('ptBroadcastText')?.value.trim();
 
-      const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast });
+      const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text });
       if (r && r.success) {
         toast(r.broadcastCount > 0 ? `✅ Saqlandi va ${r.broadcastCount} ta guruhga yuborildi` : '✅ Namoz vaqtlari saqlandi');
         if (document.getElementById('ptBroadcast')) document.getElementById('ptBroadcast').checked = false;
+        if (document.getElementById('ptBroadcastText')) document.getElementById('ptBroadcastText').value = '';
       }
     });
 

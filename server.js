@@ -1662,7 +1662,7 @@ app.get('/api/admin/prayer-times', adminMiddleware, (req, res) => {
 
 // Admin: Update prayer times settings
 app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
-  const { enabled, location, mosque, notify_before, times, broadcast } = req.body;
+  const { enabled, location, mosque, notify_before, times, broadcast, broadcast_text } = req.body;
   const db = loadDB();
   db.settings.prayer_times = {
     enabled: enabled !== undefined ? enabled : false,
@@ -1675,16 +1675,18 @@ app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
   
   if (broadcast && db.chats) {
     const pt = db.settings.prayer_times;
-    const msg = `🕌 *${pt.mosque || 'Masjid'}* namoz vaqtlari yangilandi!
+    let msg = `🕌 *${pt.mosque || 'Masjid'}* namoz vaqtlari yangilandi!
 📍 Hudud: *${pt.location || 'Noma\'lum'}*
 
 🌅 Bomdod: *${pt.times.bomdod || '-'}*
 ☀️ Peshin: *${pt.times.peshin || '-'}*
 🌇 Asr: *${pt.times.asr || '-'}*
 🌆 Shom: *${pt.times.shom || '-'}*
-🌃 Xufton: *${pt.times.xufton || '-'}*
+🌃 Xufton: *${pt.times.xufton || '-'}*`;
 
-_Vaqtlar o'zgarishi haqida ogohlantirish yoqildi._`;
+    if (broadcast_text) {
+      msg += `\n\n_${broadcast_text}_`;
+    }
     
     let sentCount = 0;
     for (const chatId of Object.keys(db.chats)) {
