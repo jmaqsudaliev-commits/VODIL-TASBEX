@@ -769,14 +769,17 @@ function formatDate(dateStr) {
 }
 
 function generateAvatarUrl(name) {
-  // Generate a simple SVG avatar as data URI
-  const initial = (name || '?').charAt(0).toUpperCase();
-  const hue = (initial.charCodeAt(0) * 37) % 360;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-    <rect width="100" height="100" rx="50" fill="hsl(${hue}, 45%, 35%)"/>
-    <text x="50" y="55" text-anchor="middle" dy=".1em" fill="white" font-size="42" font-family="Inter,sans-serif" font-weight="700">${initial}</text>
-  </svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  try {
+    const initial = Array.from(name || '?')[0].toUpperCase();
+    const hue = (initial.charCodeAt(0) * 37) % 360;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="50" fill="hsl(${hue}, 45%, 35%)"/>
+      <text x="50" y="55" text-anchor="middle" dy=".1em" fill="white" font-size="42" font-family="Inter,sans-serif" font-weight="700">${initial}</text>
+    </svg>`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  } catch (e) {
+    return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect width="100" height="100" rx="50" fill="%23666"/%3E%3Ctext x="50" y="55" text-anchor="middle" dy=".1em" fill="%23fff" font-size="42" font-family="Inter,sans-serif" font-weight="700"%3E?%3C/text%3E%3C/svg%3E';
+  }
 }
 
 // ============================================
