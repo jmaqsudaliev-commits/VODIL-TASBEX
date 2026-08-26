@@ -1,0 +1,126 @@
+{
+  "users": {
+    "111": {
+      "telegram_id": 111,
+      "first_name": "Ahmad",
+      "last_name": "Karimov",
+      "username": "ahmad_k",
+      "photo_url": "",
+      "count": 75,
+      "total_all_time": 75,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12",
+      "blocked": false
+    },
+    "222": {
+      "telegram_id": 222,
+      "first_name": "Sardor",
+      "last_name": "Raximov",
+      "username": "sardor_r",
+      "photo_url": "",
+      "count": 150,
+      "total_all_time": 150,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12"
+    },
+    "333": {
+      "telegram_id": 333,
+      "first_name": "Malika",
+      "last_name": "Umarova",
+      "username": "malika_u",
+      "photo_url": "",
+      "count": 89,
+      "total_all_time": 89,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12"
+    },
+    "444": {
+      "telegram_id": 444,
+      "first_name": "Bobur",
+      "last_name": "Aliyev",
+      "username": "bobur_a",
+      "photo_url": "",
+      "count": 210,
+      "total_all_time": 210,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12"
+    },
+    "555": {
+      "telegram_id": 555,
+      "first_name": "Nilufar",
+      "last_name": "Karimova",
+      "username": "nilufar_k",
+      "photo_url": "",
+      "count": 45,
+      "total_all_time": 45,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12"
+    },
+    "666": {
+      "telegram_id": 666,
+      "first_name": "Jasur",
+      "last_name": "Toshmatov",
+      "username": "jasur_t",
+      "photo_url": "",
+      "count": 320,
+      "total_all_time": 320,
+      "streak_days": 1,
+      "last_active": "2026-08-12",
+      "created_at": "2026-08-12"
+    },
+    "123456789": {
+      "telegram_id": 123456789,
+      "first_name": "Demo",
+      "last_name": "User",
+      "username": "demo_user",
+      "photo_url": "",
+      "count": 6,
+      "total_all_time": 6,
+      "streak_days": 1,
+      "last_active": "2026-08-25",
+      "created_at": "2026-08-25",
+      "blocked": false,
+      "total_donated": 0,
+      "language": "uz"
+    }
+  },
+  "settings": {
+    "required_channels": [],
+    "donation_amounts": [
+      10,
+      50,
+      100,
+      500
+    ],
+    "donation_card": {
+      "enabled": true,
+      "card_number": "8600 1234 5678 9012",
+      "card_holder": "RAYIMJONOV ISLOM",
+      "bank_name": "Uzcard",
+      "card_type": "uzcard",
+      "reason": "Masjid ta'miri uchun ehson"
+    },
+    "prayer_times": {
+      "enabled": true,
+      "location": "Toshkent shahri",
+      "mosque": "Xazrati Imom masjidi",
+      "notify_before": 10,
+      "times": {
+        "bomdod": "05:15",
+        "peshin": "13:00",
+        "asr": "16:30",
+        "shom": "19:45",
+        "xufton": "21:15"
+      }
+    }
+  },
+  "admins": [
+    8809344628
+  ],
+  "donations": []
+}

@@ -1,0 +1,30 @@
+{
+  "name": "elektron-tasbih",
+  "version": "2.0.0",
+  "description": "Elektron Tasbih - Telegram Web App bot (Production Ready)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "start:prod": "NODE_ENV=production node server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop elektron-tasbih",
+    "pm2:restart": "pm2 restart elektron-tasbih",
+    "pm2:logs": "pm2 logs elektron-tasbih",
+    "docker:build": "docker build -t elektron-tasbih .",
+    "docker:run": "docker-compose up -d"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.1.0",
+    "helmet": "^7.1.0",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["telegram", "bot", "tasbih", "zikr", "webapp"],
+  "license": "MIT"
+}
