@@ -482,8 +482,23 @@
     // ---- Format ----
     function fmt(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return (n/1e3).toFixed(1)+'K'; return n.toString(); }
     function genAvatar(name) {
-      const n = encodeURIComponent((name || '?').trim());
-      return `https://ui-avatars.com/api/?name=${n}&background=random&color=fff&size=100&bold=true`;
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 100; canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
+        const hue = (initial.charCodeAt(0) * 37) % 360;
+        ctx.fillStyle = `hsl(${hue}, 45%, 35%)`;
+        ctx.fillRect(0,0,100,100);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 42px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(initial, 50, 52);
+        return canvas.toDataURL('image/png');
+      } catch(e) {
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQMAAABKLAcXAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAABNJREFUOMtjYBgFo2AUjIJRMApIBwAGQAABTXpIigAAAABJRU5ErkJggg==';
+      }
     }
     const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
 

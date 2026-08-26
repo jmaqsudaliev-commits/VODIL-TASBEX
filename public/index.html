@@ -56,8 +56,12 @@
         <div class="tab-lottie" id="tabDonateLottie"></div>
         <span class="tab-label" data-i18n="tabDonate">Ehson</span>
       </button>
+      <button class="tab-btn" data-tab="prayer" id="tabPrayer">
+        <span class="tab-icon" style="font-size:1.2rem; margin-bottom:4px; display:block">🕌</span>
+        <span class="tab-label" data-i18n="tabPrayer">Namoz</span>
+      </button>
       <button class="tab-btn" data-tab="profile" id="tabProfile">
-        <span class="tab-icon">👤</span>
+        <span class="tab-icon" style="font-size:1.2rem; margin-bottom:4px; display:block">👤</span>
         <span class="tab-label" data-i18n="tabProfile">Profil</span>
       </button>
     </nav>
@@ -324,6 +328,17 @@
           <span class="info-label" data-i18n="profileLastActive">⏱ Oxirgi faollik</span>
           <span class="info-value" id="profileLastActive">—</span>
         </div>
+      </div>
+    </section>
+
+    <!-- ==================== PRAYER PAGE ==================== -->
+    <section class="page" id="pagePrayer">
+      <div class="donate-page-header" style="margin-bottom:10px;">
+        <h1 class="donate-page-title">🕌 Namoz Vaqtlari</h1>
+        <p class="donate-page-subtitle" id="prayerLocation">Shahar yuklanmoqda...</p>
+      </div>
+      <div id="prayerContent" style="padding:0 20px;">
+        <div class="loading"><div class="spinner"></div></div>
       </div>
     </section>
 

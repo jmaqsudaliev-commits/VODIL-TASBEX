@@ -766,11 +766,24 @@ function formatDate(dateStr) {
   } catch {
     return dateStr;
   }
-}
-
 function generateAvatarUrl(name) {
-  const n = encodeURIComponent((name || '?').trim());
-  return `https://ui-avatars.com/api/?name=${n}&background=random&color=fff&size=100&bold=true`;
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 100; canvas.height = 100;
+    const ctx = canvas.getContext('2d');
+    const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
+    const hue = (initial.charCodeAt(0) * 37) % 360;
+    ctx.fillStyle = `hsl(${hue}, 45%, 35%)`;
+    ctx.fillRect(0,0,100,100);
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 42px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(initial, 50, 52);
+    return canvas.toDataURL('image/png');
+  } catch(e) {
+    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQMAAABKLAcXAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAABNJREFUOMtjYBgFo2AUjIJRMApIBwAGQAABTXpIigAAAABJRU5ErkJggg==';
+  }
 }
 
 // ============================================
@@ -801,6 +814,58 @@ function switchTab(tabName) {
   }
   if (tabName === 'profile') {
     updateProfileDisplay();
+  }
+  if (tabName === 'prayer') {
+    loadPrayerTimes();
+  }
+}
+
+// ============================================
+// PRAYER TIMES
+// ============================================
+async function loadPrayerTimes() {
+  try {
+    const data = await apiCall('/api/prayer-times');
+    const el = document.getElementById('prayerContent');
+    const loc = document.getElementById('prayerLocation');
+    
+    if (!data || !data.enabled) {
+      loc.textContent = 'Namoz eslatmalari o\'chirilgan';
+      el.innerHTML = '<div style="text-align:center;color:var(--text-4);padding:40px 0;">Hozircha namoz vaqtlari belgilanmagan</div>';
+      return;
+    }
+    
+    loc.textContent = (data.location || '') + (data.mosque ? ` (${data.mosque})` : '');
+    
+    if (data.times) {
+      const p = data.times;
+      el.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Bomdod</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.bomdod || '-'}</span>
+          </div>
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Peshin</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.peshin || '-'}</span>
+          </div>
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Asr</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.asr || '-'}</span>
+          </div>
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Shom</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.shom || '-'}</span>
+          </div>
+          <div style="background:var(--surface);padding:16px;border-radius:12px;display:flex;justify-content:space-between;border:1px solid var(--border)">
+            <span style="font-weight:600;color:var(--text-2)">Xufton</span>
+            <span style="font-weight:800;color:var(--text-1)">${p.xufton || '-'}</span>
+          </div>
+        </div>
+      `;
+    }
+  } catch (e) {
+    document.getElementById('prayerContent').innerHTML = '<div style="color:var(--red-400);text-align:center;">Xatolik yuz berdi</div>';
   }
 }
 
