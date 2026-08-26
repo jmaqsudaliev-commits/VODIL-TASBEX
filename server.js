@@ -1255,7 +1255,9 @@ if (BOT_TOKEN) {
       const pt = db.settings.prayer_times;
       if (!pt || !pt.enabled) return;
 
-      const now = new Date();
+      const nowUTC = new Date();
+      // Server UTC vaqtidan qat'iy nazar Toshkent vaqtini olamiz
+      const tashkentTime = new Date(nowUTC.toLocaleString('en-US', { timeZone: 'Asia/Tashkent' }));
       const notifyBefore = pt.notify_before || 10;
 
       // Check each prayer time
@@ -1269,11 +1271,14 @@ if (BOT_TOKEN) {
 
         // Calculate prayer time in minutes from midnight
         const prayerMinutes = hours * 60 + minutes;
-        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        const nowMinutes = tashkentTime.getHours() * 60 + tashkentTime.getMinutes();
         const diff = prayerMinutes - nowMinutes;
 
         // Send notification X minutes before prayer
-        const notifyKey = `${key}_${now.toISOString().split('T')[0]}`;
+        const yyyy = tashkentTime.getFullYear();
+        const mm = String(tashkentTime.getMonth() + 1).padStart(2, '0');
+        const dd = String(tashkentTime.getDate()).padStart(2, '0');
+        const notifyKey = `${key}_${yyyy}-${mm}-${dd}`;
         if (diff === notifyBefore && lastNotifiedPrayer !== notifyKey) {
           lastNotifiedPrayer = notifyKey;
 
