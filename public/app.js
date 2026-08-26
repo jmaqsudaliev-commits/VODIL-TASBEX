@@ -769,14 +769,15 @@ function generateAvatarHTML(name, photo_url) {
   if (!p_url && tg?.initDataUnsafe?.user?.photo_url && (!name || name === tg.initDataUnsafe.user.first_name)) {
     p_url = tg.initDataUnsafe.user.photo_url;
   }
-  
-  if (p_url) {
-    return `<img src="${p_url}" alt="${name || ''}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
-  }
-  
+
   const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
   const hue = (initial.charCodeAt(0) * 37) % 360;
-  return `<div style="width:100%; height:100%; background-color:hsl(${hue},45%,35%); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.5em; border-radius:50%;">${initial}</div>`;
+  const divHTML = `<div style="width:100%;height:100%;background:hsl(${hue},45%,35%);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:50%;">${initial}</div>`;
+  if (p_url) {
+    const safeDiv = divHTML.replace(/"/g, '&quot;');
+    return `<img src="${p_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="" onerror="this.outerHTML='${safeDiv}'">`;
+  }
+  return divHTML;
 }
 
 // ============================================
