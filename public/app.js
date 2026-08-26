@@ -769,23 +769,14 @@ function formatDate(dateStr) {
 }
 
 function generateAvatarUrl(name) {
-  try {
-    const canvas = document.createElement('canvas');
-    canvas.width = 100; canvas.height = 100;
-    const ctx = canvas.getContext('2d');
-    const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
-    const hue = (initial.charCodeAt(0) * 37) % 360;
-    ctx.fillStyle = `hsl(${hue}, 45%, 35%)`;
-    ctx.fillRect(0,0,100,100);
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 42px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(initial, 50, 52);
-    return canvas.toDataURL('image/png');
-  } catch(e) {
-    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQMAAABKLAcXAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAABNJREFUOMtjYBgFo2AUjIJRMApIBwAGQAABTXpIigAAAABJRU5ErkJggg==';
+  const tg = window.Telegram?.WebApp;
+  if (tg?.initDataUnsafe?.user?.photo_url && (!name || name === tg.initDataUnsafe.user.first_name)) {
+    return tg.initDataUnsafe.user.photo_url;
   }
+  const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
+  const hue = (initial.charCodeAt(0) * 37) % 360;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="hsl(${hue},45%,35%)"/><text x="50" y="52" font-family="sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${initial}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
 // ============================================

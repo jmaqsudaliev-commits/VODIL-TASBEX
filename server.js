@@ -325,6 +325,7 @@ async function initDB() {
   if (!_dbCache.settings.donation_card) _dbCache.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' };
   if (!_dbCache.settings.prayer_times) _dbCache.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
   if (!_dbCache.donations) _dbCache.donations = [];
+  if (!_dbCache.chats) _dbCache.chats = {};
   if (!_dbCache.admins.includes(SUPER_ADMIN_ID)) _dbCache.admins.push(SUPER_ADMIN_ID);
   
   console.log(`💾 DB loaded: ${Object.keys(_dbCache.users).length} users in memory`);
@@ -1157,6 +1158,26 @@ if (BOT_TOKEN) {
     }
   });
 
+  // Track groups and channels where bot is added/removed
+  bot.on('my_chat_member', (msg) => {
+    const chat = msg.chat;
+    const newStatus = msg.new_chat_member.status;
+    
+    if (chat.type === 'group' || chat.type === 'supergroup' || chat.type === 'channel') {
+      if (!_dbCache.chats) _dbCache.chats = {};
+      if (['administrator', 'creator', 'member'].includes(newStatus)) {
+        _dbCache.chats[chat.id] = {
+          title: chat.title || 'Noma\'lum guruh/kanal',
+          type: chat.type,
+          addedAt: new Date().toISOString()
+        };
+      } else if (['left', 'kicked'].includes(newStatus)) {
+        delete _dbCache.chats[chat.id];
+      }
+      saveDB(_dbCache);
+    }
+  });
+
   bot.on('message', async (msg) => {
     if (msg.successful_payment) {
       const payment = msg.successful_payment;
@@ -1639,8 +1660,8 @@ app.get('/api/admin/prayer-times', adminMiddleware, (req, res) => {
 });
 
 // Admin: Update prayer times settings
-app.put('/api/admin/prayer-times', adminMiddleware, (req, res) => {
-  const { enabled, location, mosque, notify_before, times } = req.body;
+app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
+  const { enabled, location, mosque, notify_before, times, broadcast } = req.body;
   const db = loadDB();
   db.settings.prayer_times = {
     enabled: enabled !== undefined ? enabled : false,
@@ -1650,7 +1671,33 @@ app.put('/api/admin/prayer-times', adminMiddleware, (req, res) => {
     times: times || { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' },
   };
   saveDB(db);
-  res.json({ success: true, prayer_times: db.settings.prayer_times });
+  
+  if (broadcast && db.chats) {
+    const pt = db.settings.prayer_times;
+    const msg = `🕌 *${pt.mosque || 'Masjid'}* namoz vaqtlari yangilandi!
+📍 Hudud: *${pt.location || 'Noma\'lum'}*
+
+🌅 Bomdod: *${pt.times.bomdod || '-'}*
+☀️ Peshin: *${pt.times.peshin || '-'}*
+🌇 Asr: *${pt.times.asr || '-'}*
+🌆 Shom: *${pt.times.shom || '-'}*
+🌃 Xufton: *${pt.times.xufton || '-'}*
+
+_Vaqtlar o'zgarishi haqida ogohlantirish yoqildi._`;
+    
+    let sentCount = 0;
+    for (const chatId of Object.keys(db.chats)) {
+      try {
+        await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
+        sentCount++;
+      } catch (err) {
+        console.error(`Failed to broadcast prayer times to chat ${chatId}:`, err.message);
+      }
+    }
+    res.json({ success: true, prayer_times: db.settings.prayer_times, broadcastCount: sentCount });
+  } else {
+    res.json({ success: true, prayer_times: db.settings.prayer_times });
+  }
 });
 
 // Admin: Update donation reason
