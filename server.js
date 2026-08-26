@@ -1419,6 +1419,8 @@ function adminMiddleware(req, res, next) {
 // ============================================
 // PUBLIC API
 // ============================================
+app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
+
 app.post('/api/user', (req, res) => {
   const { telegram_id, first_name, last_name, username, photo_url } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id is required' });
@@ -1829,5 +1831,16 @@ initDB().then(() => {
     console.log(`📦 Compression: enabled`);
     console.log(`🔒 Helmet: enabled`);
     console.log(`⏱ Rate limiting: enabled`);
+
+    // O'z-o'zini uyg'otish tizimi
+    const selfUrl = process.env.RENDER_EXTERNAL_URL || process.env.WEB_APP_URL;
+    if (selfUrl) {
+      console.log(`⏰ Keep-alive tizimi yoqildi: ${selfUrl}`);
+      setInterval(async () => {
+        try {
+          await fetch(`${selfUrl}/api/ping`);
+        } catch (e) {}
+      }, 14 * 60 * 1000);
+    }
   });
 });
