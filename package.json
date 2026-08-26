@@ -20,11 +20,18 @@
     "express": "^4.21.0",
     "express-rate-limit": "^7.1.0",
     "helmet": "^7.1.0",
+    "mongoose": "^9.9.4",
     "node-telegram-bot-api": "^0.66.0"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["telegram", "bot", "tasbih", "zikr", "webapp"],
+  "keywords": [
+    "telegram",
+    "bot",
+    "tasbih",
+    "zikr",
+    "webapp"
+  ],
   "license": "MIT"
 }

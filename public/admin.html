@@ -268,6 +268,7 @@
         <button class="tab" data-sec="admins"><span class="tab-icon">👑</span><span>Adminlar</span></button>
         <button class="tab" data-sec="donations"><span class="tab-icon">💰</span><span>Ehsonlar</span></button>
         <button class="tab" data-sec="channels"><span class="tab-icon">📢</span><span>Kanallar</span></button>
+        <button class="tab" data-sec="prayer"><span class="tab-icon">🕌</span><span>Namoz</span></button>
         <button class="tab" data-sec="broadcast"><span class="tab-icon">📡</span><span>Broadcast</span></button>
       </div>
 
@@ -366,6 +367,40 @@
         <div id="chList"></div>
       </div>
 
+      <!-- ============ PRAYER TIMES ============ -->
+      <div class="section" id="secPrayer">
+        <div class="sec-head">
+          <span class="sec-title">🕌 Namoz Vaqtlari</span>
+        </div>
+        <div class="card-settings">
+          <div class="toggle-wrap">
+            <div class="toggle" id="prayerToggle"></div>
+            <span class="toggle-label">Namoz eslatmasini yoqish</span>
+          </div>
+          <div class="card-form-row">
+            <label>Shahar</label>
+            <input type="text" class="input" id="ptLocation" placeholder="Toshkent shahri">
+          </div>
+          <div class="card-form-row">
+            <label>Masjid</label>
+            <input type="text" class="input" id="ptMosque" placeholder="Xazrati Imom">
+          </div>
+          <div class="card-form-row">
+            <label>Oldin (daq)</label>
+            <input type="number" class="input" id="ptNotify" placeholder="10">
+          </div>
+          
+          <div class="card-settings-title" style="margin-top:16px">⏰ Vaqtlar</div>
+          <div class="card-form-row"><label>Bomdod</label><input type="time" class="input" id="ptBomdod"></div>
+          <div class="card-form-row"><label>Peshin</label><input type="time" class="input" id="ptPeshin"></div>
+          <div class="card-form-row"><label>Asr</label><input type="time" class="input" id="ptAsr"></div>
+          <div class="card-form-row"><label>Shom</label><input type="time" class="input" id="ptShom"></div>
+          <div class="card-form-row"><label>Xufton</label><input type="time" class="input" id="ptXufton"></div>
+          
+          <button class="btn-primary" style="width:100%;margin-top:16px" id="savePrayerBtn">✅ Saqlash</button>
+        </div>
+      </div>
+
       <!-- ============ BROADCAST ============ -->
       <div class="section" id="secBroadcast">
         <div class="sec-head">
@@ -450,9 +485,11 @@
       try {
         const i = Array.from(name || '?')[0].toUpperCase();
         const h = (i.charCodeAt(0) * 37) % 360;
-        return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="50" fill="hsl(${h},45%,35%)"/><text x="50" y="55" text-anchor="middle" dy=".1em" fill="#fff" font-size="42" font-family="Inter,sans-serif" font-weight="700">${i}</text></svg>`)}`;
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="50" fill="hsl(${h},45%,35%)"/><text x="50" y="55" text-anchor="middle" dy=".1em" fill="#fff" font-size="42" font-family="Inter,sans-serif" font-weight="700">${i}</text></svg>`;
+        const b64 = btoa(encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)));
+        return `data:image/svg+xml;base64,${b64}`;
       } catch (e) {
-        return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect width="100" height="100" rx="50" fill="%23666"/%3E%3Ctext x="50" y="55" text-anchor="middle" dy=".1em" fill="%23fff" font-size="42" font-family="Inter,sans-serif" font-weight="700"%3E?%3C/text%3E%3C/svg%3E';
+        return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjUwIiBmaWxsPSIjNjY2Ii8+PHRleHQgeD0iNTAiIHk9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjFlbSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSI0MiIgZm9udC1mYW1pbHk9IkludGVyLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiPj88L3RleHQ+PC9zdmc+';
       }
     }
     const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
@@ -760,6 +797,48 @@
       document.getElementById('previewHolder').textContent = holder.toUpperCase();
     }
 
+    // ---- Prayer Times ----
+    let ptEnabled = false;
+    async function loadPrayer() {
+      const d = await api('/api/admin/prayer-times');
+      if (!d) return;
+      ptEnabled = !!d.enabled;
+      document.getElementById('prayerToggle').className = 'toggle ' + (ptEnabled ? 'on' : '');
+      document.getElementById('ptLocation').value = d.location || '';
+      document.getElementById('ptMosque').value = d.mosque || '';
+      document.getElementById('ptNotify').value = d.notify_before || 10;
+      if (d.times) {
+        document.getElementById('ptBomdod').value = d.times.bomdod || '';
+        document.getElementById('ptPeshin').value = d.times.peshin || '';
+        document.getElementById('ptAsr').value = d.times.asr || '';
+        document.getElementById('ptShom').value = d.times.shom || '';
+        document.getElementById('ptXufton').value = d.times.xufton || '';
+      }
+    }
+
+    document.getElementById('prayerToggle').addEventListener('click', () => {
+      ptEnabled = !ptEnabled;
+      document.getElementById('prayerToggle').className = 'toggle ' + (ptEnabled ? 'on' : '');
+    });
+
+    document.getElementById('savePrayerBtn').addEventListener('click', async () => {
+      const payload = {
+        enabled: ptEnabled,
+        location: document.getElementById('ptLocation').value.trim(),
+        mosque: document.getElementById('ptMosque').value.trim(),
+        notify_before: Number(document.getElementById('ptNotify').value) || 10,
+        times: {
+          bomdod: document.getElementById('ptBomdod').value,
+          peshin: document.getElementById('ptPeshin').value,
+          asr: document.getElementById('ptAsr').value,
+          shom: document.getElementById('ptShom').value,
+          xufton: document.getElementById('ptXufton').value
+        }
+      };
+      const r = await api('/api/admin/prayer-times', 'PUT', payload);
+      if (r && r.success) toast('✅ Namoz vaqtlari saqlandi');
+    });
+
     // ---- Init ----
     async function init() {
       ADMIN_ID = initTG();
@@ -770,7 +849,7 @@
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
 
-      await Promise.all([loadStats(), loadUsers(), loadAdmins()]);
+      await Promise.all([loadStats(), loadUsers(), loadAdmins(), loadDonations(), loadChannels(), loadPrayer()]);
 
       // Tabs
       document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchSec(t.dataset.sec)));

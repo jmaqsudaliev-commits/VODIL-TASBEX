@@ -6,7 +6,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const compression = require('compression');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-
+const mongoose = require('mongoose');
 // ============================================
 // CONFIGURATION
 // ============================================
@@ -267,45 +267,70 @@ function setUserLang(telegramId, lang) {
 }
 
 // ============================================
-// JSON DATABASE — IN-MEMORY CACHED
-// Reads from RAM (instant), writes debounced to disk
+// JSON DATABASE — IN-MEMORY CACHED (MONGODB + DISK FALLBACK)
 // ============================================
 const DB_PATH = path.join(__dirname, 'data.json');
 let _dbCache = null;
 let _dbDirty = false;
 let _dbSaveTimer = null;
+let _useMongo = false;
 
-function loadDB() {
-  if (_dbCache) return _dbCache;
+const stateSchema = new mongoose.Schema({
+  docId: { type: String, default: 'main' },
+  data: mongoose.Schema.Types.Mixed
+}, { strict: false });
+const AppState = mongoose.models.AppState || mongoose.model('AppState', stateSchema);
 
-  try {
-    if (fs.existsSync(DB_PATH)) {
-      const raw = fs.readFileSync(DB_PATH, 'utf-8');
-      const data = JSON.parse(raw);
-      if (!data.users) data.users = {};
-      if (!data.admins) data.admins = [SUPER_ADMIN_ID];
-      if (!data.settings) data.settings = { required_channels: [], donation_amounts: [10, 50, 100, 500] };
-      if (!data.settings.required_channels) data.settings.required_channels = [];
-      if (!data.settings.donation_amounts) data.settings.donation_amounts = [10, 50, 100, 500];
-      if (!data.settings.donation_card) data.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' };
-      if (!data.settings.prayer_times) data.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
-      if (!data.donations) data.donations = [];
-      if (!data.admins.includes(SUPER_ADMIN_ID)) {
-        data.admins.push(SUPER_ADMIN_ID);
+async function initDB() {
+  if (process.env.MONGODB_URI) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      console.log('✅ Connected to MongoDB');
+      _useMongo = true;
+      let state = await AppState.findOne({ docId: 'main' });
+      if (state && state.data) {
+        _dbCache = state.data;
+        console.log('💾 DB loaded from MongoDB');
       }
-      _dbCache = data;
-      return data;
+    } catch (e) {
+      console.error('❌ MongoDB connection error:', e.message);
     }
-  } catch (e) {
-    console.error('DB read error:', e.message);
   }
 
-  _dbCache = {
-    users: {},
-    admins: [SUPER_ADMIN_ID],
-    settings: { required_channels: [], donation_amounts: [10, 50, 100, 500], donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' }, prayer_times: { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } } },
-    donations: [],
-  };
+  if (!_dbCache) {
+    try {
+      if (fs.existsSync(DB_PATH)) {
+        _dbCache = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+      }
+    } catch (e) {
+      console.error('DB read error:', e.message);
+    }
+  }
+
+  if (!_dbCache) {
+    _dbCache = {
+      users: {},
+      admins: [SUPER_ADMIN_ID],
+      settings: { required_channels: [], donation_amounts: [10, 50, 100, 500], donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' }, prayer_times: { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } } },
+      donations: [],
+    };
+  }
+
+  // Ensure structure
+  if (!_dbCache.users) _dbCache.users = {};
+  if (!_dbCache.admins) _dbCache.admins = [SUPER_ADMIN_ID];
+  if (!_dbCache.settings) _dbCache.settings = { required_channels: [], donation_amounts: [10, 50, 100, 500] };
+  if (!_dbCache.settings.required_channels) _dbCache.settings.required_channels = [];
+  if (!_dbCache.settings.donation_amounts) _dbCache.settings.donation_amounts = [10, 50, 100, 500];
+  if (!_dbCache.settings.donation_card) _dbCache.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' };
+  if (!_dbCache.settings.prayer_times) _dbCache.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
+  if (!_dbCache.donations) _dbCache.donations = [];
+  if (!_dbCache.admins.includes(SUPER_ADMIN_ID)) _dbCache.admins.push(SUPER_ADMIN_ID);
+  
+  console.log(`💾 DB loaded: ${Object.keys(_dbCache.users).length} users in memory`);
+}
+
+function loadDB() {
   return _dbCache;
 }
 
@@ -313,41 +338,47 @@ function saveDB(data) {
   _dbCache = data;
   _dbDirty = true;
 
-  // Debounce: write to disk at most every 5 seconds (optimized for high traffic)
   if (!_dbSaveTimer) {
-    _dbSaveTimer = setTimeout(() => {
+    _dbSaveTimer = setTimeout(async () => {
       _dbSaveTimer = null;
       if (_dbDirty) {
         _dbDirty = false;
         try {
-          fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
+          if (_useMongo) {
+            await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+          } else {
+            fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
+          }
         } catch (e) {
           console.error('DB write error:', e.message);
+          _dbDirty = true;
         }
       }
     }, 5000);
   }
 }
 
-// Flush DB to disk on exit
-function flushDB() {
+async function flushDB() {
   if (_dbDirty && _dbCache) {
     try {
-      fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
+      if (_useMongo) {
+        await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+      } else {
+        fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
+      }
       _dbDirty = false;
-      console.log('💾 DB flushed to disk');
+      console.log('💾 DB flushed');
     } catch (e) {
       console.error('DB flush error:', e.message);
     }
   }
 }
-process.on('SIGINT', () => { flushDB(); process.exit(0); });
-process.on('SIGTERM', () => { flushDB(); process.exit(0); });
-process.on('exit', flushDB);
-
-// Pre-load DB into memory at startup
-loadDB();
-console.log(`💾 DB loaded: ${Object.keys(_dbCache.users).length} users in memory`);
+process.removeAllListeners('SIGINT');
+process.removeAllListeners('SIGTERM');
+process.removeAllListeners('exit');
+process.on('SIGINT', async () => { await flushDB(); process.exit(0); });
+process.on('SIGTERM', async () => { await flushDB(); process.exit(0); });
+process.on('exit', () => { if (!_useMongo && _dbDirty) fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8'); });
 
 // ============================================
 // USER FUNCTIONS
@@ -908,6 +939,9 @@ if (BOT_TOKEN) {
 
     const broadcastMessage = match[1];
     const users = getAllUsers().filter(u => !u.blocked);
+    if (!users.find(u => u.telegram_id === SUPER_ADMIN_ID)) {
+      users.push({ telegram_id: SUPER_ADMIN_ID, language: 'uz' });
+    }
     let sent = 0, failed = 0;
 
     await safeSend(chatId, bt(lang, 'broadcastSending', { count: users.length }));
@@ -1635,6 +1669,9 @@ app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
   if (!bot) return res.status(500).json({ error: 'Bot is not active' });
 
   const users = getAllUsers().filter(u => !u.blocked);
+  if (!users.find(u => u.telegram_id === SUPER_ADMIN_ID)) {
+    users.push({ telegram_id: SUPER_ADMIN_ID, language: 'uz' });
+  }
   let sent = 0, failed = 0;
 
   for (const user of users) {
@@ -1693,12 +1730,14 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server v2.0: http://localhost:${PORT}`);
-  console.log(`📿 Tasbih: http://localhost:${PORT}`);
-  console.log(`🛡️ Admin: http://localhost:${PORT}/admin.html`);
-  console.log(`❤️ Health: http://localhost:${PORT}/api/health`);
-  console.log(`📦 Compression: enabled`);
-  console.log(`🔒 Helmet: enabled`);
-  console.log(`⏱ Rate limiting: enabled`);
+initDB().then(() => {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server v2.0: http://localhost:${PORT}`);
+    console.log(`📿 Tasbih: http://localhost:${PORT}`);
+    console.log(`🛡️ Admin: http://localhost:${PORT}/admin.html`);
+    console.log(`❤️ Health: http://localhost:${PORT}/api/health`);
+    console.log(`📦 Compression: enabled`);
+    console.log(`🔒 Helmet: enabled`);
+    console.log(`⏱ Rate limiting: enabled`);
+  });
 });
