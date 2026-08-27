@@ -1039,6 +1039,7 @@ if (BOT_TOKEN) {
       users.push({ telegram_id: SUPER_ADMIN_ID, language: 'uz' });
     }
     let sent = 0, failed = 0;
+    const failedUsers = [];
 
     await safeSend(chatId, bt(lang, 'broadcastSending', { count: users.length }));
 
@@ -1047,9 +1048,31 @@ if (BOT_TOKEN) {
         const userLang = user.language || 'uz';
         await safeSend(user.telegram_id, `${bt(userLang, 'broadcastMsg')}\n\n${broadcastMessage}`, { parse_mode: 'HTML' });
         sent++;
-      } catch (e) { failed++; }
-      await new Promise(resolve => setTimeout(resolve, 50));
+      } catch (e) {
+        failed++;
+        failedUsers.push({ id: user.telegram_id, name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'User' });
+      }
+      await new Promise(resolve => setTimeout(resolve, 40));
     }
+
+    // Save to archive
+    const db = loadDB();
+    if (!db.archive) db.archive = { messages: [], card_history: [] };
+    if (!db.archive.messages) db.archive.messages = [];
+    db.archive.messages.unshift({
+      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      type: 'broadcast',
+      text: broadcastMessage,
+      sent_count: sent,
+      failed_count: failed,
+      failed_users: failedUsers.slice(0, 50),
+      total_targets: users.length,
+      sent_by: msg.from.id,
+      status: failed === 0 ? 'success' : (sent > 0 ? 'partial' : 'failed'),
+      timestamp: new Date().toISOString()
+    });
+    if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
+    saveDB(db);
 
     safeSend(chatId, bt(lang, 'broadcastDone', { sent, failed }));
   });
@@ -1865,7 +1888,7 @@ app.get('/api/admin/donation-card', adminMiddleware, (req, res) => {
   res.json(db.settings.donation_card || { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard' });
 });
 
-// Admin: Update donation card settings
+// Admin: Update donation card settings + Archive logging
 app.put('/api/admin/donation-card', adminMiddleware, (req, res) => {
   const { enabled, card_number, card_holder, bank_name, card_type } = req.body;
   const db = loadDB();
@@ -1876,6 +1899,22 @@ app.put('/api/admin/donation-card', adminMiddleware, (req, res) => {
     bank_name: bank_name || '',
     card_type: card_type || 'uzcard',
   };
+
+  // Log to archive
+  if (!db.archive) db.archive = { messages: [], card_history: [] };
+  if (!db.archive.card_history) db.archive.card_history = [];
+  db.archive.card_history.unshift({
+    id: 'card_' + Date.now(),
+    timestamp: new Date().toISOString(),
+    card_number: card_number || '',
+    card_holder: card_holder || '',
+    bank_name: bank_name || '',
+    card_type: card_type || 'uzcard',
+    enabled: !!enabled,
+    saved_by: req.adminId || SUPER_ADMIN_ID
+  });
+  if (db.archive.card_history.length > 100) db.archive.card_history = db.archive.card_history.slice(0, 100);
+
   saveDB(db);
   res.json({ success: true, donation_card: db.settings.donation_card });
 });
@@ -1902,7 +1941,7 @@ app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
     mosque: mosque || '',
     notify_before: notify_before || 10,
     times: times || { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' },
-    footer_text: broadcast_text || '' // doimiy tavsif uchun saqlaymiz
+    footer_text: broadcast_text || ''
   };
   saveDB(db);
   
@@ -1954,19 +1993,61 @@ app.put('/api/admin/donation-reason', adminMiddleware, (req, res) => {
   res.json({ success: true, reason: db.settings.donation_card.reason });
 });
 
-// Admin: Send direct message to a specific user
+// Admin: Send direct message to a specific user + Archive logging
 app.post('/api/admin/send-message', adminMiddleware, async (req, res) => {
   const { telegram_id, message } = req.body;
   if (!telegram_id || !message) return res.status(400).json({ error: 'telegram_id and message required' });
   if (!bot) return res.status(500).json({ error: 'Bot is not active' });
+  
+  const user = getUser(telegram_id);
+  const recipientName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'Foydalanuvchi';
+
   try {
     await bot.sendMessage(Number(telegram_id), `📩 <b>Admin xabari:</b>\n\n${message}`, { parse_mode: 'HTML' });
+    
+    // Log archive
+    const db = loadDB();
+    if (!db.archive) db.archive = { messages: [], card_history: [] };
+    if (!db.archive.messages) db.archive.messages = [];
+    db.archive.messages.unshift({
+      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      type: 'direct',
+      text: message,
+      recipient_id: Number(telegram_id),
+      recipient_name: recipientName,
+      recipient_username: user?.username || '',
+      sent_by: req.adminId || SUPER_ADMIN_ID,
+      status: 'success',
+      timestamp: new Date().toISOString()
+    });
+    if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
+    saveDB(db);
+
     res.json({ success: true });
   } catch (err) {
+    // Log failed message in archive too so admin knows who didn't get it
+    const db = loadDB();
+    if (!db.archive) db.archive = { messages: [], card_history: [] };
+    if (!db.archive.messages) db.archive.messages = [];
+    db.archive.messages.unshift({
+      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      type: 'direct',
+      text: message,
+      recipient_id: Number(telegram_id),
+      recipient_name: recipientName,
+      recipient_username: user?.username || '',
+      sent_by: req.adminId || SUPER_ADMIN_ID,
+      status: 'failed',
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+    saveDB(db);
+
     res.status(500).json({ error: err.message });
   }
 });
 
+// Admin: Broadcast message to all users + Archive logging
 app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: 'message required' });
@@ -1977,17 +2058,64 @@ app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
     users.push({ telegram_id: SUPER_ADMIN_ID, language: 'uz' });
   }
   let sent = 0, failed = 0;
+  const failedUsers = [];
 
   for (const user of users) {
     try {
       const userLang = user.language || 'uz';
       await bot.sendMessage(user.telegram_id, `${bt(userLang, 'broadcastMsg')}\n\n${message}`, { parse_mode: 'HTML' });
       sent++;
-    } catch (e) { failed++; }
-    await new Promise(resolve => setTimeout(resolve, 50));
+    } catch (e) {
+      failed++;
+      failedUsers.push({ id: user.telegram_id, name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'User' });
+    }
+    await new Promise(resolve => setTimeout(resolve, 35));
   }
 
+  // Log to archive
+  const db = loadDB();
+  if (!db.archive) db.archive = { messages: [], card_history: [] };
+  if (!db.archive.messages) db.archive.messages = [];
+  db.archive.messages.unshift({
+    id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    type: 'broadcast',
+    text: message,
+    sent_count: sent,
+    failed_count: failed,
+    failed_users: failedUsers.slice(0, 50),
+    total_targets: users.length,
+    sent_by: req.adminId || SUPER_ADMIN_ID,
+    status: failed === 0 ? 'success' : (sent > 0 ? 'partial' : 'failed'),
+    timestamp: new Date().toISOString()
+  });
+  if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
+  saveDB(db);
+
   res.json({ success: true, sent, failed, total: users.length });
+});
+
+// Admin: Get Archive (Sent Messages & Card History)
+app.get('/api/admin/archive', adminMiddleware, (req, res) => {
+  const db = loadDB();
+  const archive = db.archive || { messages: [], card_history: [] };
+  res.json({
+    messages: archive.messages || [],
+    card_history: archive.card_history || []
+  });
+});
+
+// Admin: Delete an item from archive
+app.delete('/api/admin/archive/:type/:id', adminMiddleware, (req, res) => {
+  const { type, id } = req.params;
+  const db = loadDB();
+  if (!db.archive) db.archive = { messages: [], card_history: [] };
+  if (type === 'message' && db.archive.messages) {
+    db.archive.messages = db.archive.messages.filter(m => m.id !== id);
+  } else if (type === 'card' && db.archive.card_history) {
+    db.archive.card_history = db.archive.card_history.filter(c => c.id !== id);
+  }
+  saveDB(db);
+  res.json({ success: true });
 });
 
 // ============================================
