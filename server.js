@@ -1885,6 +1885,19 @@ app.put('/api/admin/donation-reason', adminMiddleware, (req, res) => {
   res.json({ success: true, reason: db.settings.donation_card.reason });
 });
 
+// Admin: Send direct message to a specific user
+app.post('/api/admin/send-message', adminMiddleware, async (req, res) => {
+  const { telegram_id, message } = req.body;
+  if (!telegram_id || !message) return res.status(400).json({ error: 'telegram_id and message required' });
+  if (!bot) return res.status(500).json({ error: 'Bot is not active' });
+  try {
+    await bot.sendMessage(Number(telegram_id), `📩 <b>Admin xabari:</b>\n\n${message}`, { parse_mode: 'HTML' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: 'message required' });

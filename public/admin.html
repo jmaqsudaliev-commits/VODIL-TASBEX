@@ -1013,7 +1013,7 @@
       c.innerHTML = users.map(u => {
         const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
         return `
-          <div class="user-card ${u.blocked ? 'blocked' : ''}" onclick="openUserModal(${u.telegram_id})">
+          <div class="user-card ${u.blocked ? 'blocked' : ''}" onclick="openUserModal(${u.telegram_id})" ondblclick="openUserModal(${u.telegram_id})" title="Bosib boshqarish">
             <div class="user-avatar-wrap">${genAvatarHTML(u.first_name, u.photo_url)}</div>
             <div class="user-info-body">
               <div class="user-title-row">${u.blocked ? '🚫 ' : ''}${nm}</div>
@@ -1024,10 +1024,29 @@
               </div>
               <div class="user-uid-lbl">ID: ${u.telegram_id}</div>
             </div>
-            <span style="color:var(--text-4);font-size:0.9rem;">▸</span>
+            <span style="color:var(--text-4);font-size:0.9rem;">⚙️</span>
           </div>
         `;
       }).join('');
+    }
+
+    function openUserProfile(username, tid) {
+      if (username) {
+        window.open(`https://t.me/${username.replace('@', '')}`, '_blank');
+      } else {
+        window.open(`tg://user?id=${tid}`, '_blank');
+      }
+    }
+
+    async function doSendDirectMessage(tid, name) {
+      const msg = prompt(`💬 ${name} (ID: ${tid}) ga shaxsiy xabar matnini yozing:`);
+      if (!msg || !msg.trim()) return;
+      const r = await api('/api/admin/send-message', 'POST', { telegram_id: tid, message: msg.trim() });
+      if (r?.success) {
+        toast(`✅ ${name} ga xabar yuborildi`);
+      } else {
+        toast(`❌ Xabar yuborishda xatolik yuz berdi`, 'err');
+      }
     }
 
     function openUserModal(tid) {
@@ -1037,7 +1056,7 @@
       const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
       document.getElementById('mAvatar').innerHTML = genAvatarHTML(u.first_name, u.photo_url);
       document.getElementById('mName').textContent = nm;
-      document.getElementById('mUsername').textContent = u.username ? `@${u.username}` : '';
+      document.getElementById('mUsername').textContent = u.username ? `@${u.username}` : 'Username yo\'q';
       document.getElementById('mCount').textContent = fmt(u.count || 0);
       document.getElementById('mTotal').textContent = fmt(u.total_all_time || 0);
       document.getElementById('mStreak').textContent = u.streak_days || 0;
@@ -1052,20 +1071,33 @@
 
       const acts = document.getElementById('mActions');
       let html = '';
+      
+      // 1. Profilga kirish
+      html += `<button class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', ${tid})">👤 Telegram Profilini Ochish</button>`;
+
+      // 2. Shaxsiy xabar yuborish
+      html += `<button class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage(${tid}, '${nm.replace(/'/g, "\\'")}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
+
+      // 3. Bloklash / Ochish
       if (u.blocked) {
-        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock(${tid})">✅ Blokdan ochish</button>`;
+        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock(${tid})">✅ Blokdan Ochish</button>`;
       } else {
-        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock(${tid})">🚫 Bloklash</button>`;
+        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock(${tid})">🚫 Foydalanuvchini Bloklash</button>`;
       }
-      html += `<button class="modal-btn-full modal-btn-blue" onclick="doReset(${tid})">🔄 Hisobni 0 ga qaytarish</button>`;
+
+      // 4. To'liq Restart qilish (0 ga qaytarish)
+      html += `<button class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset(${tid})">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
+
+      // 5. Admin tayinlash
       if (IS_SUPER) {
         const isAdm = allAdmins.some(a => a.telegram_id === tid);
         if (isAdm) {
-          if (tid !== ADMIN_ID) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin(${tid})">👑 Adminlikdan olish</button>`;
+          if (tid !== ADMIN_ID) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin(${tid})">👑 Adminlikdan Olish</button>`;
         } else {
-          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin(${tid})">👑 Admin qilish</button>`;
+          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin(${tid})">👑 Admin Qilish</button>`;
         }
       }
+
       html += `<button class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
       acts.innerHTML = html;
 
