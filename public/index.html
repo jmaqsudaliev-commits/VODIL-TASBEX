@@ -63,19 +63,19 @@
       <!-- Zikr Category Selector -->
       <div class="zikr-selector-wrap">
         <div class="zikr-selector">
-          <button class="zikr-type active" data-zikr="subhanalloh" id="zikrSubhanalloh">
+          <button class="zikr-type active" data-zikr="subhanalloh" id="zikrSubhanalloh" onclick="setZikr('subhanalloh')">
             <span class="zikr-arabic">سُبْحَانَ اللَّهِ</span>
             <span class="zikr-latin" data-i18n="zikrSubhanalloh">SubhanAlloh</span>
           </button>
-          <button class="zikr-type" data-zikr="alhamdulillah" id="zikrAlhamdulillah">
+          <button class="zikr-type" data-zikr="alhamdulillah" id="zikrAlhamdulillah" onclick="setZikr('alhamdulillah')">
             <span class="zikr-arabic">الْحَمْدُ لِلَّهِ</span>
             <span class="zikr-latin" data-i18n="zikrAlhamdulillah">Alhamdulillah</span>
           </button>
-          <button class="zikr-type" data-zikr="allohuakbar" id="zikrAllohuakbar">
+          <button class="zikr-type" data-zikr="allohuakbar" id="zikrAllohuakbar" onclick="setZikr('allohuakbar')">
             <span class="zikr-arabic">اللَّهُ أَكْبَرُ</span>
             <span class="zikr-latin" data-i18n="zikrAllohuakbar">Allohu Akbar</span>
           </button>
-          <button class="zikr-type" data-zikr="custom" id="zikrCustom">
+          <button class="zikr-type" data-zikr="custom" id="zikrCustom" onclick="setZikr('custom')">
             <span class="zikr-arabic">✨</span>
             <span class="zikr-latin" data-i18n="zikrCustom">Boshqa</span>
           </button>
@@ -121,11 +121,11 @@
         <!-- Target Selector Pills -->
         <div class="target-selector-wrap">
           <div class="target-selector">
-            <button class="target-btn active" data-target="33" id="target33">33</button>
-            <button class="target-btn" data-target="99" id="target99">99</button>
-            <button class="target-btn" data-target="100" id="target100">100</button>
-            <button class="target-btn" data-target="1000" id="target1000">1K</button>
-            <button class="target-btn" data-target="0" id="targetInfinity">∞</button>
+            <button class="target-btn active" data-target="33" id="target33" onclick="setTarget(33)">33</button>
+            <button class="target-btn" data-target="99" id="target99" onclick="setTarget(99)">99</button>
+            <button class="target-btn" data-target="100" id="target100" onclick="setTarget(100)">100</button>
+            <button class="target-btn" data-target="1000" id="target1000" onclick="setTarget(1000)">1K</button>
+            <button class="target-btn" data-target="0" id="targetInfinity" onclick="setTarget(0)">∞</button>
           </div>
         </div>
 
@@ -376,23 +376,23 @@
 
     <!-- ==================== FLOATING FROSTED DOCK ==================== -->
     <nav class="tab-nav" id="tabNav">
-      <button class="tab-btn active" data-tab="counter" id="tabCounter">
+      <button class="tab-btn active" data-tab="counter" id="tabCounter" onclick="switchTab('counter')">
         <div class="tab-lottie" id="tabCounterLottie"><span class="tab-icon">📿</span></div>
         <span class="tab-label" data-i18n="tabCounter">Tasbih</span>
       </button>
-      <button class="tab-btn" data-tab="leaderboard" id="tabLeaderboard">
+      <button class="tab-btn" data-tab="leaderboard" id="tabLeaderboard" onclick="switchTab('leaderboard')">
         <div class="tab-lottie" id="tabLeaderboardLottie"><span class="tab-icon">🏆</span></div>
         <span class="tab-label" data-i18n="tabLeaderboard">Top 10</span>
       </button>
-      <button class="tab-btn" data-tab="donate" id="tabDonate">
+      <button class="tab-btn" data-tab="donate" id="tabDonate" onclick="switchTab('donate')">
         <div class="tab-lottie" id="tabDonateLottie"><span class="tab-icon">💳</span></div>
         <span class="tab-label" data-i18n="tabDonate">Ehson</span>
       </button>
-      <button class="tab-btn" data-tab="prayer" id="tabPrayer">
+      <button class="tab-btn" data-tab="prayer" id="tabPrayer" onclick="switchTab('prayer')">
         <span class="tab-icon">🕌</span>
         <span class="tab-label" data-i18n="tabPrayer">Namoz</span>
       </button>
-      <button class="tab-btn" data-tab="profile" id="tabProfile">
+      <button class="tab-btn" data-tab="profile" id="tabProfile" onclick="switchTab('profile')">
         <span class="tab-icon">👤</span>
         <span class="tab-label" data-i18n="tabProfile">Profil</span>
       </button>

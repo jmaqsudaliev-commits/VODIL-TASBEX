@@ -757,27 +757,27 @@
 
       <!-- Tab Switcher Navigation -->
       <div class="tabs-bar" id="tabs">
-        <button class="tab-btn active" data-sec="users">
+        <button class="tab-btn active" data-sec="users" onclick="switchSec('users')">
           <span class="tab-btn-icon">👥</span>
           <span>Userlar</span>
         </button>
-        <button class="tab-btn" data-sec="admins">
+        <button class="tab-btn" data-sec="admins" onclick="switchSec('admins')">
           <span class="tab-btn-icon">👑</span>
           <span>Adminlar</span>
         </button>
-        <button class="tab-btn" data-sec="donations">
+        <button class="tab-btn" data-sec="donations" onclick="switchSec('donations')">
           <span class="tab-btn-icon">💰</span>
           <span>Ehsonlar</span>
         </button>
-        <button class="tab-btn" data-sec="channels">
+        <button class="tab-btn" data-sec="channels" onclick="switchSec('channels')">
           <span class="tab-btn-icon">📢</span>
           <span>Kanallar</span>
         </button>
-        <button class="tab-btn" data-sec="prayer">
+        <button class="tab-btn" data-sec="prayer" onclick="switchSec('prayer')">
           <span class="tab-btn-icon">🕌</span>
           <span>Namoz</span>
         </button>
-        <button class="tab-btn" data-sec="broadcast">
+        <button class="tab-btn" data-sec="broadcast" onclick="switchSec('broadcast')">
           <span class="tab-btn-icon">📡</span>
           <span>Broadcast</span>
         </button>
@@ -1414,15 +1414,26 @@
       btn.textContent = '📡 Barchaga Xabar Yuborish';
     }
 
-    function switchSec(name) {
+    window.switchSec = function(name) {
+      if (!name) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
       document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active', t.dataset.sec === name));
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(`sec${name.charAt(0).toUpperCase() + name.slice(1)}`).classList.add('active');
+      const secEl = document.getElementById(`sec${name.charAt(0).toUpperCase() + name.slice(1)}`);
+      if (secEl) secEl.classList.add('active');
       if (name === 'users') loadUsers();
       if (name === 'admins') loadAdmins();
       if (name === 'donations') loadDonations();
       if (name === 'channels') loadChannels();
-    }
+    };
+
+    window.openUserProfile = openUserProfile;
+    window.doSendDirectMessage = doSendDirectMessage;
+    window.doBlock = doBlock;
+    window.doUnblock = doUnblock;
+    window.doReset = doReset;
+    window.doMakeAdmin = doMakeAdmin;
+    window.doRemoveAdmin = doRemoveAdmin;
 
     async function loadCardSettings() {
       const d = await api('/api/admin/donation-card');

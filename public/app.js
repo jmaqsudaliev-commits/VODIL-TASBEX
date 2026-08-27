@@ -831,9 +831,11 @@ function generateAvatarHTML(name, photo_url, telegramId) {
 }
 
 // ============================================
-// TAB NAVIGATION
+// NAVIGATION & CONTROLS
 // ============================================
-function switchTab(tabName) {
+window.switchTab = function(tabName) {
+  if (!tabName) return;
+  try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
   STATE.currentTab = tabName;
 
   // Update tab buttons
@@ -847,7 +849,8 @@ function switchTab(tabName) {
   });
 
   const pageId = `page${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`;
-  document.getElementById(pageId).classList.add('active');
+  const pageEl = document.getElementById(pageId);
+  if (pageEl) pageEl.classList.add('active');
 
   // Load data for specific tabs
   if (tabName === 'leaderboard') {
@@ -862,7 +865,24 @@ function switchTab(tabName) {
   if (tabName === 'prayer') {
     loadPrayerTimes();
   }
-}
+};
+
+window.setTarget = function(targetVal) {
+  try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
+  document.querySelectorAll('.target-btn').forEach((b) => {
+    b.classList.toggle('active', parseInt(b.dataset.target) === parseInt(targetVal));
+  });
+  STATE.target = parseInt(targetVal) || 0;
+  updateCounterDisplay();
+};
+
+window.setZikr = function(zikrKey) {
+  try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
+  document.querySelectorAll('.zikr-type').forEach((b) => {
+    b.classList.toggle('active', b.dataset.zikr === zikrKey);
+  });
+  STATE.currentZikr = zikrKey;
+};
 
 // ============================================
 // PRAYER TIMES
