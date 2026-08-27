@@ -566,28 +566,36 @@
 
     /* Modal */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      z-index: 2000;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(0, 0, 0, 0.88) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      z-index: 999999 !important;
       display: none;
       align-items: flex-end;
       justify-content: center;
     }
 
-    .modal-overlay.active { display: flex; }
+    .modal-overlay.active { display: flex !important; }
 
     .modal-body {
       width: 100%;
       max-width: 540px;
-      background: var(--bg-1);
-      border: 1px solid var(--border);
+      background: #091322 !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
       border-radius: var(--r-xl) var(--r-xl) 0 0;
       padding: 24px 20px 36px;
-      animation: modalSlide 0.3s var(--ease);
+      animation: modalSlide 0.25s var(--ease);
       max-height: 85vh;
       overflow-y: auto;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+      z-index: 1000000 !important;
     }
 
     @keyframes modalSlide {
@@ -1117,10 +1125,11 @@
       }
       c.innerHTML = users.map(u => {
         const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
+        const safeTid = String(u.telegram_id);
         return `
-          <div class="user-card ${u.blocked ? 'blocked' : ''}" onclick="openUserModal('${u.telegram_id}')" ondblclick="openUserModal('${u.telegram_id}')" title="Bosib boshqarish">
-            <div class="user-avatar-wrap">${genAvatarHTML(u.first_name, u.photo_url)}</div>
-            <div class="user-info-body">
+          <div class="user-card ${u.blocked ? 'blocked' : ''}" data-tid="${safeTid}" onclick="openUserModal('${safeTid}')" role="button" tabindex="0" title="Bosib boshqarish">
+            <div class="user-avatar-wrap" style="pointer-events:none;">${genAvatarHTML(u.first_name, u.photo_url)}</div>
+            <div class="user-info-body" style="pointer-events:none;">
               <div class="user-title-row">${u.blocked ? '🚫 ' : ''}${nm}</div>
               <div class="user-meta-row">
                 <span>📿 ${fmt(u.total_all_time || 0)}</span>
@@ -1129,7 +1138,7 @@
               </div>
               <div class="user-uid-lbl">ID: ${u.telegram_id}</div>
             </div>
-            <span style="color:var(--text-4);font-size:1.1rem;margin-left:auto;">⚙️</span>
+            <span style="color:var(--emerald-400);font-size:1.3rem;margin-left:auto;pointer-events:none;">⚙️</span>
           </div>
         `;
       }).join('');
@@ -1154,7 +1163,7 @@
       }
     }
 
-    function openUserModal(tid) {
+    window.openUserModal = function(tid) {
       try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
       const u = allUsers.find(x => String(x.telegram_id) === String(tid));
       if (!u) {
@@ -1226,14 +1235,20 @@
       acts.innerHTML = html;
 
       const modalEl = document.getElementById('userModal');
-      if (modalEl) modalEl.classList.add('active');
-    }
+      if (modalEl) {
+        modalEl.style.display = 'flex';
+        modalEl.classList.add('active');
+      }
+    };
 
-    function closeModal() {
+    window.closeModal = function() {
       const modalEl = document.getElementById('userModal');
-      if (modalEl) modalEl.classList.remove('active');
+      if (modalEl) {
+        modalEl.style.display = 'none';
+        modalEl.classList.remove('active');
+      }
       selectedUser = null;
-    }
+    };
 
     // Modal tashqarisiga bosilganda yopish
     document.getElementById('userModal')?.addEventListener('click', (e) => {
@@ -1509,6 +1524,14 @@
           const nm = `${u.first_name || ''} ${u.last_name || ''}`.toLowerCase();
           return nm.includes(q) || String(u.telegram_id).includes(q) || (u.username || '').toLowerCase().includes(q);
         }));
+      });
+
+      // Delegated User List Click Handler
+      document.getElementById('userList')?.addEventListener('click', (e) => {
+        const card = e.target.closest('.user-card');
+        if (card && card.dataset.tid) {
+          openUserModal(card.dataset.tid);
+        }
       });
 
       // Card settings
