@@ -282,14 +282,18 @@ const stateSchema = new mongoose.Schema({
 const AppState = mongoose.models.AppState || mongoose.model('AppState', stateSchema);
 
 async function initDB() {
+  let loaded = false;
+
+  // 1. Try MongoDB
   if (process.env.MONGODB_URI) {
     try {
-      await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 8000 });
       console.log('✅ Connected to MongoDB');
       _useMongo = true;
       let state = await AppState.findOne({ docId: 'main' });
-      if (state && state.data) {
+      if (state && state.data && typeof state.data === 'object') {
         _dbCache = state.data;
+        loaded = true;
         console.log('💾 DB loaded from MongoDB');
       }
     } catch (e) {
@@ -297,13 +301,27 @@ async function initDB() {
     }
   }
 
-  if (!_dbCache) {
+  // 2. Load / Merge with local data.json
+  if (fs.existsSync(DB_PATH)) {
     try {
-      if (fs.existsSync(DB_PATH)) {
-        _dbCache = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+      const localData = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+      if (!_dbCache) {
+        _dbCache = localData;
+        loaded = true;
+        console.log('💾 DB loaded from local data.json');
+      } else if (localData.users) {
+        // Merge local users into MongoDB cache if local had higher counts or missing users
+        for (const [uid, lu] of Object.entries(localData.users)) {
+          if (!_dbCache.users[uid]) {
+            _dbCache.users[uid] = lu;
+          } else if ((lu.total_all_time || 0) > (_dbCache.users[uid].total_all_time || 0)) {
+            _dbCache.users[uid].total_all_time = lu.total_all_time;
+            _dbCache.users[uid].count = lu.count;
+          }
+        }
       }
     } catch (e) {
-      console.error('DB read error:', e.message);
+      console.error('Local DB read error:', e.message);
     }
   }
 
@@ -311,8 +329,9 @@ async function initDB() {
     _dbCache = {
       users: {},
       admins: [SUPER_ADMIN_ID],
-      settings: { required_channels: [], donation_amounts: [10, 50, 100, 500], donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' }, prayer_times: { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } } },
+      settings: { required_channels: [], donation_amounts: [10, 50, 100, 500], donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' }, prayer_times: { enabled: false, location: '', mosque: '', notify_before: 10, times: { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } } },
       donations: [],
+      chats: {}
     };
   }
 
@@ -323,12 +342,20 @@ async function initDB() {
   if (!_dbCache.settings.required_channels) _dbCache.settings.required_channels = [];
   if (!_dbCache.settings.donation_amounts) _dbCache.settings.donation_amounts = [10, 50, 100, 500];
   if (!_dbCache.settings.donation_card) _dbCache.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' };
-  if (!_dbCache.settings.prayer_times) _dbCache.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
+  if (!_dbCache.settings.prayer_times) _dbCache.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
   if (!_dbCache.donations) _dbCache.donations = [];
   if (!_dbCache.chats) _dbCache.chats = {};
   if (!_dbCache.admins.includes(SUPER_ADMIN_ID)) _dbCache.admins.push(SUPER_ADMIN_ID);
   
-  console.log(`💾 DB loaded: ${Object.keys(_dbCache.users).length} users in memory`);
+  // Save immediate local snapshot
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
+    if (_useMongo) {
+      await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+    }
+  } catch (err) {}
+
+  console.log(`💾 DB initialized: ${Object.keys(_dbCache.users).length} users preserved`);
 }
 
 function loadDB() {
@@ -338,6 +365,7 @@ function loadDB() {
 function saveDB(data) {
   _dbCache = data;
   _dbDirty = true;
+  _leaderboardCache = null; // Always clear leaderboard cache on save!
 
   if (!_dbSaveTimer) {
     _dbSaveTimer = setTimeout(async () => {
@@ -345,30 +373,29 @@ function saveDB(data) {
       if (_dbDirty) {
         _dbDirty = false;
         try {
+          // Always write to local file as immediate persistence guarantee
+          fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
           if (_useMongo) {
             await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
-          } else {
-            fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
           }
         } catch (e) {
           console.error('DB write error:', e.message);
           _dbDirty = true;
         }
       }
-    }, 5000);
+    }, 2000);
   }
 }
 
 async function flushDB() {
-  if (_dbDirty && _dbCache) {
+  if (_dbCache) {
     try {
+      fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
       if (_useMongo) {
         await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
-      } else {
-        fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
       }
       _dbDirty = false;
-      console.log('💾 DB flushed');
+      console.log('💾 DB flushed safely to disk & Mongo');
     } catch (e) {
       console.error('DB flush error:', e.message);
     }
@@ -444,11 +471,15 @@ function incrementUserCount(telegramId, amount = 1) {
   return user;
 }
 
-function resetUserCount(telegramId) {
+function resetUserCount(telegramId, resetTotal = false) {
   const db = loadDB();
   const id = String(telegramId);
   if (db.users[id]) {
     db.users[id].count = 0;
+    if (resetTotal) {
+      db.users[id].total_all_time = 0;
+    }
+    _leaderboardCache = null;
     saveDB(db);
     return db.users[id];
   }
@@ -458,7 +489,7 @@ function resetUserCount(telegramId) {
 // Leaderboard cache — avoid sorting on every request
 let _leaderboardCache = null;
 let _leaderboardCacheTime = 0;
-const LEADERBOARD_CACHE_TTL = 5000; // 5 seconds
+const LEADERBOARD_CACHE_TTL = 3000; // 3 seconds
 
 function getLeaderboard(limit = 50) {
   const now = Date.now();
@@ -468,7 +499,11 @@ function getLeaderboard(limit = 50) {
 
   const db = loadDB();
   const users = Object.values(db.users).filter(u => !u.blocked);
-  users.sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0));
+  users.sort((a, b) => {
+    const totalDiff = (b.total_all_time || 0) - (a.total_all_time || 0);
+    if (totalDiff !== 0) return totalDiff;
+    return (b.count || 0) - (a.count || 0);
+  });
 
   _leaderboardCache = users;
   _leaderboardCacheTime = now;
@@ -479,7 +514,11 @@ function getLeaderboard(limit = 50) {
 function getUserRank(telegramId) {
   const db = loadDB();
   const users = Object.values(db.users).filter(u => !u.blocked);
-  users.sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0));
+  users.sort((a, b) => {
+    const totalDiff = (b.total_all_time || 0) - (a.total_all_time || 0);
+    if (totalDiff !== 0) return totalDiff;
+    return (b.count || 0) - (a.count || 0);
+  });
   const index = users.findIndex(u => u.telegram_id === Number(telegramId));
   return index >= 0 ? index + 1 : users.length + 1;
 }
@@ -1589,7 +1628,7 @@ app.post('/api/admin/unblock', adminMiddleware, (req, res) => {
 app.post('/api/admin/reset-user', adminMiddleware, (req, res) => {
   const { telegram_id } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
-  const user = resetUserCount(telegram_id);
+  const user = resetUserCount(telegram_id, true); // Reset total score completely so rank clears
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json({ success: true, user });
 });

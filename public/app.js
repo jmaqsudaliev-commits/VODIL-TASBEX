@@ -549,13 +549,23 @@ async function updateLeaderboard() {
   for (let i = 0; i < 3; i++) {
     const num = i + 1;
     const user = users[i];
+    const nameEl = document.getElementById(`podiumName${num}`);
+    const scoreEl = document.getElementById(`podiumScore${num}`);
+    const avatarEl = document.getElementById(`podiumAvatar${num}`);
 
-    if (user && user.count > 0) {
-      document.getElementById(`podiumName${num}`).textContent = user.first_name;
-      document.getElementById(`podiumScore${num}`).textContent = formatNumber(user.count);
-      const avatarHtml = generateAvatarHTML(user.first_name, user.photo_url);
-      document.getElementById(`podiumAvatar${num}`).innerHTML = avatarHtml;
-    } else { }
+    if (user && (user.total_all_time || 0) > 0) {
+      if (nameEl) nameEl.textContent = user.first_name || 'Noma\'lum';
+      if (scoreEl) scoreEl.textContent = formatNumber(user.total_all_time);
+      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url);
+    } else if (user) {
+      if (nameEl) nameEl.textContent = user.first_name || '—';
+      if (scoreEl) scoreEl.textContent = '0';
+      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url);
+    } else {
+      if (nameEl) nameEl.textContent = '—';
+      if (scoreEl) scoreEl.textContent = '0';
+      if (avatarEl) avatarEl.innerHTML = '<div style="width:100%;height:100%;background:rgba(255,255,255,0.05);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-weight:bold;">?</div>';
+    }
   }
 
   // List (4th place and below)
