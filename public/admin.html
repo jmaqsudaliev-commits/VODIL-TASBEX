@@ -1190,7 +1190,7 @@
         const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
         const safeTid = String(u.telegram_id);
         return `
-          <div class="user-card ${u.blocked ? 'blocked' : ''}" data-tid="${safeTid}" onclick="openUserModal('${safeTid}')" role="button" tabindex="0" title="Bosib boshqarish">
+          <div class="user-card ${u.blocked ? 'blocked' : ''}" data-tid="${safeTid}" role="button" tabindex="0">
             <div class="user-avatar-wrap" style="pointer-events:none;">${genAvatarHTML(u.first_name, u.photo_url)}</div>
             <div class="user-info-body" style="pointer-events:none;">
               <div class="user-title-row">${u.blocked ? '🚫 ' : ''}${nm}</div>
