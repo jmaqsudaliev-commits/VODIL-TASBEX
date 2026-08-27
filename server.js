@@ -1393,15 +1393,15 @@ app.use(compression());
 // JSON body parser
 app.use(express.json({ limit: '1mb' }));
 
-// Static files with caching headers
+// Static files with aggressive no-cache headers for instant updates
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1h',
-  etag: true,
-  lastModified: true,
+  maxAge: 0,
+  etag: false,
   setHeaders: (res, filePath) => {
-    // Service worker — never cache
-    if (filePath.endsWith('sw.js')) {
+    if (filePath.endsWith('.html') || filePath.endsWith('.css') || filePath.endsWith('.js') || filePath.endsWith('sw.js')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     }
   },
 }));
