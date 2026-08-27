@@ -2,39 +2,38 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🛡️ Admin Panel — Elektron Tasbih</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🛡️ Admin Panel PRO MAX — Elektron Tasbih</title>
   <meta name="description" content="Elektron Tasbih — Admin boshqaruv paneli">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* ============================================
-       ADMIN PANEL PRO — ULTRA PREMIUM DESIGN
-       ============================================ */
+    /* ================================================================
+       ADMIN PANEL PRO MAX — MODERN GLASS DASHBOARD
+       ================================================================ */
     :root {
       --bg-0: #030712;
-      --bg-1: #0a0f1e;
-      --bg-2: #111827;
-      --bg-3: #1a2332;
-      --surface: rgba(255,255,255,0.03);
-      --surface-2: rgba(255,255,255,0.06);
-      --surface-3: rgba(255,255,255,0.09);
-      --surface-4: rgba(255,255,255,0.12);
-      --border: rgba(255,255,255,0.06);
-      --border-2: rgba(255,255,255,0.1);
-      --border-glow: rgba(34,197,94,0.25);
-      --border-gold: rgba(251,191,36,0.25);
-      --text-1: #f1f5f9;
+      --bg-1: #070f1e;
+      --bg-2: #0d1a30;
+      --bg-3: #132442;
+      
+      --surface: rgba(255, 255, 255, 0.035);
+      --surface-2: rgba(255, 255, 255, 0.065);
+      --surface-3: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(16, 185, 129, 0.35);
+      --border-gold: rgba(245, 158, 11, 0.35);
+
+      --text-1: #f8fafc;
       --text-2: #94a3b8;
       --text-3: #64748b;
       --text-4: #475569;
-      --green-400: #4ade80;
-      --green-500: #22c55e;
-      --green-600: #16a34a;
-      --green-700: #15803d;
-      --green-800: #166534;
+
+      --emerald-400: #34d399;
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
       --gold-400: #fbbf24;
       --gold-500: #f59e0b;
       --red-400: #f87171;
@@ -42,464 +41,926 @@
       --blue-400: #60a5fa;
       --blue-500: #3b82f6;
       --purple-400: #c084fc;
-      --purple-500: #a855f7;
-      --cyan-400: #22d3ee;
-      --cyan-500: #06b6d4;
-      --grad-green: linear-gradient(135deg, #166534 0%, #15803d 50%, #22c55e 100%);
-      --grad-gold: linear-gradient(135deg, #92400e 0%, #b45309 50%, #f59e0b 100%);
-      --grad-blue: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 50%, #3b82f6 100%);
-      --grad-red: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #ef4444 100%);
-      --grad-purple: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a78bfa 100%);
-      --grad-card: linear-gradient(145deg, rgba(22,101,52,0.1) 0%, rgba(10,15,30,0.95) 100%);
-      --shadow: 0 4px 24px rgba(0,0,0,0.4);
-      --shadow-glow: 0 0 40px rgba(34,197,94,0.12);
-      --r-xs: 6px; --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-full: 9999px;
-      --ease: cubic-bezier(0.16,1,0.3,1);
-      --t-fast: 0.15s var(--ease);
-      --t-normal: 0.3s var(--ease);
-      --font: 'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+
+      --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+      --grad-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde68a 100%);
+      --grad-blue: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
+      --grad-red: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%);
+      --grad-card: linear-gradient(145deg, rgba(16, 185, 129, 0.08) 0%, rgba(7, 15, 30, 0.96) 100%);
+
+      --r-sm: 10px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 26px;
+      --r-full: 9999px;
+      --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    html{font-size:16px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-    body{font-family:var(--font);background:var(--bg-0);color:var(--text-1);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-0);
+      color: var(--text-1);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    .app{max-width:640px;margin:0 auto;padding:12px 14px 100px}
+    .app {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 16px 100px;
+    }
 
-    /* ---- HEADER ---- */
-    .header{text-align:center;padding:20px 0 28px;position:relative}
-    .header-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(34,197,94,0.08) 0%,transparent 70%);pointer-events:none}
-    .logo{font-size:2.8rem;display:block;margin-bottom:6px;animation:logoFloat 4s ease-in-out infinite}
-    @keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.05)}}
-    .title{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
-    .subtitle{color:var(--text-3);font-size:0.78rem;margin-top:2px}
+    /* Header */
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      background: var(--grad-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      margin-bottom: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
 
-    /* ---- STATS GRID ---- */
-    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:20px}
-    .stats.wide{grid-template-columns:repeat(3,1fr)}
-    .stat{background:var(--grad-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;transition:all var(--t-normal);position:relative;overflow:hidden}
-    .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad-green);opacity:0;transition:opacity var(--t-normal)}
-    .stat:hover{border-color:var(--border-glow);transform:translateY(-2px)}.stat:hover::before{opacity:1}
-    .stat-icon{font-size:1.3rem;display:block;margin-bottom:4px}
-    .stat-val{font-size:1.5rem;font-weight:800;color:var(--text-1);line-height:1.2}
-    .stat-lbl{font-size:0.65rem;color:var(--text-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    /* ---- TABS ---- */
-    .tabs{display:flex;gap:3px;margin-bottom:18px;background:var(--surface);border-radius:var(--r-lg);padding:3px;border:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-    .tabs::-webkit-scrollbar{display:none}
-    .tab{flex:1;min-width:0;padding:9px 6px;border:none;background:transparent;color:var(--text-3);font-family:var(--font);font-size:0.68rem;font-weight:600;cursor:pointer;border-radius:var(--r-md);transition:all var(--t-normal);display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
-    .tab:hover{color:var(--text-2);background:var(--surface-2)}
-    .tab.active{background:var(--grad-green);color:#fff;box-shadow:var(--shadow-glow)}
-    .tab-icon{font-size:1.1rem}
-    .tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;background:rgba(239,68,68,0.2);color:var(--red-400);border-radius:var(--r-full);font-size:0.55rem;font-weight:700;margin-left:2px}
+    .admin-shield {
+      font-size: 1.8rem;
+      width: 46px;
+      height: 46px;
+      border-radius: var(--r-md);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--border-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
 
-    /* ---- SECTIONS ---- */
-    .section{display:none;animation:sectionIn 0.35s var(--ease)}.section.active{display:block}
-    @keyframes sectionIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .admin-title-h1 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      background: var(--grad-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
 
-    .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    .sec-title{font-size:0.95rem;font-weight:700;display:flex;align-items:center;gap:6px}
-    .sec-badge{padding:3px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-full);font-size:0.68rem;color:var(--text-2);font-weight:600}
+    .admin-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      font-weight: 500;
+    }
 
-    /* ---- SEARCH ---- */
-    .search{width:100%;padding:10px 14px 10px 36px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-1);font-family:var(--font);font-size:0.82rem;outline:none;transition:all var(--t-fast);margin-bottom:10px;position:relative}
-    .search:focus{border-color:var(--green-600);box-shadow:0 0 0 3px rgba(22,101,52,0.2)}
-    .search::placeholder{color:var(--text-4)}
-    .search-wrap{position:relative;margin-bottom:10px}
-    .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:0.85rem;pointer-events:none;z-index:1}
+    .admin-badge-pro {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold-400);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--r-full);
+      letter-spacing: 0.05em;
+    }
 
-    /* ---- CARDS ---- */
-    .card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--grad-card);border:1px solid var(--border);border-radius:var(--r-lg);transition:all var(--t-normal);margin-bottom:6px;cursor:pointer}
-    .card:hover{border-color:var(--border-glow);background:var(--surface-2)}
-    .card.blocked{opacity:0.55;border-color:rgba(239,68,68,0.15)}
-    .card.highlight{border-color:var(--border-gold);background:rgba(251,191,36,0.04)}
+    /* KPI Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-    .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:var(--surface);flex-shrink:0}
-    .avatar.sm{width:32px;height:32px}
-    .avatar.lg{width:52px;height:52px}
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
 
-    .info{flex:1;min-width:0}
-    .name{font-size:0.82rem;font-weight:600;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .meta{font-size:0.68rem;color:var(--text-3);display:flex;gap:8px;margin-top:1px;flex-wrap:wrap}
-    .uid{font-size:0.62rem;color:var(--text-4);font-family:'Courier New',monospace}
+    .stat-card {
+      background: var(--grad-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 14px 12px;
+      text-align: center;
+      transition: all 0.2s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
 
-    .actions{display:flex;gap:4px;flex-shrink:0}
+    .stat-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-2px);
+    }
 
-    /* ---- BUTTONS ---- */
-    .btn{padding:6px 12px;border:none;border-radius:var(--r-sm);font-family:var(--font);font-size:0.7rem;font-weight:600;cursor:pointer;transition:all var(--t-fast);display:inline-flex;align-items:center;gap:4px}
-    .btn:active{transform:scale(0.95)}
-    .btn-red{background:rgba(239,68,68,0.12);color:var(--red-400);border:1px solid rgba(239,68,68,0.15)}.btn-red:hover{background:rgba(239,68,68,0.22)}
-    .btn-green{background:rgba(34,197,94,0.12);color:var(--green-400);border:1px solid rgba(34,197,94,0.15)}.btn-green:hover{background:rgba(34,197,94,0.22)}
-    .btn-blue{background:rgba(59,130,246,0.12);color:var(--blue-400);border:1px solid rgba(59,130,246,0.15)}.btn-blue:hover{background:rgba(59,130,246,0.22)}
-    .btn-gold{background:rgba(251,191,36,0.12);color:var(--gold-400);border:1px solid rgba(251,191,36,0.15)}.btn-gold:hover{background:rgba(251,191,36,0.22)}
-    .btn-primary{background:var(--grad-green);color:#fff;border:none;padding:10px 18px;font-size:0.82rem;border-radius:var(--r-md);box-shadow:0 0 20px rgba(34,197,94,0.2)}.btn-primary:hover{box-shadow:0 0 30px rgba(34,197,94,0.3)}
-    .btn-broadcast{width:100%;background:var(--grad-blue);color:#fff;border:none;padding:12px;font-size:0.88rem;font-weight:700;border-radius:var(--r-md);box-shadow:0 0 20px rgba(59,130,246,0.2)}.btn-broadcast:disabled{opacity:0.4;cursor:not-allowed}
+    .stat-icon { font-size: 1.35rem; margin-bottom: 4px; display: block; }
+    .stat-val {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--text-1);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-lbl {
+      font-size: 0.65rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
 
-    /* ---- FORM ---- */
-    .input{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-1);font-family:var(--font);font-size:0.82rem;outline:none;transition:all var(--t-fast)}
-    .input:focus{border-color:var(--green-600);box-shadow:0 0 0 3px rgba(22,101,52,0.2)}
-    .input::placeholder{color:var(--text-4)}
-    .input-row{display:flex;gap:8px;margin-bottom:12px}
+    /* Tab Switcher Pills */
+    .tabs-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
 
-    .textarea{width:100%;min-height:110px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-1);font-family:var(--font);font-size:0.82rem;outline:none;resize:vertical;transition:all var(--t-fast);margin-bottom:10px}
-    .textarea:focus{border-color:var(--green-600);box-shadow:0 0 0 3px rgba(22,101,52,0.2)}
-    .textarea::placeholder{color:var(--text-4)}
+    .tabs-bar::-webkit-scrollbar { display: none; }
 
-    /* ---- CHANNEL CARD ---- */
-    .ch-card{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--grad-card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;transition:all var(--t-normal)}
-    .ch-card:hover{border-color:var(--border-glow)}
-    .ch-name{font-size:0.88rem;font-weight:600;display:flex;align-items:center;gap:8px}
+    .tab-btn {
+      flex: 1;
+      min-width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-3);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: var(--r-md);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
 
-    /* ---- DONATION CARD ---- */
-    .don-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--grad-card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;transition:all var(--t-normal)}
-    .don-card:hover{border-color:var(--border-gold)}
-    .don-amount{font-size:1rem;font-weight:800;color:var(--gold-400);white-space:nowrap;display:flex;align-items:center;gap:3px}
-    .don-date{font-size:0.62rem;color:var(--text-4)}
+    .tab-btn:hover { color: var(--text-1); background: var(--surface-2); }
+    .tab-btn.active {
+      background: var(--grad-emerald);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+    }
 
-    /* ---- MODAL ---- */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2000;display:none;align-items:flex-end;justify-content:center;animation:modalBgIn 0.25s ease}
-    .modal-overlay.active{display:flex}
-    @keyframes modalBgIn{from{opacity:0}to{opacity:1}}
-    .modal{width:100%;max-width:640px;max-height:85vh;overflow-y:auto;background:var(--bg-1);border:1px solid var(--border-2);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:20px 16px 30px;animation:modalSlideUp 0.35s var(--ease)}
-    @keyframes modalSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-    .modal-handle{width:36px;height:4px;background:var(--surface-4);border-radius:var(--r-full);margin:0 auto 16px}
-    .modal-header{text-align:center;margin-bottom:20px}
-    .modal-avatar{width:64px;height:64px;border-radius:50%;border:3px solid var(--border-glow);margin:0 auto 10px;display:block;object-fit:cover;background:var(--surface)}
-    .modal-name{font-size:1.1rem;font-weight:700}
-    .modal-username{font-size:0.8rem;color:var(--text-3)}
-    .modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-    .modal-stat{text-align:center;padding:10px 6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md)}
-    .modal-stat-val{font-size:1.1rem;font-weight:800;color:var(--text-1)}
-    .modal-stat-lbl{font-size:0.62rem;color:var(--text-3);margin-top:2px;text-transform:uppercase}
-    .modal-info{margin-bottom:16px}
-    .modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.8rem}
-    .modal-row:last-child{border-bottom:none}
-    .modal-row-label{color:var(--text-3)}
-    .modal-row-value{color:var(--text-1);font-weight:600}
-    .modal-actions{display:flex;flex-direction:column;gap:8px}
-    .modal-btn{width:100%;padding:12px;border:none;border-radius:var(--r-md);font-family:var(--font);font-size:0.85rem;font-weight:700;cursor:pointer;transition:all var(--t-fast);display:flex;align-items:center;justify-content:center;gap:6px}
-    .modal-btn:active{transform:scale(0.98)}
-    .modal-btn-red{background:rgba(239,68,68,0.12);color:var(--red-400);border:1px solid rgba(239,68,68,0.15)}
-    .modal-btn-green{background:rgba(34,197,94,0.12);color:var(--green-400);border:1px solid rgba(34,197,94,0.15)}
-    .modal-btn-blue{background:rgba(59,130,246,0.12);color:var(--blue-400);border:1px solid rgba(59,130,246,0.15)}
-    .modal-btn-gold{background:rgba(251,191,36,0.12);color:var(--gold-400);border:1px solid rgba(251,191,36,0.15)}
+    .tab-btn-icon { font-size: 1.1rem; }
 
-    /* ---- EMPTY / LOADING ---- */
-    .empty{text-align:center;padding:36px 20px;color:var(--text-4)}
-    .empty-icon{font-size:2.5rem;display:block;margin-bottom:8px}
-    .empty-text{font-size:0.82rem}
-    .loading{text-align:center;padding:36px}
-    .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green-400);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 10px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Sections */
+    .section { display: none; animation: secFade 0.3s var(--ease); }
+    .section.active { display: block; }
 
-    /* ---- TOAST ---- */
-    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:10px 22px;background:rgba(10,15,30,0.95);color:var(--text-1);border:1px solid var(--border-2);border-radius:var(--r-full);font-size:0.8rem;font-weight:500;z-index:3000;opacity:0;transition:all 0.3s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,0.5)}
-    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-    .toast.ok{border-color:rgba(34,197,94,0.3)}.toast.err{border-color:rgba(239,68,68,0.3)}
+    @keyframes secFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    /* ---- ACCESS DENIED ---- */
-    .denied{text-align:center;padding:80px 20px}
-    .denied-icon{font-size:4rem;display:block;margin-bottom:14px}
-    .denied-title{font-size:1.2rem;font-weight:700;margin-bottom:6px}
-    .denied-text{color:var(--text-3);font-size:0.85rem}
+    .sec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
 
-    /* ---- SUPER ADMIN CROWN ---- */
-    .crown{color:var(--gold-400);font-size:0.8rem;margin-left:4px}
+    .sec-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    /* ---- SCROLLBAR ---- */
-    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:var(--r-full)}
+    .sec-badge {
+      padding: 4px 12px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--emerald-400);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--r-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
 
-    /* ---- RESPONSIVE ---- */
-    @media(max-width:380px){.stats{grid-template-columns:repeat(2,1fr)}.stats.wide{grid-template-columns:repeat(2,1fr)}}
+    /* Search & Inputs */
+    .search-container {
+      position: relative;
+      margin-bottom: 14px;
+    }
 
-    /* ---- CARD SETTINGS ---- */
-    .card-settings{background:var(--grad-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px}
-    .card-settings-title{font-size:0.88rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--gold-400)}
-    .card-form-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
-    .card-form-row label{font-size:0.72rem;color:var(--text-3);min-width:80px;font-weight:600}
-    .card-form-row .input{flex:1}
-    .toggle-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-    .toggle{position:relative;width:44px;height:24px;border-radius:12px;background:var(--surface-3);border:1px solid var(--border);cursor:pointer;transition:all var(--t-fast)}
-    .toggle.on{background:var(--green-600);border-color:var(--green-500)}
-    .toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all var(--t-fast)}
-    .toggle.on::after{left:22px}
-    .toggle-label{font-size:0.78rem;color:var(--text-2);font-weight:600}
-    .card-preview{margin-top:12px;padding:14px;background:linear-gradient(145deg,#1a3a2a 0%,#0d2818 30%,#164525 60%,#0f3018 100%);border-radius:14px;border:1px solid rgba(34,197,94,0.15)}
-    .card-preview-title{font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
-    .card-preview-number{font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:0.1em;font-family:'Courier New',monospace;margin-bottom:6px}
-    .card-preview-holder{font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.05em}
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      color: var(--text-1);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+    }
+
+    .search-icon-abs {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      color: var(--text-3);
+    }
+
+    /* User List Cards */
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--grad-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-card:hover {
+      border-color: var(--border-glow);
+      transform: translateX(4px);
+    }
+
+    .user-card.blocked {
+      opacity: 0.6;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .user-avatar-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .user-info-body { flex: 1; min-width: 0; }
+    .user-title-row { font-size: 0.9rem; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-meta-row { font-size: 0.72rem; color: var(--text-3); display: flex; gap: 10px; margin-top: 2px; }
+    .user-uid-lbl { font-size: 0.65rem; color: var(--text-4); font-family: monospace; }
+
+    /* Buttons & Form Elements */
+    .btn-action {
+      padding: 10px 18px;
+      border: none;
+      border-radius: var(--r-md);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:active { transform: scale(0.96); }
+
+    .btn-emerald {
+      background: var(--grad-emerald);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-danger {
+      background: var(--grad-red);
+      color: #fff;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text-1);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
+    }
+
+    .input-row-group { display: flex; gap: 8px; margin-bottom: 14px; }
+
+    .textarea-box {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      color: var(--text-1);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      outline: none;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+
+    .textarea-box:focus { border-color: var(--emerald-500); }
+
+    /* Card Settings Container */
+    .card-settings-box {
+      background: var(--grad-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 20px 18px;
+      margin-bottom: 18px;
+    }
+
+    .card-settings-header {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--gold-400);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-group-row label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-2);
+      min-width: 90px;
+    }
+
+    .switch-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .switch-btn {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      border-radius: 13px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .switch-btn.on {
+      background: var(--emerald-600);
+      border-color: var(--emerald-400);
+    }
+
+    .switch-btn::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: all 0.2s;
+    }
+
+    .switch-btn.on::after { left: 24px; }
+    .switch-label { font-size: 0.85rem; font-weight: 700; }
+
+    /* Bank Card Preview */
+    .bank-card-preview {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #022c22 100%);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      border-radius: var(--r-lg);
+      padding: 18px 16px;
+      color: #fff;
+      margin-top: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .preview-card-num {
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: monospace;
+      letter-spacing: 0.1em;
+      margin: 12px 0 8px;
+    }
+
+    .preview-card-holder {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-body {
+      width: 100%;
+      max-width: 540px;
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      padding: 24px 20px 36px;
+      animation: modalSlide 0.3s var(--ease);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-handle-bar {
+      width: 40px;
+      height: 4px;
+      background: var(--surface-3);
+      border-radius: var(--r-full);
+      margin: 0 auto 16px;
+    }
+
+    .modal-header-block { text-align: center; margin-bottom: 20px; }
+    .modal-avatar-circle { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 10px; overflow: hidden; border: 3px solid var(--emerald-400); }
+    .modal-name-title { font-size: 1.25rem; font-weight: 800; }
+    .modal-user-handle { font-size: 0.82rem; color: var(--text-3); }
+
+    .modal-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .modal-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 10px;
+      text-align: center;
+    }
+
+    .modal-kpi-val { font-size: 1.15rem; font-weight: 800; }
+    .modal-kpi-lbl { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; margin-top: 2px; }
+
+    .modal-details-list { margin-bottom: 20px; }
+    .modal-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .modal-detail-lbl { color: var(--text-3); }
+    .modal-detail-val { font-weight: 700; color: var(--text-1); }
+
+    .modal-actions-box { display: flex; flex-direction: column; gap: 10px; }
+    .modal-btn-full {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: var(--r-md);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-btn-full:active { transform: scale(0.97); }
+
+    .modal-btn-red { background: var(--grad-red); color: #fff; }
+    .modal-btn-green { background: var(--grad-emerald); color: #fff; }
+    .modal-btn-blue { background: var(--grad-blue); color: #fff; }
+    .modal-btn-gold { background: var(--grad-gold); color: #000; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 24px;
+      background: rgba(7, 15, 30, 0.98);
+      color: #fff;
+      border: 1px solid var(--border-glow);
+      border-radius: var(--r-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* Spinner */
+    .loading-state { text-align: center; padding: 50px 20px; }
+    .spinner-disc { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--emerald-400); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .denied-screen { text-align: center; padding: 80px 20px; }
+    .denied-shield { font-size: 4rem; margin-bottom: 12px; display: block; }
   </style>
 </head>
 <body>
   <div class="app" id="app">
-    <!-- Loading -->
-    <div class="loading" id="loadingState"><div class="spinner"></div><div style="color:var(--text-3);font-size:0.82rem">Yuklanmoqda...</div></div>
-
-    <!-- Access Denied -->
-    <div class="denied" id="accessDenied" style="display:none">
-      <span class="denied-icon">🚫</span>
-      <h2 class="denied-title">Ruxsat berilmagan</h2>
-      <p class="denied-text">Bu sahifa faqat admin uchun.</p>
+    <!-- Loading State -->
+    <div class="loading-state" id="loadingState">
+      <div class="spinner-disc"></div>
+      <p style="color:var(--text-3);font-size:0.85rem;font-weight:600;">Admin ma'lumotlari yuklanmoqda...</p>
     </div>
 
-    <!-- Admin Content -->
+    <!-- Access Denied -->
+    <div class="denied-screen" id="accessDenied" style="display:none">
+      <span class="denied-shield">🚫</span>
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;">Ruxsat Berilmagan</h2>
+      <p style="color:var(--text-3);font-size:0.85rem;">Ushbu sahifa faqat tayinlangan adminlar uchun ochiq.</p>
+    </div>
+
+    <!-- Main Admin Dashboard Content -->
     <div id="adminContent" style="display:none">
-      <!-- Header -->
-      <header class="header">
-        <div class="header-glow"></div>
-        <span class="logo">🛡️</span>
-        <h1 class="title">Admin Panel</h1>
-        <p class="subtitle">Elektron Tasbih boshqaruvi</p>
+      <!-- Top Brand Bar -->
+      <header class="admin-header">
+        <div class="admin-brand">
+          <div class="admin-shield">🛡️</div>
+          <div>
+            <h1 class="admin-title-h1">Admin Panel</h1>
+            <p class="admin-subtitle">Vodil Tasbih Boshqaruv Markazi</p>
+          </div>
+        </div>
+        <span class="admin-badge-pro">PRO MAX</span>
       </header>
 
-      <!-- Stats Grid -->
-      <div class="stats wide" id="statsGrid">
-        <div class="stat"><span class="stat-icon">👥</span><div class="stat-val" id="sTotalUsers">0</div><div class="stat-lbl">Foydalanuvchilar</div></div>
-        <div class="stat"><span class="stat-icon">🟢</span><div class="stat-val" id="sActiveToday">0</div><div class="stat-lbl">Bugun faol</div></div>
-        <div class="stat"><span class="stat-icon">📿</span><div class="stat-val" id="sTotalZikr">0</div><div class="stat-lbl">Jami zikr</div></div>
-        <div class="stat"><span class="stat-icon">🚫</span><div class="stat-val" id="sBlocked">0</div><div class="stat-lbl">Bloklangan</div></div>
-        <div class="stat"><span class="stat-icon">💰</span><div class="stat-val" id="sTotalDonations">0⭐</div><div class="stat-lbl">Jami ehson</div></div>
-        <div class="stat"><span class="stat-icon">🛡️</span><div class="stat-val" id="sAdminCount">0</div><div class="stat-lbl">Adminlar</div></div>
+      <!-- KPI Statistics Grid -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <span class="stat-icon">👥</span>
+          <div class="stat-val" id="sTotalUsers">0</div>
+          <div class="stat-lbl">Foydalanuvchilar</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🟢</span>
+          <div class="stat-val" id="sActiveToday">0</div>
+          <div class="stat-lbl">Bugun Faol</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📿</span>
+          <div class="stat-val" id="sTotalZikr">0</div>
+          <div class="stat-lbl">Jami Zikr</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🚫</span>
+          <div class="stat-val" id="sBlocked">0</div>
+          <div class="stat-lbl">Bloklangan</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⭐</span>
+          <div class="stat-val" id="sTotalDonations">0⭐</div>
+          <div class="stat-lbl">Jami Ehson</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">👑</span>
+          <div class="stat-val" id="sAdminCount">0</div>
+          <div class="stat-lbl">Adminlar</div>
+        </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="tabs" id="tabs">
-        <button class="tab active" data-sec="users"><span class="tab-icon">👥</span><span>Userlar</span></button>
-        <button class="tab" data-sec="admins"><span class="tab-icon">👑</span><span>Adminlar</span></button>
-        <button class="tab" data-sec="donations"><span class="tab-icon">💰</span><span>Ehsonlar</span></button>
-        <button class="tab" data-sec="channels"><span class="tab-icon">📢</span><span>Kanallar</span></button>
-        <button class="tab" data-sec="prayer"><span class="tab-icon">🕌</span><span>Namoz</span></button>
-        <button class="tab" data-sec="broadcast"><span class="tab-icon">📡</span><span>Broadcast</span></button>
+      <!-- Tab Switcher Navigation -->
+      <div class="tabs-bar" id="tabs">
+        <button class="tab-btn active" data-sec="users">
+          <span class="tab-btn-icon">👥</span>
+          <span>Userlar</span>
+        </button>
+        <button class="tab-btn" data-sec="admins">
+          <span class="tab-btn-icon">👑</span>
+          <span>Adminlar</span>
+        </button>
+        <button class="tab-btn" data-sec="donations">
+          <span class="tab-btn-icon">💰</span>
+          <span>Ehsonlar</span>
+        </button>
+        <button class="tab-btn" data-sec="channels">
+          <span class="tab-btn-icon">📢</span>
+          <span>Kanallar</span>
+        </button>
+        <button class="tab-btn" data-sec="prayer">
+          <span class="tab-btn-icon">🕌</span>
+          <span>Namoz</span>
+        </button>
+        <button class="tab-btn" data-sec="broadcast">
+          <span class="tab-btn-icon">📡</span>
+          <span>Broadcast</span>
+        </button>
       </div>
 
-      <!-- ============ USERS ============ -->
+      <!-- ==================== 1. USERS SECTION ==================== -->
       <div class="section active" id="secUsers">
-        <div class="sec-head">
-          <span class="sec-title">👥 Foydalanuvchilar</span>
-          <span class="sec-badge" id="userBadge">0</span>
+        <div class="sec-header">
+          <span class="sec-title">👥 Foydalanuvchilar Ro'yxati</span>
+          <span class="sec-badge" id="userBadge">0 ta</span>
         </div>
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" class="search" id="userSearch" placeholder="Ism yoki ID qidirish...">
+        <div class="search-container">
+          <span class="search-icon-abs">🔍</span>
+          <input type="text" class="search-input" id="userSearch" placeholder="Ism, username yoki Telegram ID qidirish...">
         </div>
-        <div id="userList"><div class="loading"><div class="spinner"></div></div></div>
+        <div id="userList">
+          <div class="loading-state"><div class="spinner-disc"></div></div>
+        </div>
       </div>
 
-      <!-- ============ ADMINS ============ -->
+      <!-- ==================== 2. ADMINS SECTION ==================== -->
       <div class="section" id="secAdmins">
-        <div class="sec-head">
-          <span class="sec-title">👑 Adminlar</span>
-          <span class="sec-badge" id="adminBadge">0</span>
+        <div class="sec-header">
+          <span class="sec-title">👑 Adminlar Boshqaruvi</span>
+          <span class="sec-badge" id="adminBadge">0 ta</span>
         </div>
-        <div class="input-row">
-          <input type="text" class="input" id="adminInput" placeholder="Telegram ID kiriting...">
-          <button class="btn-primary" id="addAdminBtn">➕ Qo'shish</button>
+        <div class="input-row-group">
+          <input type="text" class="input-field" id="adminInput" placeholder="Telegram ID kiriting (masalan: 123456789)...">
+          <button class="btn-action btn-emerald" id="addAdminBtn">➕ Qo'shish</button>
         </div>
-        <div id="adminList"><div class="loading"><div class="spinner"></div></div></div>
+        <div id="adminList">
+          <div class="loading-state"><div class="spinner-disc"></div></div>
+        </div>
       </div>
 
-      <!-- ============ DONATIONS ============ -->
+      <!-- ==================== 3. DONATIONS SECTION ==================== -->
       <div class="section" id="secDonations">
-        <div class="sec-head">
-          <span class="sec-title">💰 Ehsonlar</span>
-          <span class="sec-badge" id="donBadge">0</span>
+        <div class="sec-header">
+          <span class="sec-title">💰 Ehsonlar & Xayriya</span>
+          <span class="sec-badge" id="donBadge">0 ta</span>
         </div>
-        <div class="stats" id="donStats">
-          <div class="stat"><span class="stat-icon">💰</span><div class="stat-val" id="dTotal">0⭐</div><div class="stat-lbl">Jami</div></div>
-          <div class="stat"><span class="stat-icon">📅</span><div class="stat-val" id="dToday">0⭐</div><div class="stat-lbl">Bugun</div></div>
+        
+        <div class="stats-grid" id="donStats" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+          <div class="stat-card">
+            <span class="stat-icon">💰</span>
+            <div class="stat-val" id="dTotal">0⭐</div>
+            <div class="stat-lbl">Jami Stars</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📅</span>
+            <div class="stat-val" id="dToday">0⭐</div>
+            <div class="stat-lbl">Bugun Tushgan</div>
+          </div>
         </div>
-        <!-- Top Donors -->
-        <div class="sec-head" style="margin-top:12px"><span class="sec-title">🏆 Top ehsonchilar</span></div>
-        <div id="topDonorsList"></div>
-        <!-- All Donations -->
-        <div class="sec-head" style="margin-top:16px"><span class="sec-title">📋 Oxirgi ehsonlar</span></div>
-        <div id="donationList"><div class="loading"><div class="spinner"></div></div></div>
 
-        <!-- Donation Card Settings -->
-        <div class="sec-head" style="margin-top:16px"><span class="sec-title">💳 Ehson kartasi sozlamalari</span></div>
-        <div class="card-settings" id="cardSettings">
-          <div class="card-settings-title">💳 Karta ma'lumotlari</div>
-          <div class="toggle-wrap">
-            <div class="toggle" id="cardToggle"></div>
-            <span class="toggle-label">Kartani ko'rsatish</span>
+        <!-- Top Donors -->
+        <div class="sec-header"><span class="sec-title">🏆 Eng Saxiy Ehsonchilar</span></div>
+        <div id="topDonorsList" style="margin-bottom:18px;"></div>
+
+        <!-- All Donations -->
+        <div class="sec-header"><span class="sec-title">📋 Barcha Ehsonlar Tarixi</span></div>
+        <div id="donationList" style="margin-bottom:20px;"></div>
+
+        <!-- Bank Card Settings -->
+        <div class="card-settings-box" id="cardSettings">
+          <div class="card-settings-header">💳 Ehson Bank Kartasi Sozlamalari</div>
+          <div class="switch-toggle-row">
+            <div class="switch-btn" id="cardToggle"></div>
+            <span class="switch-label">Kartani botda ko'rsatish</span>
           </div>
-          <div class="card-form-row">
+          <div class="form-group-row">
             <label>Karta raqami</label>
-            <input type="text" class="input" id="cardNumber" placeholder="8600 1234 5678 9012" maxlength="19">
+            <input type="text" class="input-field" id="cardNumber" placeholder="8600 1234 5678 9012" maxlength="19">
           </div>
-          <div class="card-form-row">
-            <label>Ism Familya</label>
-            <input type="text" class="input" id="cardHolder" placeholder="RAYIMJONOV ISLOM">
+          <div class="form-group-row">
+            <label>Karta egasi</label>
+            <input type="text" class="input-field" id="cardHolder" placeholder="ISLOM RAYIMJONOV">
           </div>
-          <div class="card-form-row">
+          <div class="form-group-row">
             <label>Bank nomi</label>
-            <input type="text" class="input" id="cardBankName" placeholder="Uzcard">
+            <input type="text" class="input-field" id="cardBankName" placeholder="Ipak Yo'li Banki / Uzcard">
           </div>
-          <div class="card-form-row">
+          <div class="form-group-row">
             <label>Karta turi</label>
-            <select class="input" id="cardType" style="padding:8px 10px">
+            <select class="input-field" id="cardType">
               <option value="uzcard">Uzcard</option>
               <option value="humo">Humo</option>
               <option value="visa">Visa</option>
               <option value="mastercard">Mastercard</option>
             </select>
           </div>
-          <!-- Preview -->
-          <div class="card-preview" id="cardPreview">
-            <div class="card-preview-title">Ko'rinishi</div>
-            <div class="card-preview-number" id="previewNumber">•••• •••• •••• ••••</div>
-            <div class="card-preview-holder" id="previewHolder">—</div>
+
+          <!-- Live Preview -->
+          <div class="bank-card-preview" id="cardPreview">
+            <div style="font-size:0.7rem;text-transform:uppercase;color:rgba(255,255,255,0.6);letter-spacing:0.1em;">Karta Ko'rinishi</div>
+            <div class="preview-card-num" id="previewNumber">•••• •••• •••• ••••</div>
+            <div class="preview-card-holder" id="previewHolder">KARTA EGASI</div>
           </div>
-          <button class="btn-primary" style="width:100%;margin-top:12px" id="saveCardBtn">✅ Saqlash</button>
+          <button class="btn-action btn-emerald" style="width:100%;margin-top:14px;justify-content:center;" id="saveCardBtn">💾 Kartani Saqlash</button>
         </div>
       </div>
 
-      <!-- ============ CHANNELS ============ -->
+      <!-- ==================== 4. CHANNELS (MAJBURIIY OBUNA) ==================== -->
       <div class="section" id="secChannels">
-        <div class="sec-head">
-          <span class="sec-title">📢 Majburiy Obuna</span>
-          <span class="sec-badge" id="chBadge">0</span>
+        <div class="sec-header">
+          <span class="sec-title">📢 Majburiy Obuna Kanallari</span>
+          <span class="sec-badge" id="chBadge">0 ta</span>
         </div>
-        <div class="input-row">
-          <input type="text" class="input" id="chInput" placeholder="@kanal_username">
-          <button class="btn-primary" id="addChBtn">➕ Qo'shish</button>
+        <div class="input-row-group">
+          <input type="text" class="input-field" id="chInput" placeholder="@kanal_username yoki havola...">
+          <button class="btn-action btn-emerald" id="addChBtn">➕ Qo'shish</button>
         </div>
         <div id="chList"></div>
       </div>
 
-      <!-- ============ PRAYER TIMES ============ -->
+      <!-- ==================== 5. PRAYER TIMES ==================== -->
       <div class="section" id="secPrayer">
-        <div class="sec-head">
-          <span class="sec-title">🕌 Namoz Vaqtlari</span>
+        <div class="sec-header">
+          <span class="sec-title">🕌 Namoz Vaqtlari & Eslatmalar</span>
         </div>
-        <div class="card-settings">
-          <div class="toggle-wrap">
-            <div class="toggle" id="prayerToggle"></div>
-            <span class="toggle-label">Namoz eslatmasini yoqish</span>
+        <div class="card-settings-box">
+          <div class="switch-toggle-row">
+            <div class="switch-btn" id="prayerToggle"></div>
+            <span class="switch-label">Namoz eslatma tizimini yoqish</span>
           </div>
-          <div class="card-form-row">
-            <label>Shahar</label>
-            <input type="text" class="input" id="ptLocation" placeholder="Toshkent shahri">
+          <div class="form-group-row">
+            <label>Hudud / Shahar</label>
+            <input type="text" class="input-field" id="ptLocation" placeholder="Toshkent shahri">
           </div>
-          <div class="card-form-row">
-            <label>Masjid</label>
-            <input type="text" class="input" id="ptMosque" placeholder="Xazrati Imom">
+          <div class="form-group-row">
+            <label>Masjid nomi</label>
+            <input type="text" class="input-field" id="ptMosque" placeholder="Xazrati Imom">
           </div>
-          <div class="card-form-row">
+          <div class="form-group-row">
             <label>Oldin (daq)</label>
-            <input type="number" class="input" id="ptNotify" placeholder="10">
+            <input type="number" class="input-field" id="ptNotify" placeholder="10">
           </div>
-          
-          <div class="card-settings-title" style="margin-top:16px">⏰ Vaqtlar</div>
-          <div class="card-form-row"><label>Tong/Quyosh</label><input type="text" class="input" id="ptTong" placeholder="Misol: 04:30 05:00"></div>
-          <div class="card-form-row"><label>Bomdod</label><input type="text" class="input" id="ptBomdod" placeholder="Misol: 05:15"></div>
-          <div class="card-form-row"><label>Peshin</label><input type="text" class="input" id="ptPeshin" placeholder="13:00"></div>
-          <div class="card-form-row"><label>Asr</label><input type="text" class="input" id="ptAsr" placeholder="16:45"></div>
-          <div class="card-form-row"><label>Shom</label><input type="text" class="input" id="ptShom" placeholder="19:00"></div>
-          <div class="card-form-row"><label>Xufton</label><input type="text" class="input" id="ptXufton" placeholder="20:30"></div>
-          
-          <div style="margin-top:16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-              <input type="checkbox" id="ptBroadcast" style="width:18px; height:18px;">
-              <span style="font-size:0.9rem; font-weight:bold;">Namoz vaqtlarini tarqatish</span>
+
+          <div class="card-settings-header" style="margin-top:16px;">⏰ Namoz Vaqtlari (Erkin format)</div>
+          <div class="form-group-row"><label>Tong/Quyosh</label><input type="text" class="input-field" id="ptTong" placeholder="04:30 05:00"></div>
+          <div class="form-group-row"><label>Bomdod</label><input type="text" class="input-field" id="ptBomdod" placeholder="05:15"></div>
+          <div class="form-group-row"><label>Peshin</label><input type="text" class="input-field" id="ptPeshin" placeholder="13:00"></div>
+          <div class="form-group-row"><label>Asr</label><input type="text" class="input-field" id="ptAsr" placeholder="16:45"></div>
+          <div class="form-group-row"><label>Shom</label><input type="text" class="input-field" id="ptShom" placeholder="19:00"></div>
+          <div class="form-group-row"><label>Xufton</label><input type="text" class="input-field" id="ptXufton" placeholder="20:30"></div>
+
+          <!-- Broadcast settings -->
+          <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-md);">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="ptBroadcast" style="width:18px;height:18px;">
+              <span style="font-size:0.88rem;font-weight:800;">Guruh va Kanallarga tarqatish</span>
             </label>
-            
-            <div id="ptBroadcastOptions" style="display:none; margin-top: 12px; padding-left: 26px;">
-              <div style="display:flex; gap:12px; margin-bottom: 8px;">
-                <label style="font-size:0.85rem; cursor:pointer;"><input type="radio" name="ptTargetType" value="all" checked> Barchaga</label>
-                <label style="font-size:0.85rem; cursor:pointer;"><input type="radio" name="ptTargetType" value="selected"> Tanlab yuborish</label>
+            <div id="ptBroadcastOptions" style="display:none;margin-top:12px;padding-left:26px;">
+              <div style="display:flex;gap:14px;margin-bottom:10px;">
+                <label style="font-size:0.85rem;cursor:pointer;"><input type="radio" name="ptTargetType" value="all" checked> Barchaga</label>
+                <label style="font-size:0.85rem;cursor:pointer;"><input type="radio" name="ptTargetType" value="selected"> Tanlab yuborish</label>
               </div>
-              <div id="ptChatList" style="display:none; max-height:150px; overflow-y:auto; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; margin-bottom: 8px;">
-                <div style="font-size:0.8rem; color:#aaa;">Yuklanmoqda...</div>
+              <div id="ptChatList" style="display:none;max-height:140px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:8px;border-radius:var(--r-sm);margin-bottom:10px;">
+                <div style="font-size:0.8rem;color:var(--text-3);">Yuklanmoqda...</div>
               </div>
-              <input type="text" class="input" id="ptBroadcastText" placeholder="Qo'shimcha matn (ixtiyoriy)" style="font-size:0.85rem; padding: 8px;">
+              <input type="text" class="input-field" id="ptBroadcastText" placeholder="Qo'shimcha tavsif / tabrik matni..." style="font-size:0.85rem;">
             </div>
           </div>
-          
-          <button class="btn-primary" style="width:100%;margin-top:16px" id="savePrayerBtn">✅ Saqlash</button>
+
+          <button class="btn-action btn-emerald" style="width:100%;margin-top:16px;justify-content:center;" id="savePrayerBtn">💾 Namoz Vaqtlarini Saqlash</button>
         </div>
       </div>
 
-      <!-- ============ BROADCAST ============ -->
+      <!-- ==================== 6. BROADCAST SECTION ==================== -->
       <div class="section" id="secBroadcast">
-        <div class="sec-head">
-          <span class="sec-title">📡 Xabar yuborish</span>
+        <div class="sec-header">
+          <span class="sec-title">📡 Barcha Foydalanuvchilarga Xabar Yuborish</span>
         </div>
-        <textarea class="textarea" id="broadcastMsg" placeholder="Barcha foydalanuvchilarga xabar yozing... (HTML qo'llab-quvvatlanadi)"></textarea>
-        <button class="btn-broadcast" id="broadcastBtn">📡 Barchaga yuborish</button>
+        <textarea class="textarea-box" id="broadcastMsg" placeholder="Xabaringizni yozing... (HTML teglar: <b>qalin</b>, <i>kursiv</i>, <a href='...'>havola</a> qo'llab-quvvatlanadi)"></textarea>
+        <button class="btn-action btn-emerald" style="width:100%;padding:14px;font-size:0.95rem;justify-content:center;" id="broadcastBtn">📡 Barchaga Xabar Yuborish</button>
       </div>
     </div>
   </div>
 
   <!-- User Detail Modal -->
   <div class="modal-overlay" id="userModal">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <div class="modal-avatar" id="mAvatar" style="width:70px; height:70px;"></div>
-        <div class="modal-name" id="mName">—</div>
-        <div class="modal-username" id="mUsername">—</div>
+    <div class="modal-body">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header-block">
+        <div class="modal-avatar-circle" id="mAvatar"></div>
+        <div class="modal-name-title" id="mName">—</div>
+        <div class="modal-user-handle" id="mUsername">@username</div>
       </div>
-      <div class="modal-stats">
-        <div class="modal-stat"><div class="modal-stat-val" id="mCount">0</div><div class="modal-stat-lbl">Hozirgi</div></div>
-        <div class="modal-stat"><div class="modal-stat-val" id="mTotal">0</div><div class="modal-stat-lbl">Jami zikr</div></div>
-        <div class="modal-stat"><div class="modal-stat-val" id="mStreak">0</div><div class="modal-stat-lbl">Streak</div></div>
+      
+      <div class="modal-kpi-grid">
+        <div class="modal-kpi-card">
+          <div class="modal-kpi-val" id="mCount">0</div>
+          <div class="modal-kpi-lbl">Hozirgi</div>
+        </div>
+        <div class="modal-kpi-card">
+          <div class="modal-kpi-val" id="mTotal">0</div>
+          <div class="modal-kpi-lbl">Jami Zikr</div>
+        </div>
+        <div class="modal-kpi-card">
+          <div class="modal-kpi-val" id="mStreak">0</div>
+          <div class="modal-kpi-lbl">Streak</div>
+        </div>
       </div>
-      <div class="modal-info" id="mInfo">
-        <div class="modal-row"><span class="modal-row-label">🆔 Telegram ID</span><span class="modal-row-value" id="mId">—</span></div>
-        <div class="modal-row"><span class="modal-row-label">🏆 Reyting</span><span class="modal-row-value" id="mRank">—</span></div>
-        <div class="modal-row"><span class="modal-row-label">💝 Ehsonlar</span><span class="modal-row-value" id="mDonated">0⭐</span></div>
-        <div class="modal-row"><span class="modal-row-label">🌐 Tili</span><span class="modal-row-value" id="mLang">—</span></div>
-        <div class="modal-row"><span class="modal-row-label">📅 Ro'yxatdan</span><span class="modal-row-value" id="mCreated">—</span></div>
-        <div class="modal-row"><span class="modal-row-label">⏱ Oxirgi faollik</span><span class="modal-row-value" id="mLastActive">—</span></div>
+
+      <div class="modal-details-list" id="mInfo">
+        <div class="modal-detail-row"><span class="modal-detail-lbl">🆔 Telegram ID</span><span class="modal-detail-val" id="mId">—</span></div>
+        <div class="modal-detail-row"><span class="modal-detail-lbl">🏆 Reyting O'rni</span><span class="modal-detail-val" id="mRank">—</span></div>
+        <div class="modal-detail-row"><span class="modal-detail-lbl">💝 Ehsonlar</span><span class="modal-detail-val" id="mDonated">0⭐</span></div>
+        <div class="modal-detail-row"><span class="modal-detail-lbl">🌐 Tili</span><span class="modal-detail-val" id="mLang">—</span></div>
+        <div class="modal-detail-row"><span class="modal-detail-lbl">📅 Ro'yxatdan o'tgan</span><span class="modal-detail-val" id="mCreated">—</span></div>
+        <div class="modal-detail-row"><span class="modal-detail-lbl">⏱ Oxirgi faollik</span><span class="modal-detail-val" id="mLastActive">—</span></div>
       </div>
-      <div class="modal-actions" id="mActions"></div>
+
+      <div class="modal-actions-box" id="mActions"></div>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
 
   <script>
-    /* ============================================
-       ADMIN PANEL PRO — APPLICATION LOGIC
-       ============================================ */
+    /* ================================================================
+       ADMIN PANEL PRO MAX — JAVASCRIPT CONTROLLER
+       ================================================================ */
     const API = window.location.origin;
     let ADMIN_ID = null;
     let IS_SUPER = false;
     let allUsers = [];
     let allAdmins = [];
     let selectedUser = null;
+    let allChats = {};
+    let ptEnabled = false;
 
-    // ---- Telegram Init ----
     function initTG() {
       const tg = window.Telegram?.WebApp;
       if (tg) { tg.ready(); tg.expand(); const u = tg.initDataUnsafe?.user; if (u) return u.id; }
-      console.log('⚠️ Demo mode');
       return 8809344628;
     }
 
-    // ---- Toast ----
     function toast(msg, type = 'ok') {
       const el = document.getElementById('toast');
-      el.textContent = msg; el.className = `toast show ${type}`;
+      el.textContent = msg;
+      el.className = `toast show ${type}`;
       setTimeout(() => { el.className = 'toast'; }, 3000);
     }
 
-    // ---- API ----
     async function api(endpoint, method = 'GET', body = null) {
       try {
         const opts = { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Id': String(ADMIN_ID) } };
         if (body) opts.body = JSON.stringify(body);
         const r = await fetch(`${API}${endpoint}`, opts);
-        if (r.status === 403) { document.getElementById('loadingState').style.display='none'; document.getElementById('accessDenied').style.display='block'; return null; }
+        if (r.status === 403) {
+          document.getElementById('loadingState').style.display = 'none';
+          document.getElementById('accessDenied').style.display = 'block';
+          return null;
+        }
         if (!r.ok) throw new Error(r.status);
         return await r.json();
-      } catch (e) { console.error('API:', e); toast('❌ Xatolik', 'err'); return null; }
+      } catch (e) {
+        console.error('API Error:', e);
+        toast('❌ Xatolik yuz berdi', 'err');
+        return null;
+      }
     }
 
-    // ---- Format ----
-    function fmt(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return (n/1e3).toFixed(1)+'K'; return n.toString(); }
+    function fmt(n) {
+      if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+      return (n || 0).toString();
+    }
+
     function genAvatarHTML(name, photoUrl, className) {
       const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
       const hue = (initial.charCodeAt(0) * 37) % 360;
@@ -510,9 +971,9 @@
       }
       return divHTML;
     }
+
     const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
 
-    // ---- Load Stats ----
     async function loadStats() {
       const s = await api('/api/admin/stats');
       if (!s) return;
@@ -524,78 +985,77 @@
       document.getElementById('sAdminCount').textContent = s.admin_count;
     }
 
-    // ---- Load Users ----
     async function loadUsers() {
       const d = await api('/api/admin/users');
       if (!d) return;
-      allUsers = d.users.sort((a,b) => (b.total_all_time||0) - (a.total_all_time||0));
-      document.getElementById('userBadge').textContent = d.total;
+      allUsers = d.users.sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0));
+      document.getElementById('userBadge').textContent = d.total + ' ta';
       renderUsers(allUsers);
     }
 
     function renderUsers(users) {
       const c = document.getElementById('userList');
-      try {
-        if (!users.length) { c.innerHTML = '<div class="empty"><span class="empty-icon">👥</span><div class="empty-text">Foydalanuvchilar topilmadi</div></div>'; return; }
-        c.innerHTML = users.map((u,i) => {
-          const nm = `${u.first_name||''} ${u.last_name||''}`.trim() || 'Noma\'lum';
-          return `<div class="card ${u.blocked?'blocked':''}" onclick="openUserModal(${u.telegram_id})">
-            <div style="width:42px;height:42px;flex-shrink:0;">${genAvatarHTML(u.first_name, u.photo_url, 'avatar')}</div>
-            <div class="info">
-              <div class="name">${u.blocked?'🚫 ':''}${nm}</div>
-              <div class="meta"><span>📿 ${fmt(u.total_all_time||0)}</span><span>🔥 ${u.streak_days||0}d</span><span>${LANG_FLAGS[u.language]||'🇺🇿'}</span></div>
-              <div class="uid">ID: ${u.telegram_id}</div>
-            </div>
-            <div class="actions">
-              <span style="font-size:0.75rem;color:var(--text-4)">▸</span>
-            </div>
-          </div>`;
-        }).join('');
-      } catch (e) {
-        c.innerHTML = `<div style="padding:20px;color:red;word-break:break-all">${e.message}</div>`;
+      if (!users.length) {
+        c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Foydalanuvchilar topilmadi</div>';
+        return;
       }
+      c.innerHTML = users.map(u => {
+        const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
+        return `
+          <div class="user-card ${u.blocked ? 'blocked' : ''}" onclick="openUserModal(${u.telegram_id})">
+            <div class="user-avatar-wrap">${genAvatarHTML(u.first_name, u.photo_url)}</div>
+            <div class="user-info-body">
+              <div class="user-title-row">${u.blocked ? '🚫 ' : ''}${nm}</div>
+              <div class="user-meta-row">
+                <span>📿 ${fmt(u.total_all_time || 0)}</span>
+                <span>🔥 ${u.streak_days || 0}d</span>
+                <span>${LANG_FLAGS[u.language] || '🇺🇿'}</span>
+              </div>
+              <div class="user-uid-lbl">ID: ${u.telegram_id}</div>
+            </div>
+            <span style="color:var(--text-4);font-size:0.9rem;">▸</span>
+          </div>
+        `;
+      }).join('');
     }
 
-    // ---- User Modal ----
     function openUserModal(tid) {
       const u = allUsers.find(x => x.telegram_id === tid);
       if (!u) return;
       selectedUser = u;
-      const nm = `${u.first_name||''} ${u.last_name||''}`.trim() || 'Noma\'lum';
-      document.getElementById('mAvatar').innerHTML = genAvatarHTML(u.first_name, u.photo_url, 'modal-avatar-content');
+      const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
+      document.getElementById('mAvatar').innerHTML = genAvatarHTML(u.first_name, u.photo_url);
       document.getElementById('mName').textContent = nm;
       document.getElementById('mUsername').textContent = u.username ? `@${u.username}` : '';
-      document.getElementById('mCount').textContent = fmt(u.count||0);
-      document.getElementById('mTotal').textContent = fmt(u.total_all_time||0);
-      document.getElementById('mStreak').textContent = u.streak_days||0;
+      document.getElementById('mCount').textContent = fmt(u.count || 0);
+      document.getElementById('mTotal').textContent = fmt(u.total_all_time || 0);
+      document.getElementById('mStreak').textContent = u.streak_days || 0;
       document.getElementById('mId').textContent = u.telegram_id;
-      document.getElementById('mDonated').textContent = (u.total_donated||0) + '⭐';
-      document.getElementById('mLang').textContent = (LANG_FLAGS[u.language]||'🇺🇿') + ' ' + (u.language||'uz').toUpperCase();
+      document.getElementById('mDonated').textContent = (u.total_donated || 0) + '⭐';
+      document.getElementById('mLang').textContent = (LANG_FLAGS[u.language] || '🇺🇿') + ' ' + (u.language || 'uz').toUpperCase();
       document.getElementById('mCreated').textContent = u.created_at || '—';
       document.getElementById('mLastActive').textContent = u.last_active || '—';
 
-      // Rank
-      const rank = allUsers.filter(x=>!x.blocked).sort((a,b)=>(b.total_all_time||0)-(a.total_all_time||0)).findIndex(x=>x.telegram_id===tid);
-      document.getElementById('mRank').textContent = rank >= 0 ? `#${rank+1}` : '—';
+      const rank = allUsers.filter(x => !x.blocked).sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0)).findIndex(x => x.telegram_id === tid);
+      document.getElementById('mRank').textContent = rank >= 0 ? `#${rank + 1}` : '—';
 
-      // Actions
       const acts = document.getElementById('mActions');
       let html = '';
       if (u.blocked) {
-        html += `<button class="modal-btn modal-btn-green" onclick="doUnblock(${tid})">✅ Blokdan ochish</button>`;
+        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock(${tid})">✅ Blokdan ochish</button>`;
       } else {
-        html += `<button class="modal-btn modal-btn-red" onclick="doBlock(${tid})">🚫 Bloklash</button>`;
+        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock(${tid})">🚫 Bloklash</button>`;
       }
-      html += `<button class="modal-btn modal-btn-blue" onclick="doReset(${tid})">🔄 Hisobni qayta boshlash</button>`;
+      html += `<button class="modal-btn-full modal-btn-blue" onclick="doReset(${tid})">🔄 Hisobni 0 ga qaytarish</button>`;
       if (IS_SUPER) {
         const isAdm = allAdmins.some(a => a.telegram_id === tid);
         if (isAdm) {
-          if (tid !== ADMIN_ID) html += `<button class="modal-btn modal-btn-gold" onclick="doRemoveAdmin(${tid})">👑 Adminlikdan olish</button>`;
+          if (tid !== ADMIN_ID) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin(${tid})">👑 Adminlikdan olish</button>`;
         } else {
-          html += `<button class="modal-btn modal-btn-gold" onclick="doMakeAdmin(${tid})">👑 Admin qilish</button>`;
+          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin(${tid})">👑 Admin qilish</button>`;
         }
       }
-      html += `<button class="modal-btn" style="background:var(--surface);color:var(--text-2);border:1px solid var(--border)" onclick="closeModal()">Yopish</button>`;
+      html += `<button class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
       acts.innerHTML = html;
 
       document.getElementById('userModal').classList.add('active');
@@ -606,9 +1066,8 @@
       selectedUser = null;
     }
 
-    // ---- User Actions ----
     async function doBlock(tid) {
-      if (!confirm('Bloklaysizmi?')) return;
+      if (!confirm('Ushbu foydalanuvchini bloklaysizmi?')) return;
       const r = await api('/api/admin/block', 'POST', { telegram_id: tid });
       if (r?.success) { toast('🚫 Bloklandi'); closeModal(); loadUsers(); loadStats(); }
     }
@@ -619,9 +1078,9 @@
     }
 
     async function doReset(tid) {
-      if (!confirm('Hisobni 0 ga qaytarasizmi?')) return;
+      if (!confirm('Foydalanuvchi hisobini butunlay 0 ga qaytarasizmi? (Reytingdagi o\'rni ham o\'chadi)')) return;
       const r = await api('/api/admin/reset-user', 'POST', { telegram_id: tid });
-      if (r?.success) { toast('🔄 Hisob qayta boshlandi'); closeModal(); loadUsers(); loadStats(); }
+      if (r?.success) { toast('🔄 Hisob to\'liq qayta boshlandi'); closeModal(); loadUsers(); loadStats(); }
     }
 
     async function doMakeAdmin(tid) {
@@ -636,44 +1095,32 @@
       if (r?.success) { toast('⬇️ Adminlikdan olindi'); closeModal(); loadUsers(); loadAdmins(); }
     }
 
-    // ---- Channels ----
-    async function deleteChannel(chName) {
-      if (!confirm(`${chName} kanalini o'chirasizmi?`)) return;
-      const r = await api('/api/admin/channels', 'DELETE', { channel: chName });
-      if (r?.success) { 
-        toast('🗑 Kanal o\'chirildi');
-        loadChannels();
-      }
-    }
-
-    // ---- Load Admins ----
     async function loadAdmins() {
       const d = await api('/api/admin/admins');
       if (!d) return;
       allAdmins = d.admins;
       IS_SUPER = d.super_admin === ADMIN_ID;
-      document.getElementById('adminBadge').textContent = d.admins.length;
+      document.getElementById('adminBadge').textContent = d.admins.length + ' ta';
 
       const c = document.getElementById('adminList');
-      if (!d.admins.length) { c.innerHTML = '<div class="empty"><span class="empty-icon">👑</span><div class="empty-text">Adminlar yo\'q</div></div>'; return; }
+      if (!d.admins.length) { c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Adminlar yo\'q</div>'; return; }
 
       c.innerHTML = d.admins.map(a => {
-        const nm = `${a.first_name||''} ${a.last_name||''}`.trim() || 'Noma\'lum';
-        return `<div class="card ${a.is_super?'highlight':''}">
-          <div style="width:42px;height:42px;flex-shrink:0;">${genAvatarHTML(a.first_name, a.photo_url, 'avatar')}</div>
-          <div class="info">
-            <div class="name">${nm}${a.is_super?' <span class="crown">👑 Super</span>':''}</div>
-            <div class="meta"><span>${a.username?'@'+a.username:''}</span></div>
-            <div class="uid">ID: ${a.telegram_id}</div>
+        const nm = `${a.first_name || ''} ${a.last_name || ''}`.trim() || 'Noma\'lum';
+        return `
+          <div class="user-card">
+            <div class="user-avatar-wrap">${genAvatarHTML(a.first_name, a.photo_url)}</div>
+            <div class="user-info-body">
+              <div class="user-title-row">${nm}${a.is_super ? ' <span style="color:var(--gold-400);">👑 Super</span>' : ''}</div>
+              <div class="user-meta-row"><span>${a.username ? '@' + a.username : ''}</span></div>
+              <div class="user-uid-lbl">ID: ${a.telegram_id}</div>
+            </div>
+            ${!a.is_super && IS_SUPER ? `<button class="btn-action btn-danger" style="padding:6px 12px;" onclick="doRemoveAdmin(${a.telegram_id})">🗑 O'chirish</button>` : ''}
           </div>
-          <div class="actions">
-            ${!a.is_super && IS_SUPER ? `<button class="btn btn-red" onclick="doRemoveAdmin(${a.telegram_id})">🗑</button>` : ''}
-          </div>
-        </div>`;
+        `;
       }).join('');
     }
 
-    // ---- Load Donations ----
     async function loadDonations() {
       const [stats, list] = await Promise.all([
         api('/api/admin/donations'),
@@ -681,58 +1128,70 @@
       ]);
 
       if (stats) {
-        document.getElementById('donBadge').textContent = stats.total_donations;
-        document.getElementById('dTotal').textContent = stats.total_stars + '⭐';
-        document.getElementById('dToday').textContent = stats.today_stars + '⭐';
+        document.getElementById('donBadge').textContent = (stats.total_donations || 0) + ' ta';
+        document.getElementById('dTotal').textContent = (stats.total_stars || 0) + '⭐';
+        document.getElementById('dToday').textContent = (stats.today_stars || 0) + '⭐';
 
-        // Top donors
         const td = document.getElementById('topDonorsList');
         if (stats.top_donors?.length) {
-          const medals = ['🥇','🥈','🥉'];
-          td.innerHTML = stats.top_donors.map((d,i) => {
-            const nm = `${d.first_name||''} ${d.last_name||''}`.trim() || 'Noma\'lum';
-            return `<div class="don-card">
-              <span style="font-size:1.1rem;min-width:24px">${medals[i]||(i+1)+'.'}</span>
-              <div style="width:36px;height:36px;flex-shrink:0;">${genAvatarHTML(d.first_name, d.photo_url, 'avatar sm')}</div>
-              <div class="info"><div class="name">${nm}</div><div class="uid">ID: ${d.telegram_id}</div></div>
-              <div class="don-amount">${d.total_donated||0} ⭐</div>
-            </div>`;
+          const medals = ['🥇', '🥈', '🥉'];
+          td.innerHTML = stats.top_donors.map((d, i) => {
+            const nm = `${d.first_name || ''} ${d.last_name || ''}`.trim() || 'Noma\'lum';
+            return `
+              <div class="user-card" style="margin-bottom:6px;">
+                <span style="font-size:1.1rem;min-width:26px;">${medals[i] || (i + 1) + '.'}</span>
+                <div class="user-avatar-wrap" style="width:36px;height:36px;">${genAvatarHTML(d.first_name, d.photo_url)}</div>
+                <div class="user-info-body">
+                  <div class="user-title-row">${nm}</div>
+                  <div class="user-uid-lbl">ID: ${d.telegram_id}</div>
+                </div>
+                <div style="font-size:1.1rem;font-weight:900;color:var(--gold-400);">${d.total_donated || 0} ⭐</div>
+              </div>
+            `;
           }).join('');
         } else {
-          td.innerHTML = '<div class="empty"><span class="empty-icon">💰</span><div class="empty-text">Hali ehsonchilar yo\'q</div></div>';
+          td.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);">Hali ehsonchilar yo\'q</div>';
         }
       }
 
-      // Donation list
       const dl = document.getElementById('donationList');
       if (list?.donations?.length) {
-        dl.innerHTML = list.donations.map(d => {
-          return `<div class="don-card">
-            <span style="font-size:1.2rem">💝</span>
-            <div class="info">
-              <div class="name">${d.user_name || 'Noma\'lum'}</div>
-              <div class="meta"><span>ID: ${d.user_id}</span></div>
-              <div class="don-date">${d.timestamp ? new Date(d.timestamp).toLocaleString('uz-UZ') : d.date}</div>
+        dl.innerHTML = list.donations.map(d => `
+          <div class="user-card" style="margin-bottom:6px;">
+            <span style="font-size:1.2rem;">💝</span>
+            <div class="user-info-body">
+              <div class="user-title-row">${d.user_name || 'Noma\'lum'} (ID: ${d.user_id})</div>
+              <div class="user-meta-row">${d.timestamp ? new Date(d.timestamp).toLocaleString('uz-UZ') : d.date}</div>
             </div>
-            <div class="don-amount">${d.amount} ⭐</div>
-          </div>`;
-        }).join('');
+            <div style="font-size:1rem;font-weight:800;color:var(--gold-400);">${d.amount} ⭐</div>
+          </div>
+        `).join('');
       } else {
-        dl.innerHTML = '<div class="empty"><span class="empty-icon">💰</span><div class="empty-text">Hali ehsonlar yo\'q</div></div>';
+        dl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);">Hali ehsonlar yo\'q</div>';
       }
     }
 
-    // ---- Load Channels ----
     async function loadChannels() {
       const d = await api('/api/admin/channels');
       if (!d) return;
-      document.getElementById('chBadge').textContent = d.channels.length;
+      document.getElementById('chBadge').textContent = d.channels.length + ' ta';
       const c = document.getElementById('chList');
-      if (!d.channels.length) { c.innerHTML = '<div class="empty"><span class="empty-icon">📢</span><div class="empty-text">Kanallar yo\'q</div></div>'; return; }
-      c.innerHTML = d.channels.map(ch => `<div class="ch-card">
-        <span class="ch-name">📢 ${ch}</span>
-        <button class="btn btn-red" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
-      </div>`).join('');
+      if (!d.channels.length) {
+        c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Kanallar kiritilmagan</div>';
+        return;
+      }
+      c.innerHTML = d.channels.map(ch => `
+        <div class="user-card" style="justify-content:space-between;">
+          <span style="font-weight:800;font-size:0.95rem;">📢 ${ch}</span>
+          <button class="btn-action btn-danger" style="padding:6px 12px;" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteChannel(chName) {
+      if (!confirm(`${chName} kanalini o'chirasizmi?`)) return;
+      const r = await api('/api/admin/channels', 'DELETE', { channel: chName });
+      if (r?.success) { toast('🗑 Kanal o\'chirildi'); loadChannels(); }
     }
 
     async function doAddChannel() {
@@ -744,13 +1203,6 @@
       if (r?.success) { toast(`✅ ${ch} qo'shildi`); inp.value = ''; loadChannels(); }
     }
 
-    async function doRemoveCh(ch) {
-      if (!confirm(`${ch} o'chirilsinmi?`)) return;
-      const r = await api('/api/admin/channels', 'DELETE', { channel: ch });
-      if (r?.success) { toast(`✅ ${ch} olib tashlandi`); loadChannels(); }
-    }
-
-    // ---- Add Admin ----
     async function doAddAdmin() {
       const inp = document.getElementById('adminInput');
       const tid = inp.value.trim();
@@ -759,31 +1211,30 @@
       if (r?.success) { toast('👑 Admin qo\'shildi'); inp.value = ''; loadAdmins(); loadStats(); }
     }
 
-    // ---- Broadcast ----
     async function doBroadcast() {
       const ta = document.getElementById('broadcastMsg');
       const msg = ta.value.trim();
-      if (!msg) { toast('❌ Xabar yozing', 'err'); return; }
-      if (!confirm(`Barcha foydalanuvchilarga yuborilsinmi?\n\n"${msg.substring(0,80)}..."`)) return;
+      if (!msg) { toast('❌ Xabar matnini yozing', 'err'); return; }
+      if (!confirm('Barcha foydalanuvchilarga xabar yuborilsinmi?')) return;
       const btn = document.getElementById('broadcastBtn');
-      btn.disabled = true; btn.textContent = '📡 Yuborilmoqda...';
+      btn.disabled = true;
+      btn.textContent = '📡 Yuborilmoqda...';
       const r = await api('/api/admin/broadcast', 'POST', { message: msg });
       if (r?.success) { toast(`✅ Yuborildi: ${r.sent}, Xato: ${r.failed}`); ta.value = ''; }
-      btn.disabled = false; btn.textContent = '📡 Barchaga yuborish';
+      btn.disabled = false;
+      btn.textContent = '📡 Barchaga Xabar Yuborish';
     }
 
-    // ---- Tab Switch ----
     function switchSec(name) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.sec === name));
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active', t.dataset.sec === name));
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(`sec${name.charAt(0).toUpperCase()+name.slice(1)}`).classList.add('active');
+      document.getElementById(`sec${name.charAt(0).toUpperCase() + name.slice(1)}`).classList.add('active');
       if (name === 'users') loadUsers();
       if (name === 'admins') loadAdmins();
       if (name === 'donations') loadDonations();
       if (name === 'channels') loadChannels();
     }
 
-    // ---- Card Settings ----
     async function loadCardSettings() {
       const d = await api('/api/admin/donation-card');
       if (!d) return;
@@ -791,11 +1242,8 @@
       document.getElementById('cardHolder').value = d.card_holder || '';
       document.getElementById('cardBankName').value = d.bank_name || '';
       document.getElementById('cardType').value = d.card_type || 'uzcard';
-      if (d.enabled) {
-        document.getElementById('cardToggle').classList.add('on');
-      } else {
-        document.getElementById('cardToggle').classList.remove('on');
-      }
+      if (d.enabled) document.getElementById('cardToggle').classList.add('on');
+      else document.getElementById('cardToggle').classList.remove('on');
       updateCardPreview();
     }
 
@@ -806,55 +1254,36 @@
       const bank_name = document.getElementById('cardBankName').value.trim();
       const card_type = document.getElementById('cardType').value;
 
-      const r = await api('/api/admin/donation-card', 'PUT', {
-        enabled, card_number, card_holder, bank_name, card_type
-      });
-      if (r?.success) {
-        toast('✅ Karta sozlamalari saqlandi');
-      }
+      const r = await api('/api/admin/donation-card', 'PUT', { enabled, card_number, card_holder, bank_name, card_type });
+      if (r?.success) toast('✅ Karta sozlamalari saqlandi');
     }
-
-    let allChats = {};
-    function renderChatList() {
-      const chatListEl = document.getElementById('ptChatList');
-      if (!chatListEl) return;
-      
-      const chatIds = Object.keys(allChats);
-      if (chatIds.length === 0) {
-        chatListEl.innerHTML = '<div style="font-size:0.8rem; color:#aaa;">Ular yo\'q. Botni kanal/guruhga qo\'shing.</div>';
-        return;
-      }
-      
-      chatListEl.innerHTML = chatIds.map(id => {
-        const title = allChats[id].title || id;
-        return `<label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; margin-bottom:4px; cursor:pointer;"><input type="checkbox" class="chat-checkbox" value="${id}" checked> ${title}</label>`;
-      }).join('');
-    }
-
-    document.getElementById('ptBroadcast')?.addEventListener('change', (e) => {
-      document.getElementById('ptBroadcastOptions').style.display = e.target.checked ? 'block' : 'none';
-    });
-
-    document.querySelectorAll('input[name="ptTargetType"]').forEach(r => {
-      r.addEventListener('change', (e) => {
-        document.getElementById('ptChatList').style.display = e.target.value === 'selected' ? 'block' : 'none';
-      });
-    });
 
     function updateCardPreview() {
       const num = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
-      const holder = document.getElementById('cardHolder').value || '—';
+      const holder = document.getElementById('cardHolder').value || 'KARTA EGASI';
       document.getElementById('previewNumber').textContent = num;
       document.getElementById('previewHolder').textContent = holder.toUpperCase();
     }
 
-    // ---- Prayer Times ----
-    let ptEnabled = false;
+    function renderChatList() {
+      const chatListEl = document.getElementById('ptChatList');
+      if (!chatListEl) return;
+      const chatIds = Object.keys(allChats);
+      if (chatIds.length === 0) {
+        chatListEl.innerHTML = '<div style="font-size:0.8rem;color:var(--text-3);">Guruhlar topilmadi. Botni guruhga admin qiling.</div>';
+        return;
+      }
+      chatListEl.innerHTML = chatIds.map(id => {
+        const title = allChats[id].title || id;
+        return `<label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;margin-bottom:6px;cursor:pointer;"><input type="checkbox" class="chat-checkbox" value="${id}" checked> ${title}</label>`;
+      }).join('');
+    }
+
     async function loadPrayer() {
       const d = await api('/api/admin/prayer-times');
       if (!d) return;
       ptEnabled = !!d.enabled;
-      document.getElementById('prayerToggle').className = 'toggle ' + (ptEnabled ? 'on' : '');
+      document.getElementById('prayerToggle').className = 'switch-btn ' + (ptEnabled ? 'on' : '');
       document.getElementById('ptLocation').value = d.location || '';
       document.getElementById('ptMosque').value = d.mosque || '';
       document.getElementById('ptNotify').value = d.notify_before || 10;
@@ -874,56 +1303,14 @@
       }
     }
 
-    document.getElementById('prayerToggle').addEventListener('click', () => {
-      ptEnabled = !ptEnabled;
-      document.getElementById('prayerToggle').className = 'toggle ' + (ptEnabled ? 'on' : '');
-    });
-
-    document.getElementById('savePrayerBtn').addEventListener('click', async () => {
-      const enabled = ptEnabled;
-      const location = document.getElementById('ptLocation').value.trim();
-      const mosque = document.getElementById('ptMosque').value.trim();
-      const notify_before = Number(document.getElementById('ptNotify').value) || 10;
-      const footer_text = document.getElementById('ptBroadcastText').value.trim();
-      const times = {
-        tong: document.getElementById('ptTong').value,
-        bomdod: document.getElementById('ptBomdod').value,
-        peshin: document.getElementById('ptPeshin').value,
-        asr: document.getElementById('ptAsr').value,
-        shom: document.getElementById('ptShom').value,
-        xufton: document.getElementById('ptXufton').value
-      };
-      
-      const broadcast = document.getElementById('ptBroadcast')?.checked;
-      const broadcast_text = document.getElementById('ptBroadcastText')?.value.trim();
-      let broadcast_targets = 'all';
-      
-      if (document.querySelector('input[name="ptTargetType"]:checked')?.value === 'selected') {
-        const checkboxes = document.querySelectorAll('.chat-checkbox:checked');
-        broadcast_targets = Array.from(checkboxes).map(cb => cb.value);
-        if (broadcast_targets.length === 0 && broadcast) {
-          toast('Kamida 1 ta guruh tanlang yoki "Barchaga" ni tanlang');
-          return;
-        }
-      }
-
-      const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets });
-      if (r && r.success) {
-        toast(r.broadcastCount > 0 ? `✅ Saqlandi va ${r.broadcastCount} ta guruhga yuborildi` : '✅ Namoz vaqtlari saqlandi');
-        if (document.getElementById('ptBroadcast')) {
-          document.getElementById('ptBroadcast').checked = false;
-          document.getElementById('ptBroadcastOptions').style.display = 'none';
-        }
-        // Matnni o'chirmaymiz, chunki endi bu tavsif sifatida qoladi
-      }
-    });
-
-    // ---- Init ----
     async function init() {
       ADMIN_ID = initTG();
-
       const check = await api('/api/admin/stats');
-      if (!check) { document.getElementById('loadingState').style.display='none'; document.getElementById('accessDenied').style.display='block'; return; }
+      if (!check) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('accessDenied').style.display = 'block';
+        return;
+      }
 
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
@@ -931,7 +1318,7 @@
       await Promise.all([loadStats(), loadUsers(), loadAdmins(), loadDonations(), loadChannels(), loadPrayer()]);
 
       // Tabs
-      document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchSec(t.dataset.sec)));
+      document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', () => switchSec(t.dataset.sec)));
 
       // Buttons
       document.getElementById('addChBtn').addEventListener('click', doAddChannel);
@@ -940,34 +1327,83 @@
       document.getElementById('adminInput').addEventListener('keypress', e => { if (e.key === 'Enter') doAddAdmin(); });
       document.getElementById('broadcastBtn').addEventListener('click', doBroadcast);
 
-      // User search
+      // Search
       document.getElementById('userSearch').addEventListener('input', e => {
         const q = e.target.value.toLowerCase();
         if (!q) { renderUsers(allUsers); return; }
         renderUsers(allUsers.filter(u => {
-          const nm = `${u.first_name||''} ${u.last_name||''}`.toLowerCase();
-          return nm.includes(q) || String(u.telegram_id).includes(q) || (u.username||'').toLowerCase().includes(q);
+          const nm = `${u.first_name || ''} ${u.last_name || ''}`.toLowerCase();
+          return nm.includes(q) || String(u.telegram_id).includes(q) || (u.username || '').toLowerCase().includes(q);
         }));
       });
 
       // Card settings
       loadCardSettings();
-      document.getElementById('cardToggle').addEventListener('click', function() {
-        this.classList.toggle('on');
-      });
+      document.getElementById('cardToggle').addEventListener('click', function() { this.classList.toggle('on'); });
       document.getElementById('cardNumber').addEventListener('input', updateCardPreview);
       document.getElementById('cardHolder').addEventListener('input', updateCardPreview);
       document.getElementById('saveCardBtn').addEventListener('click', saveCardSettings);
 
-      // Format card number input
       document.getElementById('cardNumber').addEventListener('input', function(e) {
         let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-        let formatted = val.replace(/(\d{4})/g, '$1 ').trim();
-        e.target.value = formatted;
+        e.target.value = val.replace(/(\d{4})/g, '$1 ').trim();
         updateCardPreview();
       });
 
-      // Modal close
+      // Prayer broadcast toggle
+      document.getElementById('ptBroadcast')?.addEventListener('change', (e) => {
+        document.getElementById('ptBroadcastOptions').style.display = e.target.checked ? 'block' : 'none';
+      });
+
+      document.querySelectorAll('input[name="ptTargetType"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+          document.getElementById('ptChatList').style.display = e.target.value === 'selected' ? 'block' : 'none';
+        });
+      });
+
+      document.getElementById('prayerToggle').addEventListener('click', () => {
+        ptEnabled = !ptEnabled;
+        document.getElementById('prayerToggle').className = 'switch-btn ' + (ptEnabled ? 'on' : '');
+      });
+
+      document.getElementById('savePrayerBtn').addEventListener('click', async () => {
+        const enabled = ptEnabled;
+        const location = document.getElementById('ptLocation').value.trim();
+        const mosque = document.getElementById('ptMosque').value.trim();
+        const notify_before = Number(document.getElementById('ptNotify').value) || 10;
+        const footer_text = document.getElementById('ptBroadcastText').value.trim();
+        const times = {
+          tong: document.getElementById('ptTong').value,
+          bomdod: document.getElementById('ptBomdod').value,
+          peshin: document.getElementById('ptPeshin').value,
+          asr: document.getElementById('ptAsr').value,
+          shom: document.getElementById('ptShom').value,
+          xufton: document.getElementById('ptXufton').value
+        };
+
+        const broadcast = document.getElementById('ptBroadcast')?.checked;
+        const broadcast_text = document.getElementById('ptBroadcastText')?.value.trim();
+        let broadcast_targets = 'all';
+
+        if (document.querySelector('input[name="ptTargetType"]:checked')?.value === 'selected') {
+          const checkboxes = document.querySelectorAll('.chat-checkbox:checked');
+          broadcast_targets = Array.from(checkboxes).map(cb => cb.value);
+          if (broadcast_targets.length === 0 && broadcast) {
+            toast('Kamida 1 ta guruh tanlang yoki "Barchaga" ni tanlang');
+            return;
+          }
+        }
+
+        const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets });
+        if (r && r.success) {
+          toast(r.broadcastCount > 0 ? `✅ Saqlandi va ${r.broadcastCount} ta guruhga yuborildi` : '✅ Namoz vaqtlari saqlandi');
+          if (document.getElementById('ptBroadcast')) {
+            document.getElementById('ptBroadcast').checked = false;
+            document.getElementById('ptBroadcastOptions').style.display = 'none';
+          }
+        }
+      });
+
       document.getElementById('userModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
     }
 

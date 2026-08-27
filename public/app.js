@@ -568,11 +568,12 @@ async function updateLeaderboard() {
     }
   }
 
-  // List (4th place and below)
+  // List (4th to 10th place only - Top 10 total)
   const listContainer = document.getElementById('leaderboardList');
   listContainer.innerHTML = '';
 
-  users.slice(3).forEach((user, index) => {
+  const top10List = users.slice(3, 10);
+  top10List.forEach((user, index) => {
     const rank = index + 4;
     const name = user.first_name || 'Noma\'lum';
     const isMe = user.telegram_id === STATE.telegramId;
@@ -598,11 +599,33 @@ async function updateLeaderboard() {
     listContainer.appendChild(item);
   });
 
-  // Update rank
+  // Update rank & check if current user is outside Top 10
   const rankData = await fetchRank();
   if (rankData) {
     document.getElementById('rankValue').textContent = `#${rankData.rank}`;
     document.getElementById('profileRank').textContent = `#${rankData.rank}`;
+
+    // If current user is outside Top 10, add a special user card at the bottom of the list
+    if (rankData.rank > 10 && STATE.user) {
+      const myCard = document.createElement('div');
+      myCard.className = 'lb-item is-me lb-my-rank-card';
+      myCard.style.marginTop = '12px';
+      myCard.style.borderStyle = 'dashed';
+      const myAvatarHtml = generateAvatarHTML(STATE.user.first_name, STATE.user.photo_url);
+      myCard.innerHTML = `
+        <span class="lb-rank">#${rankData.rank}</span>
+        <div class="lb-avatar">${myAvatarHtml}</div>
+        <div class="lb-info">
+          <div class="lb-name">${STATE.user.first_name || 'Siz'} ${t('youLabel')}</div>
+          <div class="lb-username">${STATE.user.username ? '@' + STATE.user.username : ''}</div>
+        </div>
+        <div class="lb-score-wrap">
+          <div class="lb-score">${formatNumber(STATE.totalAllTime || 0)}</div>
+          <div class="lb-score-label">${t('zikrUnit')}</div>
+        </div>
+      `;
+      listContainer.appendChild(myCard);
+    }
   }
 }
 
