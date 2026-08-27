@@ -1355,33 +1355,33 @@
       let html = '';
       
       // 1. Profilga kirish
-      html += `<button class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', '${tid}')">👤 Telegram Profilini Ochish</button>`;
+      html += `<button type="button" class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', '${tid}')">👤 Telegram Profilini Ochish</button>`;
 
       // 2. Shaxsiy xabar yuborish
       const safeNm = nm.replace(/['"\\]/g, '');
-      html += `<button class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage('${tid}', '${safeNm}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
+      html += `<button type="button" class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage('${tid}', '${safeNm}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
 
       // 3. Bloklash / Ochish
       if (u.blocked) {
-        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock('${tid}')">✅ Blokdan Ochish</button>`;
+        html += `<button type="button" class="modal-btn-full modal-btn-green" onclick="doUnblock('${tid}')">✅ Blokdan Ochish</button>`;
       } else {
-        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock('${tid}')">🚫 Foydalanuvchini Bloklash</button>`;
+        html += `<button type="button" class="modal-btn-full modal-btn-red" onclick="doBlock('${tid}')">🚫 Foydalanuvchini Bloklash</button>`;
       }
 
       // 4. To'liq Restart qilish (0 ga qaytarish)
-      html += `<button class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset('${tid}')">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
+      html += `<button type="button" class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset('${tid}')">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
 
-      // 5. Admin tayinlash
-      if (IS_SUPER) {
-        const isAdm = allAdmins.some(a => String(a.telegram_id) === String(tid));
-        if (isAdm) {
-          if (String(tid) !== String(ADMIN_ID)) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin('${tid}')">👑 Adminlikdan Olish</button>`;
-        } else {
-          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin('${tid}')">👑 Admin Qilish</button>`;
+      // 5. Admin tayinlash / Olish
+      const isAdm = allAdmins.some(a => String(a.telegram_id) === String(tid));
+      if (isAdm) {
+        if (String(tid) !== String(ADMIN_ID) && Number(tid) !== 8809344628) {
+          html += `<button type="button" class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin('${tid}')">👑 Adminlikdan Olish</button>`;
         }
+      } else {
+        html += `<button type="button" class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin('${tid}')">👑 Admin Qilish</button>`;
       }
 
-      html += `<button class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
+      html += `<button type="button" class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
       acts.innerHTML = html;
 
       const modalEl = document.getElementById('userModal');
@@ -1408,59 +1408,68 @@
     async function doBlock(tid) {
       const ok = await appConfirm('Ushbu foydalanuvchini bloklaysizmi?', 'Foydalanuvchini bloklash', '🚫');
       if (!ok) return;
-      const r = await api('/api/admin/block', 'POST', { telegram_id: tid });
+      const r = await api('/api/admin/block', 'POST', { telegram_id: Number(tid) });
       if (r?.success) { toast('🚫 Bloklandi'); closeModal(); loadUsers(); loadStats(); }
+      else { toast('❌ Xatolik yuz berdi', 'err'); }
     }
 
     async function doUnblock(tid) {
       const ok = await appConfirm('Ushbu foydalanuvchini blokdan ochasizmi?', 'Blokdan ochish', '✅');
       if (!ok) return;
-      const r = await api('/api/admin/unblock', 'POST', { telegram_id: tid });
+      const r = await api('/api/admin/unblock', 'POST', { telegram_id: Number(tid) });
       if (r?.success) { toast('✅ Blokdan ochildi'); closeModal(); loadUsers(); loadStats(); }
+      else { toast('❌ Xatolik yuz berdi', 'err'); }
     }
 
     async function doReset(tid) {
       const ok = await appConfirm('Foydalanuvchi hisobini butunlay 0 ga qaytarasizmi? (Jami zikrlari va reytingdagi o\'rni ham o\'chadi)', 'To\'liq Qayta Boshlash', '🔄');
       if (!ok) return;
-      const r = await api('/api/admin/reset-user', 'POST', { telegram_id: tid });
+      const r = await api('/api/admin/reset-user', 'POST', { telegram_id: Number(tid) });
       if (r?.success) { toast('🔄 Hisob to\'liq qayta boshlandi'); closeModal(); loadUsers(); loadStats(); }
+      else { toast('❌ Xatolik yuz berdi', 'err'); }
     }
 
     async function doMakeAdmin(tid) {
       const ok = await appConfirm('Ushbu foydalanuvchini bot admini qilasizmi?', 'Admin tayinlash', '👑');
       if (!ok) return;
-      const r = await api('/api/admin/admins', 'POST', { telegram_id: tid });
+      const r = await api('/api/admin/admins', 'POST', { telegram_id: Number(tid) });
       if (r?.success) { toast('👑 Admin qo\'shildi'); closeModal(); loadAdmins(); loadStats(); }
+      else { toast('❌ Admin qo\'shishda xatolik', 'err'); }
     }
 
     async function doRemoveAdmin(tid) {
       const ok = await appConfirm('Ushbu foydalanuvchini adminlikdan olasizmi?', 'Adminlikdan olish', '👑');
       if (!ok) return;
-      const r = await api('/api/admin/admins', 'DELETE', { telegram_id: tid });
+      let r = await api(`/api/admin/admins?telegram_id=${Number(tid)}`, 'DELETE', { telegram_id: Number(tid) });
+      if (!r || !r.success) {
+        r = await api('/api/admin/admins/delete', 'POST', { telegram_id: Number(tid) });
+      }
       if (r?.success) { toast('⬇️ Adminlikdan olindi'); closeModal(); loadUsers(); loadAdmins(); }
+      else { toast('❌ Adminlikdan olishda xatolik', 'err'); }
     }
 
     async function loadAdmins() {
       const d = await api('/api/admin/admins');
       if (!d) return;
-      allAdmins = d.admins;
-      IS_SUPER = d.super_admin === ADMIN_ID;
-      document.getElementById('adminBadge').textContent = d.admins.length + ' ta';
+      allAdmins = d.admins || [];
+      IS_SUPER = String(d.super_admin) === String(ADMIN_ID) || Number(ADMIN_ID) === 8809344628;
+      document.getElementById('adminBadge').textContent = (d.admins || []).length + ' ta';
 
       const c = document.getElementById('adminList');
-      if (!d.admins.length) { c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Adminlar yo\'q</div>'; return; }
+      if (!allAdmins.length) { c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Adminlar yo\'q</div>'; return; }
 
-      c.innerHTML = d.admins.map(a => {
+      c.innerHTML = allAdmins.map(a => {
         const nm = `${a.first_name || ''} ${a.last_name || ''}`.trim() || 'Noma\'lum';
+        const isSuperAdm = a.is_super || Number(a.telegram_id) === 8809344628;
         return `
-          <div class="user-card">
+          <div class="user-card" style="justify-content:space-between;">
             <div class="user-avatar-wrap">${genAvatarHTML(a.first_name, a.photo_url)}</div>
             <div class="user-info-body">
-              <div class="user-title-row">${nm}${a.is_super ? ' <span style="color:var(--gold-400);">👑 Super</span>' : ''}</div>
+              <div class="user-title-row">${nm}${isSuperAdm ? ' <span style="color:var(--gold-400);">👑 Super</span>' : ''}</div>
               <div class="user-meta-row"><span>${a.username ? '@' + a.username : ''}</span></div>
               <div class="user-uid-lbl">ID: ${a.telegram_id}</div>
             </div>
-            ${!a.is_super && IS_SUPER ? `<button class="btn-action btn-danger" style="padding:6px 12px;" onclick="doRemoveAdmin(${a.telegram_id})">🗑 O'chirish</button>` : ''}
+            ${!isSuperAdm ? `<button type="button" class="btn-action btn-danger" style="padding:6px 12px;margin-left:auto;" onclick="doRemoveAdmin('${a.telegram_id}')">🗑 O'chirish</button>` : ''}
           </div>
         `;
       }).join('');
@@ -1536,8 +1545,12 @@
     async function deleteChannel(chName) {
       const ok = await appConfirm(`${chName} kanalini o'chirasizmi?`, 'Kanalni o\'chirish', '🗑');
       if (!ok) return;
-      const r = await api('/api/admin/channels', 'DELETE', { channel: chName });
+      let r = await api(`/api/admin/channels?channel=${encodeURIComponent(chName)}`, 'DELETE', { channel: chName });
+      if (!r || !r.success) {
+        r = await api('/api/admin/channels/delete', 'POST', { channel: chName });
+      }
       if (r?.success) { toast('🗑 Kanal o\'chirildi'); loadChannels(); }
+      else { toast('❌ Kanalni o\'chirishda xatolik', 'err'); }
     }
 
     async function doAddChannel() {
@@ -1547,6 +1560,7 @@
       if (!ch.startsWith('@')) ch = '@' + ch;
       const r = await api('/api/admin/channels', 'POST', { channel: ch });
       if (r?.success) { toast(`✅ ${ch} qo'shildi`); inp.value = ''; loadChannels(); }
+      else { toast('❌ Kanal qo\'shishda xatolik', 'err'); }
     }
 
     async function doAddAdmin() {
@@ -1555,6 +1569,7 @@
       if (!tid || isNaN(tid)) { toast('❌ To\'g\'ri Telegram ID kiriting', 'err'); return; }
       const r = await api('/api/admin/admins', 'POST', { telegram_id: Number(tid) });
       if (r?.success) { toast('👑 Admin qo\'shildi'); inp.value = ''; loadAdmins(); loadStats(); }
+      else { toast('❌ Admin qo\'shishda xatolik', 'err'); }
     }
 
     async function doBroadcast() {
@@ -1592,6 +1607,7 @@
     window.doReset = doReset;
     window.doMakeAdmin = doMakeAdmin;
     window.doRemoveAdmin = doRemoveAdmin;
+    window.deleteChannel = deleteChannel;
 
     async function loadCardSettings() {
       const d = await api('/api/admin/donation-card');

