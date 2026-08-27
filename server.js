@@ -1372,19 +1372,6 @@ if (BOT_TOKEN) {
 
             safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
           }
-
-          // Also broadcast to registered groups
-          if (db.chats) {
-            for (const chatId of Object.keys(db.chats)) {
-              let grpMsg = `🕌 <b>${PRAYER_NAMES.uz[key] || key} namozi eslatmasi</b>\n\n`;
-              grpMsg += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
-              if (location) grpMsg += `📍 Hudud: <b>${location}</b>\n`;
-              if (mosque) grpMsg += `🕌 Masjid: <b>${mosque}</b>\n`;
-              grpMsg += `\n⏳ <b>${diff} daqiqadan so'ng</b> namoz vaqti kiradi!\n`;
-              if (footer) grpMsg += footer;
-              safeSend(chatId, grpMsg, { parse_mode: 'HTML' }).catch(() => {});
-            }
-          }
         }
 
         // 2. Notification AT EXACT prayer time (diff === 0)
@@ -1411,18 +1398,6 @@ if (BOT_TOKEN) {
             if (footer) message += footer;
 
             safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
-          }
-
-          if (db.chats) {
-            for (const chatId of Object.keys(db.chats)) {
-              let grpMsg = `🕌 <b>${PRAYER_NAMES.uz[key] || key} namozi vaqti kirdi!</b>\n\n`;
-              grpMsg += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
-              if (location) grpMsg += `📍 Hudud: <b>${location}</b>\n`;
-              if (mosque) grpMsg += `🕌 Masjid: <b>${mosque}</b>\n`;
-              grpMsg += `\n🤲 <i>Namozni o'z vaqtida ado etaylik.</i>`;
-              if (footer) grpMsg += footer;
-              safeSend(chatId, grpMsg, { parse_mode: 'HTML' }).catch(() => {});
-            }
           }
         }
       }
