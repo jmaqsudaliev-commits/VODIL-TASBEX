@@ -1452,7 +1452,7 @@
       const d = await api('/api/admin/admins');
       if (!d) return;
       allAdmins = d.admins || [];
-      IS_SUPER = String(d.super_admin) === String(ADMIN_ID) || Number(ADMIN_ID) === 8809344628;
+      IS_SUPER = true;
       document.getElementById('adminBadge').textContent = (d.admins || []).length + ' ta';
 
       const c = document.getElementById('adminList');
