@@ -855,7 +855,7 @@ if (BOT_TOKEN) {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: getWebAppUrl() + '/admin.html' } }],
+            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: `${getWebAppUrl()}/admin.html?admin_id=${userId}` } }],
           ]
         }
       }

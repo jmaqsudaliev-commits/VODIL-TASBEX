@@ -688,11 +688,15 @@
       <p style="color:var(--text-3);font-size:0.85rem;font-weight:600;">Admin ma'lumotlari yuklanmoqda...</p>
     </div>
 
-    <!-- Access Denied -->
+    <!-- Access Denied / Login Screen -->
     <div class="denied-screen" id="accessDenied" style="display:none">
-      <span class="denied-shield">🚫</span>
-      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;">Ruxsat Berilmagan</h2>
-      <p style="color:var(--text-3);font-size:0.85rem;">Ushbu sahifa faqat tayinlangan adminlar uchun ochiq.</p>
+      <span class="denied-shield">🛡️</span>
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;">Admin Boshqaruv Markazi</h2>
+      <p style="color:var(--text-3);font-size:0.85rem;margin-bottom:18px;">Ushbu sahifaga kirish uchun Telegram ID raqamingizni tasdiqlang:</p>
+      <div style="max-width:320px;margin:0 auto;display:flex;flex-direction:column;gap:10px;">
+        <input type="number" id="manualAdminId" class="input-field" placeholder="Admin Telegram ID..." style="text-align:center;">
+        <button class="btn-action btn-emerald" style="justify-content:center;padding:12px;width:100%;" onclick="tryManualLogin()">Kirish</button>
+      </div>
     </div>
 
     <!-- Main Admin Dashboard Content -->
@@ -1001,8 +1005,32 @@
 
     function initTG() {
       const tg = window.Telegram?.WebApp;
-      if (tg) { tg.ready(); tg.expand(); const u = tg.initDataUnsafe?.user; if (u) return u.id; }
+      if (tg) {
+        tg.ready();
+        tg.expand();
+        const u = tg.initDataUnsafe?.user;
+        if (u && u.id) return Number(u.id);
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const idFromUrl = urlParams.get('admin_id') || urlParams.get('id');
+      if (idFromUrl) return Number(idFromUrl);
+      const saved = localStorage.getItem('tasbih_admin_id');
+      if (saved) return Number(saved);
       return 8809344628;
+    }
+
+    async function tryManualLogin() {
+      const inp = document.getElementById('manualAdminId');
+      const val = Number(inp?.value?.trim());
+      if (val) {
+        ADMIN_ID = val;
+        localStorage.setItem('tasbih_admin_id', String(val));
+        document.getElementById('accessDenied').style.display = 'none';
+        document.getElementById('loadingState').style.display = 'block';
+        init();
+      } else {
+        toast('❌ Telegram ID kiriting', 'err');
+      }
     }
 
     function toast(msg, type = 'ok') {
