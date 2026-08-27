@@ -362,6 +362,19 @@ function loadDB() {
   return _dbCache;
 }
 
+function getWebAppUrl() {
+  if (_dbCache?.settings?.web_app_url) {
+    return _dbCache.settings.web_app_url.replace(/\/$/, '');
+  }
+  if (process.env.RENDER_EXTERNAL_URL) {
+    return process.env.RENDER_EXTERNAL_URL.replace(/\/$/, '');
+  }
+  if (process.env.WEB_APP_URL && !process.env.WEB_APP_URL.includes('trycloudflare.com')) {
+    return process.env.WEB_APP_URL.replace(/\/$/, '');
+  }
+  return (process.env.WEB_APP_URL || '').replace(/\/$/, '');
+}
+
 function saveDB(data) {
   _dbCache = data;
   _dbDirty = true;
@@ -775,7 +788,7 @@ if (BOT_TOKEN) {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: bt(lang, 'openTasbih'), web_app: { url: WEB_APP_URL } }],
+            [{ text: bt(lang, 'openTasbih'), web_app: { url: getWebAppUrl() } }],
             [{ text: bt(lang, 'donate'), callback_data: 'donate_menu' }],
             [
               { text: bt(lang, 'stats'), callback_data: 'my_stats' },
@@ -842,11 +855,46 @@ if (BOT_TOKEN) {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: WEB_APP_URL + '/admin.html' } }],
+            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: getWebAppUrl() + '/admin.html' } }],
           ]
         }
       }
     );
+  });
+
+  // ==========================================
+  // /seturl COMMAND (Admin WebApp URL sozlash)
+  // ==========================================
+  bot.onText(/\/seturl(?:\s+(.+))?/, async (msg, match) => {
+    const userId = msg.from.id;
+    const chatId = msg.chat.id;
+    if (!isAdmin(userId)) {
+      return safeSend(chatId, '❌ Bu buyruq faqat adminlar uchun!');
+    }
+    const newUrl = match[1]?.trim();
+    if (!newUrl || !newUrl.startsWith('http')) {
+      return safeSend(chatId, `ℹ️ <b>Hozirgi WebApp havolasi:</b>\n<code>${getWebAppUrl() || 'O\'rnatilmagan'}</code>\n\nO'zgartirish uchun havolani birga yuboring:\n<code>/seturl https://sizning-domen.onrender.com</code>`, { parse_mode: 'HTML' });
+    }
+
+    const cleanUrl = newUrl.replace(/\/$/, '');
+    const db = loadDB();
+    if (!db.settings) db.settings = {};
+    db.settings.web_app_url = cleanUrl;
+    saveDB(db);
+
+    try {
+      await bot.setChatMenuButton({
+        menu_button: {
+          type: 'web_app',
+          text: '📿 Tasbih',
+          web_app: { url: cleanUrl }
+        }
+      });
+    } catch (e) {
+      console.error('Menu button error:', e.message);
+    }
+
+    safeSend(chatId, `✅ <b>WebApp havolasi muvaffaqiyatli saqlandi va Telegram menyusi yangilandi!</b>\n\n🌐 Yangi havola:\n<code>${cleanUrl}</code>`, { parse_mode: 'HTML' });
   });
 
   // ==========================================
@@ -1064,7 +1112,7 @@ if (BOT_TOKEN) {
             parse_mode: 'HTML',
             reply_markup: {
               inline_keyboard: [
-                [{ text: bt(newLang, 'openTasbih'), web_app: { url: WEB_APP_URL } }],
+                [{ text: bt(newLang, 'openTasbih'), web_app: { url: getWebAppUrl() } }],
                 [{ text: bt(newLang, 'donate'), callback_data: 'donate_menu' }],
                 [
                   { text: bt(newLang, 'stats'), callback_data: 'my_stats' },
@@ -1090,7 +1138,7 @@ if (BOT_TOKEN) {
           {
             parse_mode: 'HTML',
             reply_markup: {
-              inline_keyboard: [[{ text: bt(lang, 'openTasbih'), web_app: { url: WEB_APP_URL } }]]
+              inline_keyboard: [[{ text: bt(lang, 'openTasbih'), web_app: { url: getWebAppUrl() } }]]
             }
           }
         );
@@ -1246,7 +1294,7 @@ if (BOT_TOKEN) {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: bt(lang, 'donateBack'), web_app: { url: WEB_APP_URL } }],
+              [{ text: bt(lang, 'donateBack'), web_app: { url: getWebAppUrl() } }],
             ]
           }
         }
@@ -1975,10 +2023,19 @@ initDB().then(() => {
     console.log(`🔒 Helmet: enabled`);
     console.log(`⏱ Rate limiting: enabled`);
 
-    // O'z-o'zini uyg'otish tizimi
-    const selfUrl = process.env.RENDER_EXTERNAL_URL || process.env.WEB_APP_URL;
+    // O'z-o'zini uyg'otish va Telegram Menu Buttonni sinxronlash
+    const selfUrl = getWebAppUrl();
     if (selfUrl) {
-      console.log(`⏰ Keep-alive tizimi yoqildi: ${selfUrl}`);
+      console.log(`⏰ WebApp faol havola: ${selfUrl}`);
+      if (bot) {
+        bot.setChatMenuButton({
+          menu_button: {
+            type: 'web_app',
+            text: '📿 Tasbih',
+            web_app: { url: selfUrl }
+          }
+        }).catch(() => {});
+      }
       setInterval(async () => {
         try {
           await fetch(`${selfUrl}/api/ping`);
