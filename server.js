@@ -1508,27 +1508,41 @@ function adminMiddleware(req, res, next) {
 // ============================================
 app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
-// Avatar endpoint — serves direct Telegram avatar or gradient SVG avatar
+// Avatar endpoint — streams direct photo bytes with CORS or serves gradient SVG vector
 app.get('/api/avatar/:telegram_id', async (req, res) => {
   const tid = Number(req.params.telegram_id);
   const user = getUser(tid);
-  if (user && user.photo_url) {
-    return res.redirect(user.photo_url);
+  let photoUrl = user?.photo_url;
+  
+  if (!photoUrl && bot) {
+    photoUrl = await fetchAndCacheTelegramPhoto(tid);
   }
-  if (bot) {
-    const photo = await fetchAndCacheTelegramPhoto(tid);
-    if (photo) {
-      return res.redirect(photo);
+  
+  if (photoUrl) {
+    try {
+      const response = await fetch(photoUrl);
+      if (response.ok) {
+        const buffer = await response.arrayBuffer();
+        res.setHeader('Content-Type', response.headers.get('content-type') || 'image/jpeg');
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        return res.send(Buffer.from(buffer));
+      }
+    } catch (e) {
+      // Fallback to SVG below
     }
   }
-  // Return sleek SVG vector avatar
-  const initial = user?.first_name ? Array.from(user.first_name.trim())[0].toUpperCase() : '?';
-  const hue = ((initial.charCodeAt(0) || 65) * 37 + (tid || 0) * 17) % 360;
+
+  // Generate ultra-clean SVG initial avatar (handles fancy fonts, numbers, emojis)
+  const nameStr = user?.first_name ? String(user.first_name).trim() : '';
+  const match = nameStr.match(/[\p{L}\p{N}]/u);
+  const initial = match ? match[0].toUpperCase() : (Array.from(nameStr)[0] || '📿');
+  const hue = (((initial.codePointAt(0) || 65) * 37 + (tid || 0) * 19) % 360);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
     <defs>
       <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="hsl(${hue}, 70%, 40%)"/>
-        <stop offset="100%" stop-color="hsl(${(hue + 40) % 360}, 85%, 25%)"/>
+        <stop offset="0%" stop-color="hsl(${hue}, 75%, 45%)"/>
+        <stop offset="100%" stop-color="hsl(${(hue + 45) % 360}, 85%, 25%)"/>
       </linearGradient>
     </defs>
     <circle cx="50" cy="50" r="50" fill="url(#g)"/>
@@ -1536,6 +1550,7 @@ app.get('/api/avatar/:telegram_id', async (req, res) => {
   </svg>`;
   res.setHeader('Content-Type', 'image/svg+xml');
   res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.send(svg);
 });
 

@@ -796,6 +796,15 @@ function formatDate(dateStr) {
   }
 }
 
+function extractCleanInitial(name) {
+  if (!name) return '📿';
+  const str = String(name).trim();
+  if (!str) return '📿';
+  const match = str.match(/[\p{L}\p{N}]/u);
+  if (match) return match[0].toUpperCase();
+  return Array.from(str)[0] || '📿';
+}
+
 function generateAvatarHTML(name, photo_url, telegramId) {
   const tg = window.Telegram?.WebApp;
   let p_url = photo_url;
@@ -806,19 +815,19 @@ function generateAvatarHTML(name, photo_url, telegramId) {
     p_url = `/api/avatar/${telegramId}`;
   }
 
-  const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
-  const tidNum = Number(telegramId) || (name ? name.charCodeAt(0) : 1);
-  const hue = ((initial.charCodeAt(0) || 65) * 37 + tidNum * 17) % 360;
-  const gradientBg = `linear-gradient(135deg, hsl(${hue}, 65%, 38%) 0%, hsl(${(hue + 45) % 360}, 75%, 22%) 100%)`;
+  const initial = extractCleanInitial(name);
+  const tidNum = Number(telegramId) || (initial.codePointAt(0) || 65);
+  const hue = ((initial.codePointAt(0) || 65) * 37 + tidNum * 19) % 360;
+  const gradientBg = `linear-gradient(135deg, hsl(${hue}, 70%, 40%) 0%, hsl(${(hue + 45) % 360}, 80%, 25%) 100%)`;
 
   if (p_url) {
     return `<div class="avatar-box" style="position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:${gradientBg};display:flex;align-items:center;justify-content:center;">
-      <span style="font-weight:800;color:#ffffff;font-size:1.15em;user-select:none;">${initial}</span>
-      <img src="${p_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;transition:opacity 0.2s ease-in;" loading="lazy" alt="${name || ''}" onerror="this.style.display='none'">
+      <span style="font-weight:900;color:#ffffff;font-size:1.15em;user-select:none;text-shadow:0 1px 3px rgba(0,0,0,0.4);">${initial}</span>
+      <img src="${p_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy" alt="" onerror="this.style.display='none'">
     </div>`;
   }
 
-  return `<div class="avatar-box" style="width:100%;height:100%;border-radius:50%;background:${gradientBg};color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15em;box-shadow:inset 0 0 10px rgba(0,0,0,0.3);user-select:none;">${initial}</div>`;
+  return `<div class="avatar-box" style="width:100%;height:100%;border-radius:50%;background:${gradientBg};color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.15em;box-shadow:inset 0 0 10px rgba(0,0,0,0.3);user-select:none;text-shadow:0 1px 3px rgba(0,0,0,0.4);">${initial}</div>`;
 }
 
 // ============================================
