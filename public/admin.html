@@ -598,6 +598,40 @@
       z-index: 1000000 !important;
     }
 
+    /* Dialog Overlay for Confirm / Prompt */
+    .dialog-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(0, 0, 0, 0.9) !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
+      z-index: 99999999 !important;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dialog-overlay.active { display: flex !important; }
+
+    .dialog-box {
+      width: 100%;
+      max-width: 400px;
+      background: #0d1a30 !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: var(--r-xl);
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      animation: modalSlide 0.2s var(--ease);
+      z-index: 100000000 !important;
+    }
+
     @keyframes modalSlide {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
@@ -996,11 +1030,11 @@
   </div>
 
   <!-- Custom In-App Confirm Dialog -->
-  <div class="modal-overlay" id="confirmModal" style="z-index: 1000001;">
-    <div class="modal-body" style="border-radius: var(--r-xl); margin: auto 16px; max-width: 400px; text-align: center;">
-      <div style="font-size: 2.5rem; margin-bottom: 8px;" id="confirmIcon">⚠️</div>
-      <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px;" id="confirmTitle">Tasdiqlash</h3>
-      <p style="color: var(--text-2); font-size: 0.88rem; margin-bottom: 20px; line-height: 1.4;" id="confirmMsg">Ushbu amalni bajarishni xohlaysizmi?</p>
+  <div class="dialog-overlay" id="confirmModal">
+    <div class="dialog-box">
+      <div style="font-size: 2.6rem; margin-bottom: 8px;" id="confirmIcon">⚠️</div>
+      <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px;" id="confirmTitle">Tasdiqlash</h3>
+      <p style="color: var(--text-2); font-size: 0.88rem; margin-bottom: 22px; line-height: 1.45;" id="confirmMsg">Ushbu amalni bajarishni xohlaysizmi?</p>
       <div style="display: flex; gap: 10px;">
         <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="confirmCancelBtn">Bekor qilish</button>
         <button class="modal-btn-full modal-btn-red" id="confirmOkBtn">Tasdiqlash</button>
@@ -1009,13 +1043,13 @@
   </div>
 
   <!-- Custom In-App Prompt Dialog (Direct Messaging) -->
-  <div class="modal-overlay" id="promptModal" style="z-index: 1000002;">
-    <div class="modal-body" style="border-radius: var(--r-xl); margin: auto 16px; max-width: 440px;">
+  <div class="dialog-overlay" id="promptModal">
+    <div class="dialog-box" style="text-align:left;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <span style="font-size:1.4rem;">💬</span>
-        <h3 style="font-size: 1.1rem; font-weight: 800;" id="promptTitle">Shaxsiy xabar yuborish</h3>
+        <h3 style="font-size: 1.15rem; font-weight: 800;" id="promptTitle">Shaxsiy xabar yuborish</h3>
       </div>
-      <textarea class="textarea-box" id="promptInput" rows="3" placeholder="Xabar matnini yozing..." style="margin-bottom: 16px; font-size: 0.9rem;"></textarea>
+      <textarea class="textarea-box" id="promptInput" rows="3" placeholder="Xabar matnini yozing..." style="margin-bottom: 16px; font-size: 0.92rem;"></textarea>
       <div style="display: flex; gap: 10px;">
         <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="promptCancelBtn">Bekor qilish</button>
         <button class="modal-btn-full modal-btn-blue" id="promptOkBtn">Yuborish</button>
@@ -1174,14 +1208,7 @@
 
     function appConfirm(message, title = 'Tasdiqlash', icon = '⚠️') {
       return new Promise((resolve) => {
-        const tg = window.Telegram?.WebApp;
-        if (tg && typeof tg.showConfirm === 'function') {
-          try {
-            tg.showConfirm(message, (ok) => resolve(!!ok));
-            return;
-          } catch (e) {}
-        }
-        
+        try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
         const modal = document.getElementById('confirmModal');
         const msgEl = document.getElementById('confirmMsg');
         const titleEl = document.getElementById('confirmTitle');
@@ -1189,8 +1216,8 @@
         const okBtn = document.getElementById('confirmOkBtn');
         const cancelBtn = document.getElementById('confirmCancelBtn');
 
-        if (!modal) {
-          resolve(confirm(message));
+        if (!modal || !okBtn || !cancelBtn) {
+          resolve(true);
           return;
         }
 
@@ -1209,21 +1236,22 @@
           resolve(val);
         };
 
-        okBtn.onclick = () => cleanUp(true);
-        cancelBtn.onclick = () => cleanUp(false);
+        okBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); cleanUp(true); };
+        cancelBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); cleanUp(false); };
       });
     }
 
     function appPrompt(title, placeholder = 'Xabaringizni yozing...') {
       return new Promise((resolve) => {
+        try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
         const modal = document.getElementById('promptModal');
         const titleEl = document.getElementById('promptTitle');
         const inputEl = document.getElementById('promptInput');
         const okBtn = document.getElementById('promptOkBtn');
         const cancelBtn = document.getElementById('promptCancelBtn');
 
-        if (!modal) {
-          resolve(prompt(title));
+        if (!modal || !okBtn || !cancelBtn) {
+          resolve(null);
           return;
         }
 
@@ -1235,7 +1263,7 @@
 
         modal.style.display = 'flex';
         modal.classList.add('active');
-        setTimeout(() => { if (inputEl) inputEl.focus(); }, 100);
+        setTimeout(() => { if (inputEl) inputEl.focus(); }, 150);
 
         const cleanUp = (val) => {
           modal.style.display = 'none';
@@ -1245,11 +1273,17 @@
           resolve(val);
         };
 
-        okBtn.onclick = () => {
+        okBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           const val = inputEl ? inputEl.value.trim() : '';
           cleanUp(val || null);
         };
-        cancelBtn.onclick = () => cleanUp(null);
+        cancelBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          cleanUp(null);
+        };
       });
     }
 
