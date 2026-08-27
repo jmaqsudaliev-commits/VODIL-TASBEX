@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>📿 Elektron Tasbih PRO MAX</title>
-  <meta name="description" content="Elektron Tasbih PRO - Zikr qiling, natijalaringizni kuzating">
-  <meta name="theme-color" content="#030712">
+  <meta name="description" content="Elektron Tasbih - Zikr qiling, natijalaringizni kuzating va namoz vaqtlaridan xabardor bo'ling">
+  <meta name="theme-color" content="#0a0f1d">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -15,26 +15,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=3.1.0">
+  <link rel="stylesheet" href="style.css?v=3.2.0">
 </head>
 <body>
   <div id="app">
-    <!-- Ambient Background Lighting & Particles -->
+    <!-- Ambient Atmospheric Glows -->
     <div class="bg-glow bg-glow-top"></div>
     <div class="bg-glow bg-glow-bottom"></div>
     <div class="bg-particles" id="bgParticles"></div>
 
-    <!-- Top App Bar -->
+    <!-- Modern App Header -->
     <header class="app-topbar">
       <div class="app-brand">
-        <span class="app-logo-badge">📿</span>
+        <div class="app-logo-badge">📿</div>
         <div class="app-brand-info">
           <span class="app-brand-title">VODIL TASBIH</span>
           <span class="app-brand-subtitle">Elektron Zikr & Namoz</span>
         </div>
       </div>
 
-      <!-- Language Switcher -->
+      <!-- Language Switcher Dropdown -->
       <div class="lang-switcher" id="langSwitcher">
         <button class="lang-switch-btn" id="langSwitchBtn" aria-label="Change language">
           <span class="lang-flag">🇺🇿</span>
@@ -58,9 +58,9 @@
       </div>
     </header>
 
-    <!-- ==================== 1. COUNTER PAGE ==================== -->
+    <!-- ==================== 1. COUNTER PAGE (TASBIH) ==================== -->
     <section class="page active" id="pageCounter">
-      <!-- Zikr Selection Slider -->
+      <!-- Zikr Category Selector -->
       <div class="zikr-selector-wrap">
         <div class="zikr-selector">
           <button class="zikr-type active" data-zikr="subhanalloh" id="zikrSubhanalloh">
@@ -82,9 +82,9 @@
         </div>
       </div>
 
-      <!-- Main Counter Hero Section -->
+      <!-- Main Counter Visual Display -->
       <div class="counter-section">
-        <!-- Circular Neon Progress Dial -->
+        <!-- Circular Neon Dial -->
         <div class="counter-ring" id="counterRing">
           <svg class="progress-ring" viewBox="0 0 280 280">
             <defs>
@@ -94,7 +94,7 @@
                 <stop offset="100%" stop-color="#fbbf24"/>
               </linearGradient>
               <filter id="ringGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#10b981" flood-opacity="0.6"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#10b981" flood-opacity="0.5"/>
               </filter>
             </defs>
             <circle class="progress-ring-bg" cx="140" cy="140" r="120" />
@@ -107,7 +107,7 @@
           </div>
         </div>
 
-        <!-- 3D Tactile Golden-Emerald Tap Button -->
+        <!-- 3D Tactile Tap Button -->
         <button class="tap-button" id="tapButton" data-i18n-aria="tapAriaLabel" aria-label="Hisoblash">
           <div class="tap-glow"></div>
           <div class="tap-ripple" id="tapRipple"></div>
@@ -118,7 +118,7 @@
           </div>
         </button>
 
-        <!-- Target Selector Chips -->
+        <!-- Target Selector Pills -->
         <div class="target-selector-wrap">
           <div class="target-selector">
             <button class="target-btn active" data-target="33" id="target33">33</button>
@@ -129,7 +129,7 @@
           </div>
         </div>
 
-        <!-- Action Control Pills -->
+        <!-- Quick Action Bar -->
         <div class="action-buttons">
           <button class="action-btn reset-btn" id="resetBtn">
             <span class="action-icon">🔄</span>
@@ -145,7 +145,7 @@
           </button>
         </div>
 
-        <!-- Live KPI Stats Grid -->
+        <!-- KPI Summary Cards -->
         <div class="mini-stats">
           <div class="mini-stat-card">
             <div class="mini-stat-icon-wrap fire-glow">
@@ -172,7 +172,7 @@
       </div>
     </section>
 
-    <!-- ==================== 2. LEADERBOARD (TOP 10) ==================== -->
+    <!-- ==================== 2. LEADERBOARD PAGE (TOP 10) ==================== -->
     <section class="page" id="pageLeaderboard">
       <div class="leaderboard-header">
         <div class="leaderboard-title-wrap">
@@ -186,7 +186,7 @@
         </div>
       </div>
 
-      <!-- Top 3 Olympic Metallic Podium -->
+      <!-- Olympic Metallic Podium -->
       <div class="podium" id="podium">
         <!-- 2nd Place -->
         <div class="podium-item second" id="podiumSecond">
@@ -226,11 +226,11 @@
         <span>TOP 4 — 10 RO'YXATI</span>
       </div>
       <div class="leaderboard-list" id="leaderboardList">
-        <!-- Dynamically populated up to Top 10 only -->
+        <!-- Dynamically filled with Top 4-10 -->
       </div>
     </section>
 
-    <!-- ==================== 3. EHSON (DONATE) ==================== -->
+    <!-- ==================== 3. EHSON (DONATE) PAGE ==================== -->
     <section class="page" id="pageDonate">
       <div class="donate-page-header">
         <div class="donate-header-lottie" id="donateHeartLottie">💝</div>
@@ -238,14 +238,14 @@
         <p class="donate-page-subtitle" data-i18n="donateSubtitle">Alloh yo'lida ezgu amallarga hissa qo'shing</p>
       </div>
 
-      <!-- Bank Card Transfer Section -->
+      <!-- Bank Card Section -->
       <div class="donate-card-section" id="donateCardSection">
         <div class="section-title-wrap">
           <span class="section-title-icon">💳</span>
           <h3 class="donate-section-title" data-i18n="donateCardTitle">Karta orqali ehson</h3>
         </div>
         
-        <!-- Luxury Holographic Bank Card -->
+        <!-- Holographic Bank Card Card -->
         <div class="bank-card" id="bankCard">
           <div class="bank-card-shine"></div>
           <div class="bank-card-top">
@@ -270,38 +270,38 @@
           </div>
         </div>
 
-        <!-- One-Tap Copy Button -->
+        <!-- Copy Card Button -->
         <button class="donate-copy-btn" id="donateCopyBtn">
           <span class="copy-icon">📋</span>
           <span data-i18n="donateCopyBtn">Raqamdan nusxa olish</span>
         </button>
       </div>
 
-      <!-- Fallback when no card is active -->
+      <!-- Fallback when card disabled -->
       <div class="donate-no-card" id="donateNoCard" style="display:none">
         <span class="donate-no-card-icon">💳</span>
         <p data-i18n="donateNoCard">Hozircha ehson kartasi kiritilmagan</p>
       </div>
 
-      <!-- Telegram Stars Donation Section -->
+      <!-- Telegram Stars Donation -->
       <div class="donate-stars-section">
         <div class="section-title-wrap">
           <div class="donate-star-lottie" id="donateStarLottie">⭐</div>
           <h3 class="donate-section-title" data-i18n="donateStarsTitle">Telegram Stars orqali</h3>
         </div>
         <div class="stars-grid" id="starsGrid">
-          <!-- Dynamically populated -->
+          <!-- Dynamically filled with Stars buttons -->
         </div>
       </div>
 
-      <!-- Islamic Dua Banner -->
+      <!-- Dua Banner -->
       <div class="donate-dua">
         <div class="donate-dua-lottie" id="donateMosqueLottie">🤲</div>
         <p data-i18n="donateDua">«Ehson qiluvchilarga Allohning rahmati yaqindir»</p>
       </div>
     </section>
 
-    <!-- ==================== 4. PRAYER TIMES ==================== -->
+    <!-- ==================== 4. PRAYER TIMES PAGE ==================== -->
     <section class="page" id="pagePrayer">
       <div class="prayer-header">
         <div class="prayer-icon-wrap">🕌</div>
@@ -326,7 +326,7 @@
         <p class="profile-username" id="profileUsername">@username</p>
       </div>
 
-      <!-- 4-Card Performance Stats Grid -->
+      <!-- Stats Matrix Grid -->
       <div class="profile-stats-grid">
         <div class="profile-stat-card">
           <div class="profile-stat-icon">📿</div>
@@ -350,18 +350,18 @@
         </div>
       </div>
 
-      <!-- Gamified Achievements Gallery -->
+      <!-- Achievements Gallery -->
       <div class="profile-achievements">
         <div class="section-title-wrap">
           <span class="section-title-icon">🎖</span>
           <h3 class="achievements-title" data-i18n="achievementsTitle">Yutuqlar & Bosqichlar</h3>
         </div>
         <div class="achievements-grid" id="achievementsGrid">
-          <!-- Dynamically populated -->
+          <!-- Dynamically filled -->
         </div>
       </div>
 
-      <!-- Account Metadata Card -->
+      <!-- Account Metadata -->
       <div class="profile-info-card">
         <div class="info-row">
           <span class="info-label" data-i18n="profileRegistered">📅 Ro'yxatdan o'tgan</span>
@@ -408,20 +408,20 @@
       </div>
     </div>
 
-    <!-- ==================== MANDATORY SUBSCRIPTION OVERLAY ==================== -->
+    <!-- ==================== SUBSCRIPTION OVERLAY ==================== -->
     <div class="subscription-overlay" id="subscriptionOverlay">
       <div class="subscription-content">
         <div class="sub-icon">📢</div>
         <h2 class="sub-title">Obuna bo'ling</h2>
-        <p class="sub-text">Botdan foydalanish uchun quyidagi kanallarga a'zo bo'lishingiz kerak:</p>
+        <p class="sub-text">Botdan to'liq foydalanish uchun quyidagi kanallarga a'zo bo'ling:</p>
         <div class="sub-channels" id="subChannelsList"></div>
         <button class="sub-check-btn" id="subCheckBtn">✅ A'zo bo'ldim</button>
       </div>
     </div>
   </div>
 
-  <script src="i18n.js?v=3.1.0"></script>
-  <script src="lottie-animations.js?v=3.1.0"></script>
-  <script src="app.js?v=3.1.0"></script>
+  <script src="i18n.js?v=3.2.0"></script>
+  <script src="lottie-animations.js?v=3.2.0"></script>
+  <script src="app.js?v=3.2.0"></script>
 </body>
 </html>

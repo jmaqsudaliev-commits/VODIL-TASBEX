@@ -1,23 +1,31 @@
 /* ================================================================
-   VODIL TASBIH PRO MAX — ULTIMATE ISLAMIC CYBER-NOIR DESIGN SYSTEM
+   VODIL TASBIH PRO MAX — TELEGRAM NATIVE THEME INTEGRATION
    ================================================================ */
 
 :root {
-  /* Color Palette — Deep Obsidian & Radiant Emerald / Gold */
-  --bg-base: #030712;
-  --bg-surface-1: #070f1e;
-  --bg-surface-2: #0d1a30;
-  --bg-surface-3: #132442;
-  
-  --glass-surface: rgba(255, 255, 255, 0.035);
-  --glass-surface-hover: rgba(255, 255, 255, 0.07);
-  --glass-surface-active: rgba(16, 185, 129, 0.12);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-emerald: rgba(16, 185, 129, 0.35);
-  --glass-border-gold: rgba(245, 158, 11, 0.35);
+  /* Telegram Native CSS Theme Variables with Luxury Emerald Fallbacks */
+  --tg-bg: var(--tg-theme-bg-color, #080e1a);
+  --tg-text: var(--tg-theme-text-color, #f8fafc);
+  --tg-hint: var(--tg-theme-hint-color, #94a3b8);
+  --tg-link: var(--tg-theme-link-color, #34d399);
+  --tg-btn: var(--tg-theme-button-color, #10b981);
+  --tg-btn-text: var(--tg-theme-button-text-color, #ffffff);
+  --tg-sec-bg: var(--tg-theme-secondary-bg-color, #0f1a2e);
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  /* Curated Cyber-Emerald & Golden Noir Tokens */
+  --bg-primary: var(--tg-bg);
+  --bg-card: rgba(15, 26, 46, 0.75);
+  --bg-card-elevated: rgba(22, 38, 66, 0.85);
+
+  --surface-glass: rgba(255, 255, 255, 0.04);
+  --surface-glass-hover: rgba(255, 255, 255, 0.07);
+  --surface-glass-active: rgba(16, 185, 129, 0.14);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-emerald: rgba(16, 185, 129, 0.4);
+  --border-gold: rgba(245, 158, 11, 0.4);
+
+  --text-primary: var(--tg-text);
+  --text-secondary: var(--tg-hint);
   --text-muted: #64748b;
   --text-dim: #475569;
 
@@ -35,11 +43,8 @@
 
   --silver-300: #e2e8f0;
   --silver-400: #cbd5e1;
-  --silver-500: #94a3b8;
-
   --bronze-400: #f59e0b;
   --bronze-500: #d97706;
-  --bronze-600: #b45309;
 
   --red-400: #f87171;
   --red-500: #ef4444;
@@ -47,19 +52,19 @@
   --blue-500: #3b82f6;
 
   /* Gradients */
-  --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+  --grad-primary: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
   --grad-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde68a 100%);
   --grad-silver: linear-gradient(135deg, #64748b 0%, #cbd5e1 50%, #f8fafc 100%);
   --grad-bronze: linear-gradient(135deg, #92400e 0%, #d97706 50%, #f59e0b 100%);
-  --grad-card: linear-gradient(145deg, rgba(16, 185, 129, 0.08) 0%, rgba(7, 15, 30, 0.95) 100%);
-  --grad-card-gold: linear-gradient(145deg, rgba(245, 158, 11, 0.1) 0%, rgba(7, 15, 30, 0.95) 100%);
+  --grad-card: linear-gradient(145deg, rgba(16, 185, 129, 0.09) 0%, rgba(10, 18, 34, 0.96) 100%);
+  --grad-card-gold: linear-gradient(145deg, rgba(245, 158, 11, 0.12) 0%, rgba(10, 18, 34, 0.96) 100%);
 
   /* Shadows & Glows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.65);
-  --glow-emerald: 0 0 35px rgba(16, 185, 129, 0.25);
-  --glow-gold: 0 0 35px rgba(245, 158, 11, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 36px rgba(0, 0, 0, 0.6);
+  --glow-emerald: 0 0 35px rgba(16, 185, 129, 0.28);
+  --glow-gold: 0 0 35px rgba(245, 158, 11, 0.28);
 
   /* Radii */
   --radius-xs: 6px;
@@ -69,7 +74,7 @@
   --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* Typography & Timing */
+  /* Typography & Easing */
   --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-arabic: 'Amiri', serif;
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -94,7 +99,7 @@ html {
 
 body {
   font-family: var(--font-main);
-  background: var(--bg-base);
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
@@ -125,7 +130,7 @@ body {
   transform: translateX(-50%);
   width: 380px;
   height: 380px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
 }
 
 .bg-glow-bottom {
@@ -133,7 +138,7 @@ body {
   right: -50px;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, transparent 70%);
 }
 
 .bg-particles {
@@ -160,7 +165,7 @@ body {
 }
 
 /* ================================================================
-   TOP APP BAR & BRANDING
+   TOP APP BAR
    ================================================================ */
 .app-topbar {
   display: flex;
@@ -182,8 +187,8 @@ body {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: var(--glass-surface-active);
-  border: 1px solid var(--glass-border-emerald);
+  background: var(--surface-glass-active);
+  border: 1px solid var(--border-emerald);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,7 +218,7 @@ body {
 
 .app-brand-subtitle {
   font-size: 0.65rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.02em;
 }
@@ -227,8 +232,8 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--glass-surface);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-full);
   padding: 6px 14px;
   color: var(--text-primary);
@@ -242,8 +247,8 @@ body {
 }
 
 .lang-switch-btn:hover {
-  background: var(--glass-surface-hover);
-  border-color: var(--glass-border-emerald);
+  background: var(--surface-glass-hover);
+  border-color: var(--border-emerald);
 }
 
 .lang-switch-btn.open .lang-arrow {
@@ -253,15 +258,15 @@ body {
 .lang-arrow {
   font-size: 0.7rem;
   transition: transform 0.2s var(--ease-smooth);
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .lang-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: rgba(7, 15, 30, 0.98);
-  border: 1px solid var(--glass-border);
+  background: rgba(10, 18, 34, 0.98);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 6px;
   min-width: 150px;
@@ -300,12 +305,12 @@ body {
 }
 
 .lang-option:hover {
-  background: var(--glass-surface-hover);
+  background: var(--surface-glass-hover);
   color: var(--text-primary);
 }
 
 .lang-option.active {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.14);
   color: var(--emerald-400);
 }
 
@@ -338,7 +343,6 @@ body {
 /* ================================================================
    1. COUNTER PAGE (TASBIH)
    ================================================================ */
-/* Zikr Selector Slider */
 .zikr-selector-wrap {
   margin-bottom: 16px;
 }
@@ -361,8 +365,8 @@ body {
   align-items: center;
   gap: 4px;
   padding: 10px 16px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-surface);
+  border: 1px solid var(--border-glass);
+  background: var(--surface-glass);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.25s var(--ease-smooth);
@@ -382,7 +386,7 @@ body {
 
 .zikr-type .zikr-latin {
   font-size: 0.68rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
   transition: color 0.2s;
 }
@@ -393,7 +397,7 @@ body {
 
 .zikr-type.active {
   background: var(--grad-card);
-  border-color: var(--glass-border-emerald);
+  border-color: var(--border-emerald);
   box-shadow: var(--glow-emerald), inset 0 0 16px rgba(16, 185, 129, 0.1);
 }
 
@@ -456,8 +460,8 @@ body {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--emerald-400);
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 3px 12px;
   border-radius: var(--radius-full);
   margin-bottom: 4px;
@@ -489,20 +493,20 @@ body {
 
 .counter-label {
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* 3D Tactile Golden-Emerald Tap Button */
+/* 3D Tactile Tap Button */
 .tap-button {
   position: relative;
   width: 108px;
   height: 108px;
   border-radius: 50%;
   border: none;
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   cursor: pointer;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), 0 0 50px rgba(16, 185, 129, 0.2);
@@ -578,8 +582,8 @@ body {
 
 .target-btn {
   padding: 8px 16px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-surface);
+  border: 1px solid var(--border-glass);
+  background: var(--surface-glass);
   border-radius: var(--radius-full);
   color: var(--text-secondary);
   font-family: var(--font-main);
@@ -596,13 +600,13 @@ body {
 }
 
 .target-btn.active {
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   color: #fff;
   border-color: var(--emerald-400);
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
 }
 
-/* Action Control Quick-Bar */
+/* Action Control Bar */
 .action-buttons {
   display: flex;
   gap: 8px;
@@ -617,8 +621,8 @@ body {
   justify-content: center;
   gap: 6px;
   padding: 12px 8px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-surface);
+  border: 1px solid var(--border-glass);
+  background: var(--surface-glass);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-family: var(--font-main);
@@ -635,9 +639,9 @@ body {
 }
 
 .action-btn.active {
-  border-color: var(--glass-border-emerald);
+  border-color: var(--border-emerald);
   color: var(--emerald-400);
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.12);
   box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
 }
 
@@ -645,7 +649,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Live KPI Mini Stats Grid */
+/* Mini Stats Grid */
 .mini-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -660,7 +664,7 @@ body {
   gap: 4px;
   padding: 14px 8px;
   background: var(--grad-card);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
   transition: all 0.25s var(--ease-smooth);
   backdrop-filter: blur(14px);
@@ -668,7 +672,7 @@ body {
 }
 
 .mini-stat-card:hover {
-  border-color: var(--glass-border-emerald);
+  border-color: var(--border-emerald);
   transform: translateY(-2px);
 }
 
@@ -687,14 +691,14 @@ body {
 
 .mini-stat-label {
   font-size: 0.65rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 /* ================================================================
-   2. LEADERBOARD PAGE (TOP 10)
+   2. LEADERBOARD (TOP 10)
    ================================================================ */
 .leaderboard-header {
   text-align: center;
@@ -721,7 +725,7 @@ body {
 
 .leaderboard-subtitle {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .total-users-badge {
@@ -729,8 +733,8 @@ body {
   align-items: center;
   gap: 6px;
   padding: 5px 14px;
-  background: var(--glass-surface);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-full);
   margin-top: 10px;
   font-size: 0.75rem;
@@ -738,7 +742,7 @@ body {
   font-weight: 600;
 }
 
-/* Grand Olympic Metallic Podium */
+/* Olympic Metallic Podium */
 .podium {
   display: flex;
   align-items: flex-end;
@@ -786,7 +790,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--bg-surface-2);
+  background: var(--bg-card);
 }
 
 .podium-item.first .podium-avatar-wrap {
@@ -814,8 +818,8 @@ body {
   bottom: -4px;
   right: -4px;
   font-size: 1.1rem;
-  background: var(--bg-surface-1);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
   border-radius: 50%;
   width: 26px;
   height: 26px;
@@ -839,8 +843,8 @@ body {
   font-size: 0.72rem;
   font-weight: 800;
   color: var(--emerald-400);
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 2px 8px;
   border-radius: var(--radius-full);
 }
@@ -853,7 +857,7 @@ body {
   justify-content: center;
   font-weight: 900;
   font-size: 1.2rem;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-bottom: none;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -861,7 +865,7 @@ body {
 
 .bar-1 {
   height: 94px;
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.25) 0%, rgba(7, 15, 30, 0.98) 100%);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.25) 0%, rgba(10, 18, 34, 0.98) 100%);
   border-color: rgba(245, 158, 11, 0.4);
   color: var(--gold-400);
   text-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
@@ -869,14 +873,14 @@ body {
 
 .bar-2 {
   height: 70px;
-  background: linear-gradient(180deg, rgba(148, 163, 184, 0.2) 0%, rgba(7, 15, 30, 0.98) 100%);
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0.2) 0%, rgba(10, 18, 34, 0.98) 100%);
   border-color: rgba(148, 163, 184, 0.3);
   color: var(--silver-300);
 }
 
 .bar-3 {
   height: 52px;
-  background: linear-gradient(180deg, rgba(217, 119, 6, 0.2) 0%, rgba(7, 15, 30, 0.98) 100%);
+  background: linear-gradient(180deg, rgba(217, 119, 6, 0.2) 0%, rgba(10, 18, 34, 0.98) 100%);
   border-color: rgba(217, 119, 6, 0.3);
   color: var(--gold-500);
 }
@@ -885,12 +889,12 @@ body {
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: 12px;
 }
 
-/* Leaderboard List (Top 4 to 10) */
+/* Leaderboard List */
 .leaderboard-list {
   display: flex;
   flex-direction: column;
@@ -903,27 +907,27 @@ body {
   gap: 12px;
   padding: 12px 14px;
   background: var(--grad-card);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
   animation: itemSlideIn 0.35s var(--ease-smooth) both;
   transition: all 0.2s var(--ease-smooth);
 }
 
 .lb-item:hover {
-  border-color: var(--glass-border-emerald);
+  border-color: var(--border-emerald);
   transform: translateX(4px);
 }
 
 .lb-item.is-me {
   border-color: var(--emerald-400);
-  background: linear-gradient(145deg, rgba(16, 185, 129, 0.15) 0%, rgba(7, 15, 30, 0.98) 100%);
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(10, 18, 34, 0.98) 100%);
   box-shadow: var(--glow-emerald);
 }
 
 .lb-rank {
   font-size: 0.95rem;
   font-weight: 900;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   min-width: 26px;
   text-align: center;
 }
@@ -933,7 +937,7 @@ body {
   height: 42px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid var(--glass-border);
+  border: 2px solid var(--border-glass);
   flex-shrink: 0;
 }
 
@@ -953,7 +957,7 @@ body {
 
 .lb-username {
   font-size: 0.72rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .lb-score-wrap {
@@ -970,7 +974,7 @@ body {
 
 .lb-score-label {
   font-size: 0.62rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -1025,7 +1029,7 @@ body {
   color: var(--text-primary);
 }
 
-/* Holographic Bank Card */
+/* Bank Card */
 .bank-card {
   position: relative;
   background: linear-gradient(135deg, #064e3b 0%, #047857 40%, #065f46 70%, #022c22 100%);
@@ -1113,7 +1117,7 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 13px;
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   border: none;
   border-radius: var(--radius-md);
   color: #fff;
@@ -1145,7 +1149,7 @@ body {
   gap: 8px;
   padding: 16px 12px;
   background: var(--grad-card-gold);
-  border: 1px solid var(--glass-border-gold);
+  border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.2s var(--ease-smooth);
@@ -1173,12 +1177,11 @@ body {
   font-size: 1.2rem;
 }
 
-/* Islamic Dua */
 .donate-dua {
   text-align: center;
   padding: 18px 14px;
   background: var(--grad-card);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-xl);
 }
 
@@ -1228,37 +1231,6 @@ body {
   gap: 10px;
 }
 
-.prayer-card-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 18px;
-  background: var(--grad-card);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  transition: all 0.25s var(--ease-smooth);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-.prayer-card-item:hover {
-  border-color: var(--glass-border-emerald);
-  transform: translateX(4px);
-}
-
-.prayer-name-label {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.prayer-time-val {
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: var(--emerald-400);
-  font-variant-numeric: tabular-nums;
-}
-
 /* ================================================================
    5. PROFILE PAGE
    ================================================================ */
@@ -1285,7 +1257,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-surface-2);
+  background: var(--bg-card);
 }
 
 .profile-avatar-glow {
@@ -1310,10 +1282,9 @@ body {
 
 .profile-username {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
-/* 4-Stat Grid */
 .profile-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1324,7 +1295,7 @@ body {
 .profile-stat-card {
   padding: 16px 14px;
   background: var(--grad-card);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
   text-align: center;
   transition: all 0.25s var(--ease-smooth);
@@ -1333,7 +1304,7 @@ body {
 }
 
 .profile-stat-card:hover {
-  border-color: var(--glass-border-emerald);
+  border-color: var(--border-emerald);
   transform: translateY(-2px);
 }
 
@@ -1351,12 +1322,11 @@ body {
 
 .profile-stat-label {
   font-size: 0.68rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
 }
 
-/* Achievements Gallery */
 .profile-achievements {
   margin-bottom: 20px;
 }
@@ -1373,8 +1343,8 @@ body {
   align-items: center;
   gap: 4px;
   padding: 12px 6px;
-  background: var(--glass-surface);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   text-align: center;
   transition: all 0.2s;
@@ -1382,7 +1352,7 @@ body {
 
 .achievement-card.unlocked {
   background: var(--grad-card-gold);
-  border-color: var(--glass-border-gold);
+  border-color: var(--border-gold);
   box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
 }
 
@@ -1403,13 +1373,12 @@ body {
 
 .achievement-req {
   font-size: 0.58rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
-/* Metadata Info */
 .profile-info-card {
-  background: var(--glass-surface);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
 }
@@ -1419,7 +1388,7 @@ body {
   justify-content: space-between;
   padding: 8px 0;
   font-size: 0.8rem;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--border-glass);
 }
 
 .info-row:last-child {
@@ -1427,7 +1396,7 @@ body {
 }
 
 .info-label {
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .info-value {
@@ -1444,7 +1413,7 @@ body {
   left: 0;
   right: 0;
   display: flex;
-  background: rgba(3, 7, 18, 0.94);
+  background: rgba(8, 14, 26, 0.94);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -1467,7 +1436,7 @@ body {
   padding: 8px 4px;
   border: none;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-family: var(--font-main);
   font-size: 0.68rem;
   font-weight: 600;
@@ -1494,7 +1463,7 @@ body {
 
 .tab-btn.active {
   color: var(--emerald-400);
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.14);
   box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.15);
 }
 
@@ -1517,7 +1486,7 @@ body {
   transform: translateX(-50%);
   width: 28px;
   height: 3px;
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   border-radius: var(--radius-full);
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
 }
@@ -1525,7 +1494,6 @@ body {
 /* ================================================================
    MODALS & OVERLAYS
    ================================================================ */
-/* Celebration Modal */
 .celebration-overlay {
   position: fixed;
   inset: 0;
@@ -1545,7 +1513,7 @@ body {
 
 .celebration-content {
   background: var(--grad-card);
-  border: 1px solid var(--glass-border-emerald);
+  border: 1px solid var(--border-emerald);
   border-radius: var(--radius-xl);
   padding: 36px 24px;
   text-align: center;
@@ -1580,7 +1548,7 @@ body {
 .celebration-btn {
   width: 100%;
   padding: 14px;
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   border: none;
   border-radius: var(--radius-md);
   color: #fff;
@@ -1601,7 +1569,6 @@ body {
   to { transform: scale(1); opacity: 1; }
 }
 
-/* Subscription Overlay */
 .subscription-overlay {
   position: fixed;
   inset: 0;
@@ -1620,8 +1587,8 @@ body {
 }
 
 .subscription-content {
-  background: var(--bg-surface-1);
-  border: 1px solid var(--glass-border-emerald);
+  background: var(--bg-card);
+  border: 1px solid var(--border-emerald);
   border-radius: var(--radius-xl);
   padding: 32px 24px;
   text-align: center;
@@ -1659,8 +1626,8 @@ body {
 .sub-channel-link {
   display: block;
   padding: 12px 16px;
-  background: var(--glass-surface);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   color: var(--emerald-400);
   text-decoration: none;
@@ -1670,14 +1637,14 @@ body {
 }
 
 .sub-channel-link:hover {
-  background: var(--glass-surface-hover);
+  background: var(--surface-glass-hover);
   border-color: var(--emerald-400);
 }
 
 .sub-check-btn {
   width: 100%;
   padding: 14px;
-  background: var(--grad-emerald);
+  background: var(--grad-primary);
   border: none;
   border-radius: var(--radius-md);
   color: #fff;
@@ -1702,7 +1669,7 @@ body {
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--glass-border);
+  border: 3px solid var(--border-glass);
   border-top-color: var(--emerald-400);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -1720,9 +1687,9 @@ body {
   left: 50%;
   transform: translateX(-50%) translateY(100px);
   padding: 10px 22px;
-  background: rgba(7, 15, 30, 0.96);
+  background: rgba(10, 18, 34, 0.96);
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-full);
   font-size: 0.82rem;
   font-weight: 600;
