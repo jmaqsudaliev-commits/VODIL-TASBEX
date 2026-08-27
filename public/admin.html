@@ -1155,6 +1155,7 @@
     }
 
     function openUserModal(tid) {
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
       const u = allUsers.find(x => String(x.telegram_id) === String(tid));
       if (!u) {
         console.warn('User not found:', tid);
