@@ -995,6 +995,34 @@
     </div>
   </div>
 
+  <!-- Custom In-App Confirm Dialog -->
+  <div class="modal-overlay" id="confirmModal" style="z-index: 1000001;">
+    <div class="modal-body" style="border-radius: var(--r-xl); margin: auto 16px; max-width: 400px; text-align: center;">
+      <div style="font-size: 2.5rem; margin-bottom: 8px;" id="confirmIcon">⚠️</div>
+      <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px;" id="confirmTitle">Tasdiqlash</h3>
+      <p style="color: var(--text-2); font-size: 0.88rem; margin-bottom: 20px; line-height: 1.4;" id="confirmMsg">Ushbu amalni bajarishni xohlaysizmi?</p>
+      <div style="display: flex; gap: 10px;">
+        <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="confirmCancelBtn">Bekor qilish</button>
+        <button class="modal-btn-full modal-btn-red" id="confirmOkBtn">Tasdiqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom In-App Prompt Dialog (Direct Messaging) -->
+  <div class="modal-overlay" id="promptModal" style="z-index: 1000002;">
+    <div class="modal-body" style="border-radius: var(--r-xl); margin: auto 16px; max-width: 440px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:1.4rem;">💬</span>
+        <h3 style="font-size: 1.1rem; font-weight: 800;" id="promptTitle">Shaxsiy xabar yuborish</h3>
+      </div>
+      <textarea class="textarea-box" id="promptInput" rows="3" placeholder="Xabar matnini yozing..." style="margin-bottom: 16px; font-size: 0.9rem;"></textarea>
+      <div style="display: flex; gap: 10px;">
+        <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="promptCancelBtn">Bekor qilish</button>
+        <button class="modal-btn-full modal-btn-blue" id="promptOkBtn">Yuborish</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
 
@@ -1144,16 +1172,104 @@
       }).join('');
     }
 
+    function appConfirm(message, title = 'Tasdiqlash', icon = '⚠️') {
+      return new Promise((resolve) => {
+        const tg = window.Telegram?.WebApp;
+        if (tg && typeof tg.showConfirm === 'function') {
+          try {
+            tg.showConfirm(message, (ok) => resolve(!!ok));
+            return;
+          } catch (e) {}
+        }
+        
+        const modal = document.getElementById('confirmModal');
+        const msgEl = document.getElementById('confirmMsg');
+        const titleEl = document.getElementById('confirmTitle');
+        const iconEl = document.getElementById('confirmIcon');
+        const okBtn = document.getElementById('confirmOkBtn');
+        const cancelBtn = document.getElementById('confirmCancelBtn');
+
+        if (!modal) {
+          resolve(confirm(message));
+          return;
+        }
+
+        if (msgEl) msgEl.textContent = message;
+        if (titleEl) titleEl.textContent = title;
+        if (iconEl) iconEl.textContent = icon;
+
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+
+        const cleanUp = (val) => {
+          modal.style.display = 'none';
+          modal.classList.remove('active');
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(val);
+        };
+
+        okBtn.onclick = () => cleanUp(true);
+        cancelBtn.onclick = () => cleanUp(false);
+      });
+    }
+
+    function appPrompt(title, placeholder = 'Xabaringizni yozing...') {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('promptModal');
+        const titleEl = document.getElementById('promptTitle');
+        const inputEl = document.getElementById('promptInput');
+        const okBtn = document.getElementById('promptOkBtn');
+        const cancelBtn = document.getElementById('promptCancelBtn');
+
+        if (!modal) {
+          resolve(prompt(title));
+          return;
+        }
+
+        if (titleEl) titleEl.textContent = title;
+        if (inputEl) {
+          inputEl.value = '';
+          inputEl.placeholder = placeholder;
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        setTimeout(() => { if (inputEl) inputEl.focus(); }, 100);
+
+        const cleanUp = (val) => {
+          modal.style.display = 'none';
+          modal.classList.remove('active');
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(val);
+        };
+
+        okBtn.onclick = () => {
+          const val = inputEl ? inputEl.value.trim() : '';
+          cleanUp(val || null);
+        };
+        cancelBtn.onclick = () => cleanUp(null);
+      });
+    }
+
     function openUserProfile(username, tid) {
-      if (username) {
-        window.open(`https://t.me/${username.replace('@', '')}`, '_blank');
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
+      const tg = window.Telegram?.WebApp;
+      const cleanU = username ? username.replace('@', '').trim() : '';
+      const url = cleanU ? `https://t.me/${cleanU}` : `tg://user?id=${tid}`;
+      
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        tg.openTelegramLink(url);
+      } else if (tg && typeof tg.openLink === 'function') {
+        tg.openLink(url);
       } else {
-        window.open(`tg://user?id=${tid}`, '_blank');
+        window.open(url, '_blank');
       }
     }
 
     async function doSendDirectMessage(tid, name) {
-      const msg = prompt(`💬 ${name} (ID: ${tid}) ga shaxsiy xabar matnini yozing:`);
+      const msg = await appPrompt(`💬 ${name} ga shaxsiy xabar yuborish`, 'Xabar matnini kiriting...');
       if (!msg || !msg.trim()) return;
       const r = await api('/api/admin/send-message', 'POST', { telegram_id: tid, message: msg.trim() });
       if (r?.success) {
@@ -1163,123 +1279,37 @@
       }
     }
 
-    window.openUserModal = function(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
-      const u = allUsers.find(x => String(x.telegram_id) === String(tid));
-      if (!u) {
-        console.warn('User not found:', tid);
-        return;
-      }
-      selectedUser = u;
-      const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
-      
-      const mAv = document.getElementById('mAvatar');
-      if (mAv) mAv.innerHTML = genAvatarHTML(u.first_name, u.photo_url);
-      const mNm = document.getElementById('mName');
-      if (mNm) mNm.textContent = nm;
-      const mUn = document.getElementById('mUsername');
-      if (mUn) mUn.textContent = u.username ? `@${u.username}` : 'Username yo\'q';
-      const mCnt = document.getElementById('mCount');
-      if (mCnt) mCnt.textContent = fmt(u.count || 0);
-      const mTot = document.getElementById('mTotal');
-      if (mTot) mTot.textContent = fmt(u.total_all_time || 0);
-      const mStr = document.getElementById('mStreak');
-      if (mStr) mStr.textContent = u.streak_days || 0;
-      const mId = document.getElementById('mId');
-      if (mId) mId.textContent = u.telegram_id;
-      const mDon = document.getElementById('mDonated');
-      if (mDon) mDon.textContent = (u.total_donated || 0) + '⭐';
-      const mLn = document.getElementById('mLang');
-      if (mLn) mLn.textContent = (LANG_FLAGS[u.language] || '🇺🇿') + ' ' + (u.language || 'uz').toUpperCase();
-      const mCr = document.getElementById('mCreated');
-      if (mCr) mCr.textContent = u.created_at || '—';
-      const mLa = document.getElementById('mLastActive');
-      if (mLa) mLa.textContent = u.last_active || '—';
-
-      const rank = allUsers.filter(x => !x.blocked).sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0)).findIndex(x => String(x.telegram_id) === String(tid));
-      const mRk = document.getElementById('mRank');
-      if (mRk) mRk.textContent = rank >= 0 ? `#${rank + 1}` : '—';
-
-      const acts = document.getElementById('mActions');
-      if (!acts) return;
-      let html = '';
-      
-      // 1. Profilga kirish
-      html += `<button class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', '${tid}')">👤 Telegram Profilini Ochish</button>`;
-
-      // 2. Shaxsiy xabar yuborish
-      const safeNm = nm.replace(/['"\\]/g, '');
-      html += `<button class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage('${tid}', '${safeNm}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
-
-      // 3. Bloklash / Ochish
-      if (u.blocked) {
-        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock('${tid}')">✅ Blokdan Ochish</button>`;
-      } else {
-        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock('${tid}')">🚫 Foydalanuvchini Bloklash</button>`;
-      }
-
-      // 4. To'liq Restart qilish (0 ga qaytarish)
-      html += `<button class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset('${tid}')">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
-
-      // 5. Admin tayinlash
-      if (IS_SUPER) {
-        const isAdm = allAdmins.some(a => String(a.telegram_id) === String(tid));
-        if (isAdm) {
-          if (String(tid) !== String(ADMIN_ID)) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin('${tid}')">👑 Adminlikdan Olish</button>`;
-        } else {
-          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin('${tid}')">👑 Admin Qilish</button>`;
-        }
-      }
-
-      html += `<button class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
-      acts.innerHTML = html;
-
-      const modalEl = document.getElementById('userModal');
-      if (modalEl) {
-        modalEl.style.display = 'flex';
-        modalEl.classList.add('active');
-      }
-    };
-
-    window.closeModal = function() {
-      const modalEl = document.getElementById('userModal');
-      if (modalEl) {
-        modalEl.style.display = 'none';
-        modalEl.classList.remove('active');
-      }
-      selectedUser = null;
-    };
-
-    // Modal tashqarisiga bosilganda yopish
-    document.getElementById('userModal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'userModal') closeModal();
-    });
-
     async function doBlock(tid) {
-      if (!confirm('Ushbu foydalanuvchini bloklaysizmi?')) return;
+      const ok = await appConfirm('Ushbu foydalanuvchini bloklaysizmi?', 'Foydalanuvchini bloklash', '🚫');
+      if (!ok) return;
       const r = await api('/api/admin/block', 'POST', { telegram_id: tid });
       if (r?.success) { toast('🚫 Bloklandi'); closeModal(); loadUsers(); loadStats(); }
     }
 
     async function doUnblock(tid) {
+      const ok = await appConfirm('Ushbu foydalanuvchini blokdan ochasizmi?', 'Blokdan ochish', '✅');
+      if (!ok) return;
       const r = await api('/api/admin/unblock', 'POST', { telegram_id: tid });
       if (r?.success) { toast('✅ Blokdan ochildi'); closeModal(); loadUsers(); loadStats(); }
     }
 
     async function doReset(tid) {
-      if (!confirm('Foydalanuvchi hisobini butunlay 0 ga qaytarasizmi? (Reytingdagi o\'rni ham o\'chadi)')) return;
+      const ok = await appConfirm('Foydalanuvchi hisobini butunlay 0 ga qaytarasizmi? (Jami zikrlari va reytingdagi o\'rni ham o\'chadi)', 'To\'liq Qayta Boshlash', '🔄');
+      if (!ok) return;
       const r = await api('/api/admin/reset-user', 'POST', { telegram_id: tid });
       if (r?.success) { toast('🔄 Hisob to\'liq qayta boshlandi'); closeModal(); loadUsers(); loadStats(); }
     }
 
     async function doMakeAdmin(tid) {
-      if (!confirm('Admin qilasizmi?')) return;
+      const ok = await appConfirm('Ushbu foydalanuvchini bot admini qilasizmi?', 'Admin tayinlash', '👑');
+      if (!ok) return;
       const r = await api('/api/admin/admins', 'POST', { telegram_id: tid });
       if (r?.success) { toast('👑 Admin qo\'shildi'); closeModal(); loadAdmins(); loadStats(); }
     }
 
     async function doRemoveAdmin(tid) {
-      if (!confirm('Adminlikdan olinadimi?')) return;
+      const ok = await appConfirm('Ushbu foydalanuvchini adminlikdan olasizmi?', 'Adminlikdan olish', '👑');
+      if (!ok) return;
       const r = await api('/api/admin/admins', 'DELETE', { telegram_id: tid });
       if (r?.success) { toast('⬇️ Adminlikdan olindi'); closeModal(); loadUsers(); loadAdmins(); }
     }
@@ -1378,7 +1408,8 @@
     }
 
     async function deleteChannel(chName) {
-      if (!confirm(`${chName} kanalini o'chirasizmi?`)) return;
+      const ok = await appConfirm(`${chName} kanalini o'chirasizmi?`, 'Kanalni o\'chirish', '🗑');
+      if (!ok) return;
       const r = await api('/api/admin/channels', 'DELETE', { channel: chName });
       if (r?.success) { toast('🗑 Kanal o\'chirildi'); loadChannels(); }
     }
@@ -1404,7 +1435,8 @@
       const ta = document.getElementById('broadcastMsg');
       const msg = ta.value.trim();
       if (!msg) { toast('❌ Xabar matnini yozing', 'err'); return; }
-      if (!confirm('Barcha foydalanuvchilarga xabar yuborilsinmi?')) return;
+      const ok = await appConfirm('Barcha foydalanuvchilarga xabar yuborilsinmi?', 'Broadcast yuborish', '📡');
+      if (!ok) return;
       const btn = document.getElementById('broadcastBtn');
       btn.disabled = true;
       btn.textContent = '📡 Yuborilmoqda...';
