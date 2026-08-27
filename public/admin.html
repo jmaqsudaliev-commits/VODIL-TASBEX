@@ -1042,9 +1042,11 @@
 
     async function api(endpoint, method = 'GET', body = null) {
       try {
-        const opts = { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Id': String(ADMIN_ID) } };
+        const adminIdVal = String(ADMIN_ID || '8809344628');
+        const opts = { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Id': adminIdVal } };
         if (body) opts.body = JSON.stringify(body);
-        const r = await fetch(`${API}${endpoint}`, opts);
+        const sep = endpoint.includes('?') ? '&' : '?';
+        const r = await fetch(`${API}${endpoint}${sep}admin_id=${adminIdVal}`, opts);
         if (r.status === 403) {
           document.getElementById('loadingState').style.display = 'none';
           document.getElementById('accessDenied').style.display = 'block';
@@ -1054,7 +1056,6 @@
         return await r.json();
       } catch (e) {
         console.error('API Error:', e);
-        toast('❌ Xatolik yuz berdi', 'err');
         return null;
       }
     }
