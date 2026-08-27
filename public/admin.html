@@ -1279,6 +1279,98 @@
       }
     }
 
+    window.openUserModal = function(tid) {
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
+      const u = allUsers.find(x => String(x.telegram_id) === String(tid));
+      if (!u) {
+        console.warn('User not found:', tid);
+        return;
+      }
+      selectedUser = u;
+      const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
+      
+      const mAv = document.getElementById('mAvatar');
+      if (mAv) mAv.innerHTML = genAvatarHTML(u.first_name, u.photo_url);
+      const mNm = document.getElementById('mName');
+      if (mNm) mNm.textContent = nm;
+      const mUn = document.getElementById('mUsername');
+      if (mUn) mUn.textContent = u.username ? `@${u.username}` : 'Username yo\'q';
+      const mCnt = document.getElementById('mCount');
+      if (mCnt) mCnt.textContent = fmt(u.count || 0);
+      const mTot = document.getElementById('mTotal');
+      if (mTot) mTot.textContent = fmt(u.total_all_time || 0);
+      const mStr = document.getElementById('mStreak');
+      if (mStr) mStr.textContent = u.streak_days || 0;
+      const mId = document.getElementById('mId');
+      if (mId) mId.textContent = u.telegram_id;
+      const mDon = document.getElementById('mDonated');
+      if (mDon) mDon.textContent = (u.total_donated || 0) + '⭐';
+      const mLn = document.getElementById('mLang');
+      if (mLn) mLn.textContent = (LANG_FLAGS[u.language] || '🇺🇿') + ' ' + (u.language || 'uz').toUpperCase();
+      const mCr = document.getElementById('mCreated');
+      if (mCr) mCr.textContent = u.created_at || '—';
+      const mLa = document.getElementById('mLastActive');
+      if (mLa) mLa.textContent = u.last_active || '—';
+
+      const rank = allUsers.filter(x => !x.blocked).sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0)).findIndex(x => String(x.telegram_id) === String(tid));
+      const mRk = document.getElementById('mRank');
+      if (mRk) mRk.textContent = rank >= 0 ? `#${rank + 1}` : '—';
+
+      const acts = document.getElementById('mActions');
+      if (!acts) return;
+      let html = '';
+      
+      // 1. Profilga kirish
+      html += `<button class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', '${tid}')">👤 Telegram Profilini Ochish</button>`;
+
+      // 2. Shaxsiy xabar yuborish
+      const safeNm = nm.replace(/['"\\]/g, '');
+      html += `<button class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage('${tid}', '${safeNm}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
+
+      // 3. Bloklash / Ochish
+      if (u.blocked) {
+        html += `<button class="modal-btn-full modal-btn-green" onclick="doUnblock('${tid}')">✅ Blokdan Ochish</button>`;
+      } else {
+        html += `<button class="modal-btn-full modal-btn-red" onclick="doBlock('${tid}')">🚫 Foydalanuvchini Bloklash</button>`;
+      }
+
+      // 4. To'liq Restart qilish (0 ga qaytarish)
+      html += `<button class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset('${tid}')">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
+
+      // 5. Admin tayinlash
+      if (IS_SUPER) {
+        const isAdm = allAdmins.some(a => String(a.telegram_id) === String(tid));
+        if (isAdm) {
+          if (String(tid) !== String(ADMIN_ID)) html += `<button class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin('${tid}')">👑 Adminlikdan Olish</button>`;
+        } else {
+          html += `<button class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin('${tid}')">👑 Admin Qilish</button>`;
+        }
+      }
+
+      html += `<button class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
+      acts.innerHTML = html;
+
+      const modalEl = document.getElementById('userModal');
+      if (modalEl) {
+        modalEl.style.display = 'flex';
+        modalEl.classList.add('active');
+      }
+    };
+
+    window.closeModal = function() {
+      const modalEl = document.getElementById('userModal');
+      if (modalEl) {
+        modalEl.style.display = 'none';
+        modalEl.classList.remove('active');
+      }
+      selectedUser = null;
+    };
+
+    // Modal tashqarisiga bosilganda yopish
+    document.getElementById('userModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'userModal') closeModal();
+    });
+
     async function doBlock(tid) {
       const ok = await appConfirm('Ushbu foydalanuvchini bloklaysizmi?', 'Foydalanuvchini bloklash', '🚫');
       if (!ok) return;
