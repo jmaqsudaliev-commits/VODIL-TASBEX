@@ -694,9 +694,9 @@
 
     /* Toast */
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
+      position: fixed !important;
+      bottom: 24px !important;
+      left: 50% !important;
       transform: translateX(-50%) translateY(100px);
       padding: 12px 24px;
       background: rgba(7, 15, 30, 0.98);
@@ -705,11 +705,12 @@
       border-radius: var(--r-full);
       font-size: 0.85rem;
       font-weight: 700;
-      z-index: 3000;
+      z-index: 999999999 !important;
       opacity: 0;
       transition: all 0.3s var(--ease);
       box-shadow: 0 8px 30px rgba(0,0,0,0.6);
       white-space: nowrap;
+      pointer-events: none;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -1289,23 +1290,29 @@
 
     function openUserProfile(username, tid) {
       try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
+      const cleanU = username ? String(username).replace('@', '').trim() : '';
       const tg = window.Telegram?.WebApp;
-      const cleanU = username ? username.replace('@', '').trim() : '';
-      const url = cleanU ? `https://t.me/${cleanU}` : `tg://user?id=${tid}`;
-      
-      if (tg && typeof tg.openTelegramLink === 'function') {
-        tg.openTelegramLink(url);
-      } else if (tg && typeof tg.openLink === 'function') {
-        tg.openLink(url);
+      if (cleanU) {
+        const url = `https://t.me/${cleanU}`;
+        if (tg && typeof tg.openTelegramLink === 'function') {
+          tg.openTelegramLink(url);
+        } else {
+          window.open(url, '_blank');
+        }
       } else {
-        window.open(url, '_blank');
+        const url = `tg://user?id=${tid}`;
+        if (tg && typeof tg.openTelegramLink === 'function') {
+          try { tg.openTelegramLink(`https://t.me/user?id=${tid}`); } catch(e) { window.open(url, '_blank'); }
+        } else {
+          window.open(url, '_blank');
+        }
       }
     }
 
     async function doSendDirectMessage(tid, name) {
       const msg = await appPrompt(`💬 ${name} ga shaxsiy xabar yuborish`, 'Xabar matnini kiriting...');
       if (!msg || !msg.trim()) return;
-      const r = await api('/api/admin/send-message', 'POST', { telegram_id: tid, message: msg.trim() });
+      const r = await api('/api/admin/send-message', 'POST', { telegram_id: Number(tid), message: msg.trim() });
       if (r?.success) {
         toast(`✅ ${name} ga xabar yuborildi`);
       } else {
@@ -1406,46 +1413,79 @@
     });
 
     async function doBlock(tid) {
-      const ok = await appConfirm('Ushbu foydalanuvchini bloklaysizmi?', 'Foydalanuvchini bloklash', '🚫');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
       const r = await api('/api/admin/block', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) { toast('🚫 Bloklandi'); closeModal(); loadUsers(); loadStats(); }
-      else { toast('❌ Xatolik yuz berdi', 'err'); }
+      if (r?.success) {
+        toast('🚫 Foydalanuvchi bloklandi');
+        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) selectedUser.blocked = true;
+        openUserModal(tid);
+        loadUsers();
+        loadStats();
+      } else {
+        toast('❌ Xatolik yuz berdi', 'err');
+      }
     }
 
     async function doUnblock(tid) {
-      const ok = await appConfirm('Ushbu foydalanuvchini blokdan ochasizmi?', 'Blokdan ochish', '✅');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
       const r = await api('/api/admin/unblock', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) { toast('✅ Blokdan ochildi'); closeModal(); loadUsers(); loadStats(); }
-      else { toast('❌ Xatolik yuz berdi', 'err'); }
+      if (r?.success) {
+        toast('✅ Blokdan ochildi');
+        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) selectedUser.blocked = false;
+        openUserModal(tid);
+        loadUsers();
+        loadStats();
+      } else {
+        toast('❌ Xatolik yuz berdi', 'err');
+      }
     }
 
     async function doReset(tid) {
-      const ok = await appConfirm('Foydalanuvchi hisobini butunlay 0 ga qaytarasizmi? (Jami zikrlari va reytingdagi o\'rni ham o\'chadi)', 'To\'liq Qayta Boshlash', '🔄');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
       const r = await api('/api/admin/reset-user', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) { toast('🔄 Hisob to\'liq qayta boshlandi'); closeModal(); loadUsers(); loadStats(); }
-      else { toast('❌ Xatolik yuz berdi', 'err'); }
+      if (r?.success) {
+        toast('🔄 Hisob 0 ga qaytarildi');
+        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) {
+          selectedUser.count = 0;
+          selectedUser.total_all_time = 0;
+        }
+        openUserModal(tid);
+        loadUsers();
+        loadStats();
+      } else {
+        toast('❌ Xatolik yuz berdi', 'err');
+      }
     }
 
     async function doMakeAdmin(tid) {
-      const ok = await appConfirm('Ushbu foydalanuvchini bot admini qilasizmi?', 'Admin tayinlash', '👑');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
       const r = await api('/api/admin/admins', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) { toast('👑 Admin qo\'shildi'); closeModal(); loadAdmins(); loadStats(); }
-      else { toast('❌ Admin qo\'shishda xatolik', 'err'); }
+      if (r?.success) {
+        toast('👑 Admin tayinlandi');
+        await loadAdmins();
+        openUserModal(tid);
+        loadStats();
+      } else {
+        toast('❌ Admin qo\'shishda xatolik', 'err');
+      }
     }
 
     async function doRemoveAdmin(tid) {
-      const ok = await appConfirm('Ushbu foydalanuvchini adminlikdan olasizmi?', 'Adminlikdan olish', '👑');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
       let r = await api(`/api/admin/admins?telegram_id=${Number(tid)}`, 'DELETE', { telegram_id: Number(tid) });
       if (!r || !r.success) {
         r = await api('/api/admin/admins/delete', 'POST', { telegram_id: Number(tid) });
       }
-      if (r?.success) { toast('⬇️ Adminlikdan olindi'); closeModal(); loadUsers(); loadAdmins(); }
-      else { toast('❌ Adminlikdan olishda xatolik', 'err'); }
+      if (r?.success) {
+        toast('⬇️ Adminlikdan olindi');
+        await loadAdmins();
+        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) {
+          openUserModal(tid);
+        }
+        loadUsers();
+      } else {
+        toast('❌ Adminlikdan olishda xatolik', 'err');
+      }
     }
 
     async function loadAdmins() {
@@ -1537,20 +1577,23 @@
       c.innerHTML = d.channels.map(ch => `
         <div class="user-card" style="justify-content:space-between;">
           <span style="font-weight:800;font-size:0.95rem;">📢 ${ch}</span>
-          <button class="btn-action btn-danger" style="padding:6px 12px;" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
+          <button type="button" class="btn-action btn-danger" style="padding:6px 12px;" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
         </div>
       `).join('');
     }
 
     async function deleteChannel(chName) {
-      const ok = await appConfirm(`${chName} kanalini o'chirasizmi?`, 'Kanalni o\'chirish', '🗑');
-      if (!ok) return;
+      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
       let r = await api(`/api/admin/channels?channel=${encodeURIComponent(chName)}`, 'DELETE', { channel: chName });
       if (!r || !r.success) {
         r = await api('/api/admin/channels/delete', 'POST', { channel: chName });
       }
-      if (r?.success) { toast('🗑 Kanal o\'chirildi'); loadChannels(); }
-      else { toast('❌ Kanalni o\'chirishda xatolik', 'err'); }
+      if (r?.success) {
+        toast('🗑 Kanal o\'chirildi');
+        loadChannels();
+      } else {
+        toast('❌ Kanalni o\'chirishda xatolik', 'err');
+      }
     }
 
     async function doAddChannel() {
