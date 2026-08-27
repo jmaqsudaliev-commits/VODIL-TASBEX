@@ -1210,6 +1210,14 @@ async function init() {
   // Init language switcher
   initLanguageSwitcher();
 
+  // Load offline cached state immediately (0ms instant startup)
+  try {
+    const cachedState = JSON.parse(localStorage.getItem('tasbih_local_state') || '{}');
+    if (cachedState.count !== undefined) STATE.count = cachedState.count;
+    if (cachedState.total !== undefined) STATE.totalAllTime = cachedState.total;
+    if (cachedState.streak !== undefined) STATE.streakDays = cachedState.streak;
+  } catch (e) {}
+
   // Init background particles
   initParticles();
 
@@ -1222,37 +1230,15 @@ async function init() {
   // Init Telegram
   const userData = initTelegram();
 
-  // Register/get user
-  await registerUser(userData);
-
   // Recover any pending taps from previous session
   recoverPendingTaps();
 
-  // Check if user is blocked
-  if (STATE.isBlocked) {
-    showBlockedOverlay();
-    return;
-  }
-
-  // Check subscription
-  const isSubscribed = await checkSubscription();
-
-  // Update displays
+  // Render displays immediately with local data
   updateCounterDisplay();
   updateProfileDisplay();
 
-  // Init Lottie animations (after DOM is ready)
-  initAllLottieAnimations();
-
-  // Fetch rank
-  const rankData = await fetchRank();
-  if (rankData) {
-    document.getElementById('rankValue').textContent = `#${rankData.rank}`;
-    document.getElementById('profileRank').textContent = `#${rankData.rank}`;
-  }
-
   // ============================================
-  // EVENT LISTENERS
+  // EVENT LISTENERS (Attaching immediately so UI is responsive instantly)
   // ============================================
 
   // Tab navigation
@@ -1276,21 +1262,24 @@ async function init() {
 
   // Vibration toggle
   const vibBtn = document.getElementById('vibrationBtn');
-  vibBtn.classList.add('active');
-  vibBtn.addEventListener('click', () => {
-    STATE.vibrationEnabled = !STATE.vibrationEnabled;
-    vibBtn.classList.toggle('active', STATE.vibrationEnabled);
-  });
+  if (vibBtn) {
+    vibBtn.classList.add('active');
+    vibBtn.addEventListener('click', () => {
+      STATE.vibrationEnabled = !STATE.vibrationEnabled;
+      vibBtn.classList.toggle('active', STATE.vibrationEnabled);
+    });
+  }
 
   // Sound toggle
   const sndBtn = document.getElementById('soundBtn');
-  sndBtn.classList.add('active');
-  sndBtn.addEventListener('click', () => {
-    STATE.soundEnabled = !STATE.soundEnabled;
-    sndBtn.classList.toggle('active', STATE.soundEnabled);
-    // Update icon
-    sndBtn.querySelector('.action-icon').textContent = STATE.soundEnabled ? '🔊' : '🔇';
-  });
+  if (sndBtn) {
+    sndBtn.classList.add('active');
+    sndBtn.addEventListener('click', () => {
+      STATE.soundEnabled = !STATE.soundEnabled;
+      sndBtn.classList.toggle('active', STATE.soundEnabled);
+      sndBtn.querySelector('.action-icon').textContent = STATE.soundEnabled ? '🔊' : '🔇';
+    });
+  }
 
   // Target selector
   document.querySelectorAll('.target-btn').forEach((btn) => {
@@ -1312,8 +1301,8 @@ async function init() {
   });
 
   // Celebration close
-  document.getElementById('celebrationBtn').addEventListener('click', hideCelebration);
-  document.getElementById('celebrationOverlay').addEventListener('click', (e) => {
+  document.getElementById('celebrationBtn')?.addEventListener('click', hideCelebration);
+  document.getElementById('celebrationOverlay')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) hideCelebration();
   });
 
@@ -1329,7 +1318,52 @@ async function init() {
     bankCard.addEventListener('click', copyCardNumber);
   }
 
-  console.log(`📿 Tasbih App v2.0 initialized! Language: ${currentLanguage}`);
+  // ============================================
+  // NON-BLOCKING BACKGROUND SYNC (Server communication)
+  // ============================================
+  (async () => {
+    try {
+      const result = await registerUser(userData);
+      if (result) {
+        // Save fresh server state to localStorage backup
+        try {
+          localStorage.setItem('tasbih_local_state', JSON.stringify({
+            count: STATE.count,
+            total: STATE.totalAllTime,
+            streak: STATE.streakDays
+          }));
+        } catch(e) {}
+      }
+
+      if (STATE.isBlocked) {
+        showBlockedOverlay();
+        return;
+      }
+
+      // Update counter and profile with fresh server response
+      updateCounterDisplay();
+      updateProfileDisplay();
+
+      // Check subscription in background
+      checkSubscription();
+
+      // Init Lottie animations
+      initAllLottieAnimations();
+
+      // Fetch rank in background
+      const rankData = await fetchRank();
+      if (rankData) {
+        const rVal = document.getElementById('rankValue');
+        const pRank = document.getElementById('profileRank');
+        if (rVal) rVal.textContent = `#${rankData.rank}`;
+        if (pRank) pRank.textContent = `#${rankData.rank}`;
+      }
+    } catch (e) {
+      console.warn('Background sync note:', e);
+    }
+  })();
+
+  console.log(`📿 Tasbih App PRO MAX initialized! Language: ${currentLanguage}`);
 }
 
 // Start the app

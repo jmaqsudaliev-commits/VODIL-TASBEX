@@ -512,13 +512,7 @@ function getLeaderboard(limit = 50) {
 }
 
 function getUserRank(telegramId) {
-  const db = loadDB();
-  const users = Object.values(db.users).filter(u => !u.blocked);
-  users.sort((a, b) => {
-    const totalDiff = (b.total_all_time || 0) - (a.total_all_time || 0);
-    if (totalDiff !== 0) return totalDiff;
-    return (b.count || 0) - (a.count || 0);
-  });
+  const { users } = getLeaderboard(999999);
   const index = users.findIndex(u => u.telegram_id === Number(telegramId));
   return index >= 0 ? index + 1 : users.length + 1;
 }
