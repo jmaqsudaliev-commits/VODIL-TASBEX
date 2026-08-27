@@ -1779,11 +1779,37 @@ app.get('/api/admin/stats', adminMiddleware, (req, res) => {
   res.json(getAdminStats());
 });
 
+// Universal Admin Action Logger
+function logAdminAction(actionData) {
+  const db = loadDB();
+  if (!db.archive) db.archive = { messages: [], card_history: [], logs: [] };
+  if (!db.archive.logs) db.archive.logs = [];
+  db.archive.logs.unshift({
+    id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    timestamp: new Date().toISOString(),
+    ...actionData
+  });
+  if (db.archive.logs.length > 500) db.archive.logs = db.archive.logs.slice(0, 500);
+  saveDB(db);
+}
+
 app.post('/api/admin/block', adminMiddleware, (req, res) => {
   const { telegram_id } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
   const user = blockUser(telegram_id);
   if (!user) return res.status(404).json({ error: 'User not found' });
+  
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+  logAdminAction({
+    type: 'block',
+    category: 'block',
+    target_id: Number(telegram_id),
+    target_name: nm,
+    target_username: user.username || '',
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Foydalanuvchi bloklandi'
+  });
+
   if (bot) {
     const targetLang = getUserLang(telegram_id);
     try { bot.sendMessage(Number(telegram_id), bt(targetLang, 'blockedNotify')); } catch(e) {}
@@ -1796,6 +1822,18 @@ app.post('/api/admin/unblock', adminMiddleware, (req, res) => {
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
   const user = unblockUser(telegram_id);
   if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+  logAdminAction({
+    type: 'unblock',
+    category: 'block',
+    target_id: Number(telegram_id),
+    target_name: nm,
+    target_username: user.username || '',
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Foydalanuvchi blokdan ochildi'
+  });
+
   if (bot) {
     const targetLang = getUserLang(telegram_id);
     try { bot.sendMessage(Number(telegram_id), bt(targetLang, 'unblockedNotify')); } catch(e) {}
@@ -1806,8 +1844,20 @@ app.post('/api/admin/unblock', adminMiddleware, (req, res) => {
 app.post('/api/admin/reset-user', adminMiddleware, (req, res) => {
   const { telegram_id } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
-  const user = resetUserCount(telegram_id, true); // Reset total score completely so rank clears
+  const user = resetUserCount(telegram_id, true);
   if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+  logAdminAction({
+    type: 'reset',
+    category: 'block',
+    target_id: Number(telegram_id),
+    target_name: nm,
+    target_username: user.username || '',
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Hisobi 0 ga qaytarildi (Restart)'
+  });
+
   res.json({ success: true, user });
 });
 
@@ -1819,6 +1869,15 @@ app.post('/api/admin/channels', adminMiddleware, (req, res) => {
   const { channel } = req.body;
   if (!channel) return res.status(400).json({ error: 'channel required' });
   const channels = addRequiredChannel(channel);
+
+  logAdminAction({
+    type: 'add_channel',
+    category: 'channel',
+    channel: channel.startsWith('@') ? channel : '@' + channel,
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Majburiy kanal qo\'shildi'
+  });
+
   res.json({ success: true, channels });
 });
 
@@ -1826,6 +1885,15 @@ const handleRemoveChannel = (req, res) => {
   const channel = req.body?.channel || req.query?.channel;
   if (!channel) return res.status(400).json({ error: 'channel required' });
   const channels = removeRequiredChannel(channel);
+
+  logAdminAction({
+    type: 'remove_channel',
+    category: 'channel',
+    channel: channel.startsWith('@') ? channel : '@' + channel,
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Majburiy kanal o\'chirildi'
+  });
+
   res.json({ success: true, channels });
 };
 app.delete('/api/admin/channels', adminMiddleware, handleRemoveChannel);
@@ -1849,11 +1917,23 @@ app.get('/api/admin/admins', adminMiddleware, (req, res) => {
 app.post('/api/admin/admins', adminMiddleware, (req, res) => {
   const { telegram_id } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
-  // Only super admin can add admins
   if (!isSuperAdmin(req.adminId)) {
     return res.status(403).json({ error: 'Only super admin can add admins' });
   }
   const admins = addAdmin(telegram_id);
+
+  const user = getUser(telegram_id);
+  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'ID: ' + telegram_id;
+  logAdminAction({
+    type: 'add_admin',
+    category: 'admin',
+    target_id: Number(telegram_id),
+    target_name: nm,
+    target_username: user?.username || '',
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Admin etib tayinlandi'
+  });
+
   res.json({ success: true, admins });
 });
 
@@ -1868,6 +1948,19 @@ const handleRemoveAdmin = (req, res) => {
     return res.status(400).json({ error: 'Cannot remove super admin' });
   }
   const admins = removeAdmin(idNum);
+
+  const user = getUser(idNum);
+  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'ID: ' + idNum;
+  logAdminAction({
+    type: 'remove_admin',
+    category: 'admin',
+    target_id: idNum,
+    target_name: nm,
+    target_username: user?.username || '',
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: 'Adminlikdan olindi'
+  });
+
   res.json({ success: true, admins });
 };
 app.delete('/api/admin/admins', adminMiddleware, handleRemoveAdmin);
@@ -2094,13 +2187,14 @@ app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
   res.json({ success: true, sent, failed, total: users.length });
 });
 
-// Admin: Get Archive (Sent Messages & Card History)
+// Admin: Get Full Archive (Sent Messages, Card History & Admin Action Logs)
 app.get('/api/admin/archive', adminMiddleware, (req, res) => {
   const db = loadDB();
-  const archive = db.archive || { messages: [], card_history: [] };
+  const archive = db.archive || { messages: [], card_history: [], logs: [] };
   res.json({
     messages: archive.messages || [],
-    card_history: archive.card_history || []
+    card_history: archive.card_history || [],
+    logs: archive.logs || []
   });
 });
 
@@ -2108,11 +2202,13 @@ app.get('/api/admin/archive', adminMiddleware, (req, res) => {
 app.delete('/api/admin/archive/:type/:id', adminMiddleware, (req, res) => {
   const { type, id } = req.params;
   const db = loadDB();
-  if (!db.archive) db.archive = { messages: [], card_history: [] };
+  if (!db.archive) db.archive = { messages: [], card_history: [], logs: [] };
   if (type === 'message' && db.archive.messages) {
     db.archive.messages = db.archive.messages.filter(m => m.id !== id);
   } else if (type === 'card' && db.archive.card_history) {
     db.archive.card_history = db.archive.card_history.filter(c => c.id !== id);
+  } else if (type === 'log' && db.archive.logs) {
+    db.archive.logs = db.archive.logs.filter(l => l.id !== id);
   }
   saveDB(db);
   res.json({ success: true });

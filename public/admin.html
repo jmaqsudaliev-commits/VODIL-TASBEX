@@ -1025,11 +1025,13 @@
         </div>
 
         <!-- Archive Filter Pills -->
-        <div class="filter-pills-row" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;">
-          <button type="button" class="pill-filter active" id="archFilterAll" onclick="setArchiveFilter('all')">📨 Barchasi</button>
-          <button type="button" class="pill-filter" id="archFilterBroadcast" onclick="setArchiveFilter('broadcast')">📢 Hammaga</button>
-          <button type="button" class="pill-filter" id="archFilterDirect" onclick="setArchiveFilter('direct')">💬 Shaxsiy</button>
+        <div class="filter-pills-row" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none;">
+          <button type="button" class="pill-filter active" id="archFilterAll" onclick="setArchiveFilter('all')">🌟 Barchasi</button>
+          <button type="button" class="pill-filter" id="archFilterAdmins" onclick="setArchiveFilter('admins')">👑 Adminlar</button>
+          <button type="button" class="pill-filter" id="archFilterBlocks" onclick="setArchiveFilter('blocks')">🚫 Bloklar & Restart</button>
+          <button type="button" class="pill-filter" id="archFilterMessages" onclick="setArchiveFilter('messages')">📨 Xabarlar</button>
           <button type="button" class="pill-filter" id="archFilterCards" onclick="setArchiveFilter('cards')">💳 Karta Tarixi</button>
+          <button type="button" class="pill-filter" id="archFilterChannels" onclick="setArchiveFilter('channels')">📢 Kanallar</button>
         </div>
 
         <!-- Archive Search -->
@@ -1707,14 +1709,14 @@
     window.doRemoveAdmin = doRemoveAdmin;
     window.deleteChannel = deleteChannel;
 
-    let allArchive = { messages: [], card_history: [] };
+    let allArchive = { messages: [], card_history: [], logs: [] };
     let currentArchFilter = 'all';
 
     async function loadArchive() {
       const d = await api('/api/admin/archive');
       if (!d) return;
       allArchive = d;
-      const totalCount = (d.messages?.length || 0) + (d.card_history?.length || 0);
+      const totalCount = (d.messages?.length || 0) + (d.card_history?.length || 0) + (d.logs?.length || 0);
       const bEl = document.getElementById('archBadge');
       if (bEl) bEl.textContent = totalCount + ' ta';
       renderArchiveList();
@@ -1737,12 +1739,9 @@
 
       let items = [];
 
-      if (currentArchFilter === 'all' || currentArchFilter === 'broadcast' || currentArchFilter === 'direct') {
-        let msgs = allArchive.messages || [];
-        if (currentArchFilter === 'broadcast') msgs = msgs.filter(m => m.type === 'broadcast');
-        if (currentArchFilter === 'direct') msgs = msgs.filter(m => m.type === 'direct');
-        
-        msgs.forEach(m => {
+      // 1. Messages (Broadcast & Direct)
+      if (currentArchFilter === 'all' || currentArchFilter === 'messages') {
+        (allArchive.messages || []).forEach(m => {
           items.push({
             kind: 'message',
             data: m,
@@ -1751,12 +1750,33 @@
         });
       }
 
+      // 2. Card History
       if (currentArchFilter === 'all' || currentArchFilter === 'cards') {
         (allArchive.card_history || []).forEach(cd => {
           items.push({
             kind: 'card',
             data: cd,
             time: new Date(cd.timestamp || Date.now()).getTime()
+          });
+        });
+      }
+
+      // 3. Admin Action Logs (Promotions, Demotions, Blocks, Unblocks, Resets, Channels)
+      if (currentArchFilter === 'all' || currentArchFilter === 'admins' || currentArchFilter === 'blocks' || currentArchFilter === 'channels') {
+        let logs = allArchive.logs || [];
+        if (currentArchFilter === 'admins') {
+          logs = logs.filter(l => l.category === 'admin' || l.type.includes('admin'));
+        } else if (currentArchFilter === 'blocks') {
+          logs = logs.filter(l => l.category === 'block' || ['block', 'unblock', 'reset'].includes(l.type));
+        } else if (currentArchFilter === 'channels') {
+          logs = logs.filter(l => l.category === 'channel' || l.type.includes('channel'));
+        }
+
+        logs.forEach(l => {
+          items.push({
+            kind: 'log',
+            data: l,
+            time: new Date(l.timestamp || Date.now()).getTime()
           });
         });
       }
@@ -1777,21 +1797,136 @@
             const holder = (cd.card_holder || '').toLowerCase();
             const bank = (cd.bank_name || '').toLowerCase();
             return cardNum.includes(q) || holder.includes(q) || bank.includes(q);
+          } else if (it.kind === 'log') {
+            const l = it.data;
+            const name = (l.target_name || '').toLowerCase();
+            const id = String(l.target_id || '');
+            const ch = (l.channel || '').toLowerCase();
+            const details = (l.details || '').toLowerCase();
+            return name.includes(q) || id.includes(q) || ch.includes(q) || details.includes(q);
           }
           return false;
         });
       }
 
       if (!items.length) {
-        c.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:0.9rem;">📦 Hozircha arxiv yozuvlari mavjud emas</div>';
+        c.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:0.9rem;">📦 Ushbu toifada hozircha arxiv yozuvlari mavjud emas</div>';
         return;
       }
 
       c.innerHTML = items.map(it => {
-        if (it.kind === 'message') {
+        const dtStr = new Date(it.time).toLocaleString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        if (it.kind === 'log') {
+          const l = it.data;
+          if (l.type === 'add_admin') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--gold-400);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:var(--gold-400);display:flex;align-items:center;gap:6px;">
+                    👑 Admin Etib Tayinlandi
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Admin')}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
+                  </div>
+                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
+                </div>
+              </div>
+            `;
+          } else if (l.type === 'remove_admin') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #f97316;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:#f97316;display:flex;align-items:center;gap:6px;">
+                    ⬇️ Adminlikdan Olib Tashlandi
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
+                  </div>
+                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
+                </div>
+              </div>
+            `;
+          } else if (l.type === 'block') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #ef4444;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:#ef4444;display:flex;align-items:center;gap:6px;">
+                    🚫 Foydalanuvchi Bloklandi
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
+                  </div>
+                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
+                </div>
+              </div>
+            `;
+          } else if (l.type === 'unblock') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--emerald-400);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:var(--emerald-400);display:flex;align-items:center;gap:6px;">
+                    ✅ Foydalanuvchi Blokdan Ochildi
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
+                  </div>
+                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
+                </div>
+              </div>
+            `;
+          } else if (l.type === 'reset') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #a855f7;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:#a855f7;display:flex;align-items:center;gap:6px;">
+                    🔄 Hisobi 0 ga Tushirildi (Restart)
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
+                  </div>
+                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
+                </div>
+              </div>
+            `;
+          } else if (l.type === 'add_channel' || l.type === 'remove_channel') {
+            return `
+              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--cyan-400);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:800;font-size:0.85rem;color:var(--cyan-400);display:flex;align-items:center;gap:6px;">
+                    ${l.type === 'add_channel' ? '📢 Majburiy Kanal Qo\'shildi' : '🗑 Majburiy Kanal O\'chirildi'}
+                  </span>
+                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);font-weight:800;font-size:0.95rem;">
+                  📢 ${escapeHTML(l.channel || '')}
+                </div>
+              </div>
+            `;
+          }
+        } else if (it.kind === 'message') {
           const m = it.data;
           const isBroadcast = m.type === 'broadcast';
-          const dtStr = new Date(m.timestamp || Date.now()).toLocaleString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
           
           if (isBroadcast) {
             return `
@@ -1832,7 +1967,6 @@
           }
         } else if (it.kind === 'card') {
           const cd = it.data;
-          const dtStr = new Date(cd.timestamp || Date.now()).toLocaleString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
           return `
             <div class="user-card" style="flex-direction:column;align-items:stretch;gap:10px;margin-bottom:10px;border-left:3px solid var(--gold-400);">
               <div style="display:flex;justify-content:space-between;align-items:center;">
