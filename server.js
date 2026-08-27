@@ -1278,85 +1278,158 @@ if (BOT_TOKEN) {
   console.log(`👑 Super Admin ID: ${SUPER_ADMIN_ID}`);
 
   // ==========================================
-  // PRAYER TIME NOTIFICATION SCHEDULER
+  // TELEGRAM USER PHOTO HELPER
   // ==========================================
+  async function fetchAndCacheTelegramPhoto(userId) {
+    if (!bot) return null;
+    try {
+      const photos = await bot.getUserProfilePhotos(Number(userId), { limit: 1 });
+      if (photos && photos.total_count > 0 && photos.photos[0] && photos.photos[0].length > 0) {
+        const bestPhoto = photos.photos[0][photos.photos[0].length - 1];
+        const fileLink = await bot.getFileLink(bestPhoto.file_id);
+        if (fileLink) {
+          const db = loadDB();
+          if (db.users[userId]) {
+            db.users[userId].photo_url = fileLink;
+            _leaderboardCache = null;
+            saveDB(db);
+          }
+          return fileLink;
+        }
+      }
+    } catch (err) {
+      // User privacy settings or bot blocked
+    }
+    return null;
+  }
+
   // ==========================================
   // PRAYER TIME NOTIFICATION SCHEDULER
   // ==========================================
   const PRAYER_NAMES = {
-    uz: { tong: 'Tong/Quyosh', bomdod: 'Bomdod', peshin: 'Peshin', asr: 'Asr', shom: 'Shom', xufton: 'Xufton' },
+    uz: { tong: 'Tong / Quyosh', bomdod: 'Bomdod', peshin: 'Peshin', asr: 'Asr', shom: 'Shom', xufton: 'Xufton' },
     ru: { tong: 'Восход', bomdod: 'Фаджр', peshin: 'Зухр', asr: 'Аср', shom: 'Магриб', xufton: 'Иша' },
     en: { tong: 'Sunrise', bomdod: 'Fajr', peshin: 'Dhuhr', asr: 'Asr', shom: 'Maghrib', xufton: 'Isha' },
   };
 
-  let lastNotifiedPrayer = ''; // Track to avoid duplicate notifications
+  const _sentPrayerNotifications = new Set();
 
-  setInterval(() => {
+  setInterval(async () => {
     try {
       const db = loadDB();
       const pt = db.settings.prayer_times;
-      if (!pt || !pt.enabled) return;
+      if (!pt || !pt.enabled || !pt.times) return;
 
       const nowUTC = new Date();
-      // Server UTC vaqtidan qat'iy nazar Toshkent vaqtini olamiz
       const tashkentTime = new Date(nowUTC.toLocaleString('en-US', { timeZone: 'Asia/Tashkent' }));
-      const notifyBefore = pt.notify_before || 10;
+      const notifyBefore = Number(pt.notify_before) || 10;
+      const nowHours = tashkentTime.getHours();
+      const nowMinutes = tashkentTime.getMinutes();
+      const currentTotalMinutes = nowHours * 60 + nowMinutes;
 
-      // Check each prayer time
+      const yyyy = tashkentTime.getFullYear();
+      const mm = String(tashkentTime.getMonth() + 1).padStart(2, '0');
+      const dd = String(tashkentTime.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+
       const prayerKeys = ['tong', 'bomdod', 'peshin', 'asr', 'shom', 'xufton'];
+
       for (const key of prayerKeys) {
         const timeStrRaw = pt.times[key];
         if (!timeStrRaw) continue;
 
-        // "04:30 05:00" kabi erkin yozilgan matndan birinchi soat formatini qidirib topamiz
         const match = timeStrRaw.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
         if (!match) continue;
-        
+
         const hours = Number(match[1]);
         const minutes = Number(match[2]);
-
-        // Calculate prayer time in minutes from midnight
         const prayerMinutes = hours * 60 + minutes;
-        const nowMinutes = tashkentTime.getHours() * 60 + tashkentTime.getMinutes();
-        const diff = prayerMinutes - nowMinutes;
+        const diff = prayerMinutes - currentTotalMinutes;
 
-        // Send notification X minutes before prayer
-        const yyyy = tashkentTime.getFullYear();
-        const mm = String(tashkentTime.getMonth() + 1).padStart(2, '0');
-        const dd = String(tashkentTime.getDate()).padStart(2, '0');
-        const notifyKey = `${key}_${yyyy}-${mm}-${dd}`;
-        if (diff === notifyBefore && lastNotifiedPrayer !== notifyKey) {
-          lastNotifiedPrayer = notifyKey;
+        // 1. Notification BEFORE prayer time (e.g. 10 minutes before)
+        const beforeKey = `before_${key}_${todayStr}`;
+        if (diff <= notifyBefore && diff > 0 && !_sentPrayerNotifications.has(beforeKey)) {
+          _sentPrayerNotifications.add(beforeKey);
 
-          console.log(`🕌 Namoz eslatma yuborilmoqda: ${key} (${timeStr})`);
+          console.log(`🕌 Namoz eslatma yuborilmoqda: ${key} (${timeStrRaw}) - ${diff} daqiqa qoldi`);
 
-          // Send to all non-blocked users
+          const location = pt.location || '';
+          const mosque = pt.mosque || '';
+          const footer = pt.footer_text ? `\n\n_${pt.footer_text}_` : '';
+
           const users = Object.values(db.users).filter(u => !u.blocked);
-          let sent = 0;
-
           for (const user of users) {
             const lang = user.language || 'uz';
             const prayerName = (PRAYER_NAMES[lang] || PRAYER_NAMES.uz)[key] || key;
-            const location = pt.location || '';
-            const mosque = pt.mosque || '';
 
-            let message = `🕌  <b>${prayerName} namozi</b>\n\n`;
+            let message = `🕌  <b>${prayerName} namozi eslatmasi</b>\n\n`;
             message += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
-            if (location) message += `📍 ${location}\n`;
-            if (mosque) message += `🕌 ${mosque}\n`;
-            message += `\n⏳ ${notifyBefore} daqiqadan so'ng namoz vaqti kiradi!\n`;
-            message += `\n🤲 Alloh qabul qilsin!`;
+            if (location) message += `📍 Hudud: <b>${location}</b>\n`;
+            if (mosque) message += `🕌 Masjid: <b>${mosque}</b>\n`;
+            message += `\n⏳ <b>${diff} daqiqadan so'ng</b> namoz vaqti kiradi!\n`;
+            message += `\n🤲 <i>Alloh ibodatlaringizni qabul qilsin!</i>`;
+            if (footer) message += footer;
 
-            safeSend(user.telegram_id, message, { parse_mode: 'HTML' })
-              .then(() => { sent++; })
-              .catch(() => {});
+            safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
+          }
+
+          // Also broadcast to registered groups
+          if (db.chats) {
+            for (const chatId of Object.keys(db.chats)) {
+              let grpMsg = `🕌 <b>${PRAYER_NAMES.uz[key] || key} namozi eslatmasi</b>\n\n`;
+              grpMsg += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
+              if (location) grpMsg += `📍 Hudud: <b>${location}</b>\n`;
+              if (mosque) grpMsg += `🕌 Masjid: <b>${mosque}</b>\n`;
+              grpMsg += `\n⏳ <b>${diff} daqiqadan so'ng</b> namoz vaqti kiradi!\n`;
+              if (footer) grpMsg += footer;
+              safeSend(chatId, grpMsg, { parse_mode: 'HTML' }).catch(() => {});
+            }
+          }
+        }
+
+        // 2. Notification AT EXACT prayer time (diff === 0)
+        const exactKey = `exact_${key}_${todayStr}`;
+        if (diff === 0 && !_sentPrayerNotifications.has(exactKey)) {
+          _sentPrayerNotifications.add(exactKey);
+
+          console.log(`🕌 Namoz vaqti kirdi: ${key} (${timeStrRaw})`);
+
+          const location = pt.location || '';
+          const mosque = pt.mosque || '';
+          const footer = pt.footer_text ? `\n\n_${pt.footer_text}_` : '';
+
+          const users = Object.values(db.users).filter(u => !u.blocked);
+          for (const user of users) {
+            const lang = user.language || 'uz';
+            const prayerName = (PRAYER_NAMES[lang] || PRAYER_NAMES.uz)[key] || key;
+
+            let message = `🕌  <b>${prayerName} namozi vaqti kirdi!</b>\n\n`;
+            message += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
+            if (location) message += `📍 Hudud: <b>${location}</b>\n`;
+            if (mosque) message += `🕌 Masjid: <b>${mosque}</b>\n`;
+            message += `\n🤲 <i>Namozni o'z vaqtida ado etaylik. Alloh qabul qilsin!</i>`;
+            if (footer) message += footer;
+
+            safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
+          }
+
+          if (db.chats) {
+            for (const chatId of Object.keys(db.chats)) {
+              let grpMsg = `🕌 <b>${PRAYER_NAMES.uz[key] || key} namozi vaqti kirdi!</b>\n\n`;
+              grpMsg += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
+              if (location) grpMsg += `📍 Hudud: <b>${location}</b>\n`;
+              if (mosque) grpMsg += `🕌 Masjid: <b>${mosque}</b>\n`;
+              grpMsg += `\n🤲 <i>Namozni o'z vaqtida ado etaylik.</i>`;
+              if (footer) grpMsg += footer;
+              safeSend(chatId, grpMsg, { parse_mode: 'HTML' }).catch(() => {});
+            }
           }
         }
       }
     } catch (e) {
       console.error('Prayer notification error:', e.message);
     }
-  }, 60000); // Check every 1 minute
+  }, 15000); // Check every 15 seconds for precision
 
   console.log('🕌 Namoz eslatma tizimi ishga tushdi!');
 
@@ -1460,10 +1533,44 @@ function adminMiddleware(req, res, next) {
 // ============================================
 app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
+// Avatar endpoint — serves direct Telegram avatar or gradient SVG avatar
+app.get('/api/avatar/:telegram_id', async (req, res) => {
+  const tid = Number(req.params.telegram_id);
+  const user = getUser(tid);
+  if (user && user.photo_url) {
+    return res.redirect(user.photo_url);
+  }
+  if (bot) {
+    const photo = await fetchAndCacheTelegramPhoto(tid);
+    if (photo) {
+      return res.redirect(photo);
+    }
+  }
+  // Return sleek SVG vector avatar
+  const initial = user?.first_name ? Array.from(user.first_name.trim())[0].toUpperCase() : '?';
+  const hue = ((initial.charCodeAt(0) || 65) * 37 + (tid || 0) * 17) % 360;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="hsl(${hue}, 70%, 40%)"/>
+        <stop offset="100%" stop-color="hsl(${(hue + 40) % 360}, 85%, 25%)"/>
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="50" fill="url(#g)"/>
+    <text x="50" y="64" font-size="44" font-weight="900" font-family="-apple-system,BlinkMacSystemFont,sans-serif" fill="#ffffff" text-anchor="middle">${initial}</text>
+  </svg>`;
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.send(svg);
+});
+
 app.post('/api/user', (req, res) => {
   const { telegram_id, first_name, last_name, username, photo_url } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id is required' });
   const user = upsertUser({ telegram_id, first_name, last_name, username, photo_url });
+  if (!photo_url && bot) {
+    fetchAndCacheTelegramPhoto(telegram_id).catch(() => {});
+  }
   res.json({ ...user, is_admin: isAdmin(telegram_id) });
 });
 

@@ -491,7 +491,7 @@ function updateProfileDisplay() {
   document.getElementById('profileName').textContent = user.first_name || 'Foydalanuvchi';
   document.getElementById('profileUsername').textContent = user.username ? `@${user.username}` : '';
   
-  const avatarHtml = generateAvatarHTML(user.first_name, user.photo_url);
+  const avatarHtml = generateAvatarHTML(user.first_name, user.photo_url, STATE.telegramId);
   document.getElementById('profileAvatar').innerHTML = avatarHtml;
 
   document.getElementById('profileCount').textContent = formatNumber(user.count || 0);
@@ -556,11 +556,11 @@ async function updateLeaderboard() {
     if (user && (user.total_all_time || 0) > 0) {
       if (nameEl) nameEl.textContent = user.first_name || 'Noma\'lum';
       if (scoreEl) scoreEl.textContent = formatNumber(user.total_all_time);
-      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url);
+      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url, user.telegram_id);
     } else if (user) {
       if (nameEl) nameEl.textContent = user.first_name || '—';
       if (scoreEl) scoreEl.textContent = '0';
-      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url);
+      if (avatarEl) avatarEl.innerHTML = generateAvatarHTML(user.first_name, user.photo_url, user.telegram_id);
     } else {
       if (nameEl) nameEl.textContent = '—';
       if (scoreEl) scoreEl.textContent = '0';
@@ -577,7 +577,7 @@ async function updateLeaderboard() {
     const rank = index + 4;
     const name = user.first_name || 'Noma\'lum';
     const isMe = user.telegram_id === STATE.telegramId;
-    const avatarHtml = generateAvatarHTML(name, user.photo_url);
+    const avatarHtml = generateAvatarHTML(name, user.photo_url, user.telegram_id);
     
     const item = document.createElement('div');
     item.className = `lb-item${isMe ? ' is-me' : ''}`;
@@ -611,7 +611,7 @@ async function updateLeaderboard() {
       myCard.className = 'lb-item is-me lb-my-rank-card';
       myCard.style.marginTop = '12px';
       myCard.style.borderStyle = 'dashed';
-      const myAvatarHtml = generateAvatarHTML(STATE.user.first_name, STATE.user.photo_url);
+      const myAvatarHtml = generateAvatarHTML(STATE.user.first_name, STATE.user.photo_url, STATE.telegramId);
       myCard.innerHTML = `
         <span class="lb-rank">#${rankData.rank}</span>
         <div class="lb-avatar">${myAvatarHtml}</div>
@@ -796,21 +796,29 @@ function formatDate(dateStr) {
   }
 }
 
-function generateAvatarHTML(name, photo_url) {
+function generateAvatarHTML(name, photo_url, telegramId) {
   const tg = window.Telegram?.WebApp;
   let p_url = photo_url;
-  if (!p_url && tg?.initDataUnsafe?.user?.photo_url && (!name || name === tg.initDataUnsafe.user.first_name)) {
+  if (!p_url && tg?.initDataUnsafe?.user?.photo_url && (!telegramId || String(telegramId) === String(tg.initDataUnsafe.user.id))) {
     p_url = tg.initDataUnsafe.user.photo_url;
+  }
+  if (!p_url && telegramId) {
+    p_url = `/api/avatar/${telegramId}`;
   }
 
   const initial = Array.from((name || '?').trim())[0]?.toUpperCase() || '?';
-  const hue = (initial.charCodeAt(0) * 37) % 360;
-  const divHTML = `<div style="width:100%;height:100%;background:hsl(${hue},45%,35%);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:50%;">${initial}</div>`;
+  const tidNum = Number(telegramId) || (name ? name.charCodeAt(0) : 1);
+  const hue = ((initial.charCodeAt(0) || 65) * 37 + tidNum * 17) % 360;
+  const gradientBg = `linear-gradient(135deg, hsl(${hue}, 65%, 38%) 0%, hsl(${(hue + 45) % 360}, 75%, 22%) 100%)`;
+
   if (p_url) {
-    const safeDiv = divHTML.replace(/"/g, '&quot;');
-    return `<img src="${p_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="" onerror="this.outerHTML='${safeDiv}'">`;
+    return `<div class="avatar-box" style="position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:${gradientBg};display:flex;align-items:center;justify-content:center;">
+      <span style="font-weight:800;color:#ffffff;font-size:1.15em;user-select:none;">${initial}</span>
+      <img src="${p_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;transition:opacity 0.2s ease-in;" loading="lazy" alt="${name || ''}" onerror="this.style.display='none'">
+    </div>`;
   }
-  return divHTML;
+
+  return `<div class="avatar-box" style="width:100%;height:100%;border-radius:50%;background:${gradientBg};color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15em;box-shadow:inset 0 0 10px rgba(0,0,0,0.3);user-select:none;">${initial}</div>`;
 }
 
 // ============================================
