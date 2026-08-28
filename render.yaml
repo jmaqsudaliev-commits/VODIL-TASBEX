@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tap-bot-pro
+    env: node
+    plan: free
+    branch: tap-bot
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: BOT_TOKEN
+        value: 8926333662:AAE7V8KKaOR5hqTGftfmLLXdm4AS9Mp1SBQ
+      - key: ADMIN_ID
+        value: "8809344628"
+      - key: MONGODB_URI
+        value: mongodb+srv://jmaqsudaliev_db_user:uZ25aq1X0Sobo5IU@cluster0.ihqkbzw.mongodb.net/tap_bot_db?retryWrites=true&w=majority&appName=Cluster0
+      - key: MONGODB_DB_NAME
+        value: tap_bot_db
+      - key: PORT
+        value: "3000"
