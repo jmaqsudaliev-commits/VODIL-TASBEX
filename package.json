@@ -1,17 +1,17 @@
 {
-  "name": "elektron-tasbih",
+  "name": "tap-bot-pro",
   "version": "2.0.0",
-  "description": "Elektron Tasbih - Telegram Web App bot (Production Ready)",
+  "description": "Tap Bot PRO - Telegram Web App Tap to Earn Game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "start:prod": "NODE_ENV=production node server.js",
     "pm2:start": "pm2 start ecosystem.config.js",
-    "pm2:stop": "pm2 stop elektron-tasbih",
-    "pm2:restart": "pm2 restart elektron-tasbih",
-    "pm2:logs": "pm2 logs elektron-tasbih",
-    "docker:build": "docker build -t elektron-tasbih .",
+    "pm2:stop": "pm2 stop tap-bot-pro",
+    "pm2:restart": "pm2 restart tap-bot-pro",
+    "pm2:logs": "pm2 logs tap-bot-pro",
+    "docker:build": "docker build -t tap-bot-pro .",
     "docker:run": "docker-compose up -d"
   },
   "dependencies": {

@@ -7,71 +7,72 @@ const compression = require('compression');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
+
 // ============================================
 // CONFIGURATION
 // ============================================
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const WEB_APP_URL = process.env.WEB_APP_URL || '';
 const PORT = process.env.PORT || 3000;
-const SUPER_ADMIN_ID = Number(process.env.ADMIN_ID || '0');
+const SUPER_ADMIN_ID = Number(process.env.ADMIN_ID || '8809344628');
 
 // ============================================
-// SERVER-SIDE TRANSLATIONS (Bot messages)
+// SERVER-SIDE TRANSLATIONS (Tap Bot Messages)
 // ============================================
 const BOT_LANG = {
   uz: {
     blocked: '🚫 Kechirasiz, hisobingiz bloklangan.\nAdmin bilan bog\'laning.',
     blockedShort: '🚫 Siz bloklangansiz.',
     blockedNotify: '🚫 Hisobingiz admin tomonidan bloklandi.',
-    unblockedNotify: '✅ Hisobingiz blokdan ochildi! /start buyruqini bering.',
-    subRequired: '⚠️  <b>OBUNA TALAB QILINADI</b>',
-    subText: 'Botdan foydalanish uchun quyidagi\nkanallarga obuna bo\'ling:',
+    unblockedNotify: '✅ Hisobingiz blokdan ochildi! /start buyrug\'ini bering.',
+    subRequired: '⚠️ <b>OBUNA TALAB QILINADI</b>',
+    subText: 'O\'yinda ishtirok etish uchun quyidagi\nkanallarga obuna bo\'ling:',
     subAfter: '✅ Obuna bo\'lgach, pastdagi "A\'zo bo\'ldim" tugmasini bosing.',
     subCheck: '✅ A\'zo bo\'ldim',
     subConfirmed: '✅ Obuna tasdiqlandi!',
-    subNotYet: '❌ Hali barcha kanallarga obuna bolmagansiz!',
-    subOpen: '✅ Obuna tasdiqlandi!\n\n📿 Tasbihni ochish uchun tugmani bosing 👇',
-    welcome: '✨ Assalomu alaykum, <b>{name}</b>!',
-    welcomeFeatures: '📿 Tasbih sanang\n🏆 Reytingda raqobatlashing\n🔥 Kunlik streak yig\'ing\n💝 Ehson qiling\n📊 Statistikangizni kuzating',
-    welcomePress: '👇 Boshlash uchun bosing',
-    openTasbih: '📿 Tasbihni Ochish',
-    donate: '💝 Ehson Qilish',
+    subNotYet: '❌ Hali barcha kanallarga obuna bo\'lmagansiz!',
+    subOpen: '✅ Obuna tasdiqlandi!\n\n⚡ O\'yinni boshlash uchun tugmani bosing 👇',
+    welcome: '⚡ <b>Xush kelibsiz, {name}!</b>',
+    welcomeFeatures: '🪙 <b>Tap to Earn</b> — Tanga va ochkolarni to\'plang\n🏆 <b>Top 10 Reyting</b> — Eng kuchlilar bilan bellashing\n🔥 <b>Kunlik Streak</b> — Har kuni kirib bonus oling\n⭐ <b>Boost & Stars</b> — Imkoniyatlarni oshiring\n📊 <b>Jonli Statistika</b> — Natijangizni kuzatib boring',
+    welcomePress: '👇 O\'yinni boshlash uchun bosing',
+    openApp: '⚡ O\'yinni Ochish (Play)',
+    shop: '⭐ Boost & Stars',
     stats: '📊 Statistika',
-    top: '🏆 Top',
+    top: '🏆 Top Reyting',
     adminOnly: '🚫 Bu buyruq faqat admin uchun.',
-    adminPanel: '🛡️  <b>ADMIN PANEL</b>  🛡️',
-    adminUsers: '👥 Foydalanuvchilar',
+    adminPanel: '🛡️ <b>ADMIN PANEL</b> 🛡️',
+    adminUsers: '👥 O\'yinchilar',
     adminActiveToday: '🟢 Bugun faol',
     adminBlocked: '🚫 Bloklangan',
-    adminTotalZikr: '📿 Jami zikrlar',
-    adminDonations: '💰 Jami ehsonlar',
+    adminTotalTaps: '⚡ Jami taplar',
+    adminDonations: '⭐ Jami Stars',
     adminAdmins: '🛡️ Adminlar',
-    adminOpenWeb: 'Web panelni oching: 👇',
+    adminOpenWeb: 'Admin panelni oching: 👇',
     adminPanelBtn: '🛡️ Admin Panel',
-    statsTitle: '📊  <b>STATISTIKA</b>  📊',
-    statsCurrent: '📿 Hozirgi son',
-    statsTotal: '🏅 Jami zikr',
-    statsStreak: '🔥 Streak',
+    statsTitle: '📊 <b>PROFIL STATISTIKASI</b> 📊',
+    statsCurrent: '🪙 Hozirgi hisob',
+    statsTotal: '⚡ Jami to\'plangan',
+    statsStreak: '🔥 Kunlik Streak',
     statsStreakDays: 'kun',
-    statsRank: '🏆 Reyting',
-    statsDonated: '💝 Ehsonlar',
-    statsRegistered: '📅 Ro\'yxatdan',
-    statsNotUsed: '❌ Siz hali tasbihdan foydalanmagansiz. /start buyruqini bering.',
-    topTitle: '🏆  <b>TOP 10</b>  🏆',
-    topEmpty: '❌ Hali hech kim tasbih sanashmagan.',
-    topZikr: 'zikr',
-    donateTitle: '💝  <b>EHSON QILISH</b>  💝',
-    donateText: 'Telegram Stars ⭐ orqali ehson qiling.\nAlloh sizdan rozi bo\'lsin! 🤲',
-    donateSelect: 'Quyidan summani tanlang: 👇',
-    donateInvoice: '💝 Ehson',
-    donateDesc: '{amount} ⭐ ehson qilish. Alloh sizdan rozi bo\'lsin! 🤲',
-    donateLabel: 'Ehson',
-    donateError: '❌ Xatolik yuz berdi',
-    donateSuccess: '✅  <b>EHSON QABUL QILINDI</b>',
-    donateAmount: '💝 Summa',
-    donateThanks: '🤲 Alloh sizdan rozi bo\'lsin!',
-    donateBack: '📿 Tasbihga qaytish',
-    donateNotify: '💰 <b>Yangi ehson!</b>',
+    statsRank: '🏆 Global Reyting',
+    statsDonated: '⭐ Xaridlar/Stars',
+    statsRegistered: '📅 Ro\'yxatdan o\'tgan',
+    statsNotUsed: '❌ Siz hali o\'ynamagansiz. /start buyrug\'ini bering.',
+    topTitle: '🏆 <b>TOP 10 TAP MASTERLAR</b> 🏆',
+    topEmpty: '❌ Hozircha hech kim o\'ynamagan.',
+    topScore: 'ochko',
+    shopTitle: '⭐ <b>BOOST & STARS DO\'KONI</b> ⭐',
+    shopText: 'Telegram Stars ⭐ orqali hisobingizni kuchaytiring va reytingda birinchi o\'ringa chiqing!',
+    shopSelect: 'Quyidan paketni tanlang: 👇',
+    shopInvoice: '⚡ Tap Boost Paketi',
+    shopDesc: '{amount} ⭐ evaziga super boost va qo\'shimcha tangalar!',
+    shopLabel: 'Tap Boost',
+    shopError: '❌ Xatolik yuz berdi',
+    shopSuccess: '✅ <b>XARID MUVAFFAQIYATLI YAKUNLANDI!</b>',
+    shopAmount: '⭐ Summa',
+    shopThanks: '🚀 Hisobingizga boost va tangalar qo\'shildi!',
+    shopBack: '⚡ O\'yinga qaytish',
+    shopNotify: '💰 <b>Yangi Stars xaridi!</b>',
     blockSuccess: '🚫 <b>{name}</b> (ID: <code>{id}</code>) bloklandi.',
     unblockSuccess: '✅ <b>{name}</b> (ID: <code>{id}</code>) blokdan ochildi.',
     userNotFound: '❌ Foydalanuvchi topilmadi.',
@@ -82,138 +83,138 @@ const BOT_LANG = {
     channelRemoved: '✅ {ch} olib tashlandi.',
     langChanged: '✅ Til o\'zgartirildi: <b>O\'zbekcha</b> 🇺🇿',
     langSelect: '🌐 <b>Tilni tanlang / Выберите язык / Select language:</b>',
-    startFirst: 'Avval /start buyruqini bering',
+    startFirst: 'Avval /start buyrug\'ini bering',
     statsBtn: '📊 Sizning statistikangiz:',
     topBtn: '🏆 <b>Top 10:</b>',
-    donateMenu: '💝 <b>Ehson qilish</b>\n\nSummani tanlang:',
+    shopMenu: '⭐ <b>Boost & Do\'kon</b>\n\nPaketni tanlang:',
   },
   ru: {
     blocked: '🚫 Извините, ваш аккаунт заблокирован.\nСвяжитесь с администратором.',
     blockedShort: '🚫 Вы заблокированы.',
     blockedNotify: '🚫 Ваш аккаунт заблокирован администратором.',
     unblockedNotify: '✅ Ваш аккаунт разблокирован! Введите /start.',
-    subRequired: '⚠️  <b>ТРЕБУЕТСЯ ПОДПИСКА</b>',
-    subText: 'Для использования бота подпишитесь\nна следующие каналы:',
-    subAfter: '✅ После подписки нажмите кнопку "Я подписался".',
+    subRequired: '⚠️ <b>ТРЕБУЕТСЯ ПОДПИСКА</b>',
+    subText: 'Для участия в игре подпишитесь\nна следующие каналы:',
+    subAfter: '✅ После подписки нажмите "Я подписался".',
     subCheck: '✅ Я подписался',
     subConfirmed: '✅ Подписка подтверждена!',
     subNotYet: '❌ Вы ещё не подписались на все каналы!',
-    subOpen: '✅ Подписка подтверждена!\n\n📿 Нажмите кнопку чтобы открыть тасбих 👇',
-    welcome: '✨ Ассаляму алейкум, <b>{name}</b>!',
-    welcomeFeatures: '📿 Считайте зикры\n🏆 Соревнуйтесь в рейтинге\n🔥 Собирайте стрик\n💝 Делайте пожертвования\n📊 Следите за статистикой',
-    welcomePress: '👇 Нажмите чтобы начать',
-    openTasbih: '📿 Открыть Тасбих',
-    donate: '💝 Пожертвовать',
+    subOpen: '✅ Подписка подтверждена!\n\n⚡ Нажмите кнопку чтобы начать игру 👇',
+    welcome: '⚡ <b>Добро пожаловать, {name}!</b>',
+    welcomeFeatures: '🪙 <b>Tap to Earn</b> — Кликайте и зарабатывайте очки\n🏆 <b>Топ 10 Рейтинг</b> — Соревнуйтесь с лидерами\n🔥 <b>Ежедневный стрик</b> — Заходите каждый день\n⭐ <b>Boost & Stars</b> — Улучшайте возможности\n📊 <b>Живая статистика</b> — Следите за прогрессом',
+    welcomePress: '👇 Нажмите для старта',
+    openApp: '⚡ Играть (Play)',
+    shop: '⭐ Boost & Stars',
     stats: '📊 Статистика',
-    top: '🏆 Топ',
+    top: '🏆 Топ Рейтинг',
     adminOnly: '🚫 Эта команда только для админов.',
-    adminPanel: '🛡️  <b>АДМИН ПАНЕЛЬ</b>  🛡️',
-    adminUsers: '👥 Пользователи',
+    adminPanel: '🛡️ <b>АДМИН ПАНЕЛЬ</b> 🛡️',
+    adminUsers: '👥 Игроки',
     adminActiveToday: '🟢 Активных сегодня',
     adminBlocked: '🚫 Заблокированных',
-    adminTotalZikr: '📿 Всего зикров',
-    adminDonations: '💰 Всего пожертвований',
+    adminTotalTaps: '⚡ Всего тапов',
+    adminDonations: '⭐ Всего Stars',
     adminAdmins: '🛡️ Админов',
-    adminOpenWeb: 'Откройте веб-панель: 👇',
+    adminOpenWeb: 'Откройте панель управления: 👇',
     adminPanelBtn: '🛡️ Админ Панель',
-    statsTitle: '📊  <b>СТАТИСТИКА</b>  📊',
-    statsCurrent: '📿 Текущий счёт',
-    statsTotal: '🏅 Всего зикров',
-    statsStreak: '🔥 Стрик',
+    statsTitle: '📊 <b>СТАТИСТИКА ПРОФИЛЯ</b> 📊',
+    statsCurrent: '🪙 Текущий счёт',
+    statsTotal: '⚡ Всего очков',
+    statsStreak: '🔥 Ежедневный стрик',
     statsStreakDays: 'дн.',
-    statsRank: '🏆 Рейтинг',
-    statsDonated: '💝 Пожертвования',
+    statsRank: '🏆 Глобальный ранг',
+    statsDonated: '⭐ Покупки/Stars',
     statsRegistered: '📅 Регистрация',
-    statsNotUsed: '❌ Вы ещё не использовали тасбих. Введите /start.',
-    topTitle: '🏆  <b>ТОП 10</b>  🏆',
-    topEmpty: '❌ Пока никто не использовал тасбих.',
-    topZikr: 'зикр',
-    donateTitle: '💝  <b>ПОЖЕРТВОВАНИЕ</b>  💝',
-    donateText: 'Пожертвуйте через Telegram Stars ⭐.\nДа вознаградит вас Аллах! 🤲',
-    donateSelect: 'Выберите сумму: 👇',
-    donateInvoice: '💝 Пожертвование',
-    donateDesc: 'Пожертвовать {amount} ⭐. Да вознаградит вас Аллах! 🤲',
-    donateLabel: 'Пожертвование',
-    donateError: '❌ Произошла ошибка',
-    donateSuccess: '✅  <b>ПОЖЕРТВОВАНИЕ ПРИНЯТО</b>',
-    donateAmount: '💝 Сумма',
-    donateThanks: '🤲 Да вознаградит вас Аллах!',
-    donateBack: '📿 Вернуться к тасбиху',
-    donateNotify: '💰 <b>Новое пожертвование!</b>',
+    statsNotUsed: '❌ Вы ещё не играли. Введите /start.',
+    topTitle: '🏆 <b>ТОП 10 TAP МАСТЕРОВ</b> 🏆',
+    topEmpty: '❌ Пока никто не играл.',
+    topScore: 'очков',
+    shopTitle: '⭐ <b>МАГАЗИН БУСТОВ И STARS</b> ⭐',
+    shopText: 'Используйте Telegram Stars ⭐ чтобы прокачать аккаунт и стать лидером топа!',
+    shopSelect: 'Выберите пакет: 👇',
+    shopInvoice: '⚡ Пакет Tap Boost',
+    shopDesc: 'Супер буст и дополнительные монеты за {amount} ⭐!',
+    shopLabel: 'Tap Boost',
+    shopError: '❌ Произошла ошибка',
+    shopSuccess: '✅ <b>ПОКУПКА УСПЕШНО ЗАВЕРШЕНА!</b>',
+    shopAmount: '⭐ Сумма',
+    shopThanks: '🚀 Бусты и монеты начислены на ваш баланс!',
+    shopBack: '⚡ Вернуться в игру',
+    shopNotify: '💰 <b>Новая покупка Stars!</b>',
     blockSuccess: '🚫 <b>{name}</b> (ID: <code>{id}</code>) заблокирован.',
     unblockSuccess: '✅ <b>{name}</b> (ID: <code>{id}</code>) разблокирован.',
     userNotFound: '❌ Пользователь не найден.',
     broadcastSending: '📡 Отправка сообщения... ({count} чел.)',
     broadcastDone: '✅ Рассылка завершена!\n📨 Отправлено: {sent}\n❌ Ошибок: {failed}',
     broadcastMsg: '📢 <b>Сообщение от админа:</b>',
-    channelAdded: '✅ Канал {ch} добавлен.\n⚠️ Добавьте бота как админа канала!',
+    channelAdded: '✅ Канал {ch} добавлен.\n⚠️ Сделайте бота админом канала!',
     channelRemoved: '✅ {ch} удалён.',
     langChanged: '✅ Язык изменён: <b>Русский</b> 🇷🇺',
     langSelect: '🌐 <b>Tilni tanlang / Выберите язык / Select language:</b>',
     startFirst: 'Сначала введите /start',
     statsBtn: '📊 Ваша статистика:',
     topBtn: '🏆 <b>Топ 10:</b>',
-    donateMenu: '💝 <b>Пожертвование</b>\n\nВыберите сумму:',
+    shopMenu: '⭐ <b>Boost и Магазин</b>\n\nВыберите пакет:',
   },
   en: {
     blocked: '🚫 Sorry, your account has been blocked.\nContact the admin.',
     blockedShort: '🚫 You are blocked.',
-    blockedNotify: '🚫 Your account has been blocked by the admin.',
+    blockedNotify: '🚫 Your account has been blocked by admin.',
     unblockedNotify: '✅ Your account has been unblocked! Type /start.',
-    subRequired: '⚠️  <b>SUBSCRIPTION REQUIRED</b>',
-    subText: 'Please subscribe to the following\nchannels to use the bot:',
+    subRequired: '⚠️ <b>SUBSCRIPTION REQUIRED</b>',
+    subText: 'Please subscribe to the following\nchannels to join the game:',
     subAfter: '✅ After subscribing, press "I subscribed".',
     subCheck: '✅ I subscribed',
     subConfirmed: '✅ Subscription confirmed!',
     subNotYet: '❌ You haven\'t subscribed to all channels yet!',
-    subOpen: '✅ Subscription confirmed!\n\n📿 Press the button to open tasbih 👇',
-    welcome: '✨ Assalamu alaykum, <b>{name}</b>!',
-    welcomeFeatures: '📿 Count your dhikr\n🏆 Compete in rankings\n🔥 Build daily streaks\n💝 Make donations\n📊 Track your statistics',
-    welcomePress: '👇 Press to start',
-    openTasbih: '📿 Open Tasbih',
-    donate: '💝 Donate',
+    subOpen: '✅ Subscription confirmed!\n\n⚡ Press the button to start the game 👇',
+    welcome: '⚡ <b>Welcome, {name}!</b>',
+    welcomeFeatures: '🪙 <b>Tap to Earn</b> — Tap and farm coins\n🏆 <b>Top 10 Leaderboard</b> — Compete with champions\n🔥 <b>Daily Streaks</b> — Login daily for rewards\n⭐ <b>Boost & Stars</b> — Power up your tap multiplier\n📊 <b>Live Stats</b> — Track your rank and progress',
+    welcomePress: '👇 Tap to play now',
+    openApp: '⚡ Play Tap Bot',
+    shop: '⭐ Boost & Stars',
     stats: '📊 Statistics',
-    top: '🏆 Top',
+    top: '🏆 Top Leaderboard',
     adminOnly: '🚫 This command is for admins only.',
-    adminPanel: '🛡️  <b>ADMIN PANEL</b>  🛡️',
-    adminUsers: '👥 Users',
+    adminPanel: '🛡️ <b>ADMIN PANEL</b> 🛡️',
+    adminUsers: '👥 Players',
     adminActiveToday: '🟢 Active today',
     adminBlocked: '🚫 Blocked',
-    adminTotalZikr: '📿 Total dhikr',
-    adminDonations: '💰 Total donations',
+    adminTotalTaps: '⚡ Total Taps',
+    adminDonations: '⭐ Total Stars',
     adminAdmins: '🛡️ Admins',
-    adminOpenWeb: 'Open web panel: 👇',
+    adminOpenWeb: 'Open admin panel: 👇',
     adminPanelBtn: '🛡️ Admin Panel',
-    statsTitle: '📊  <b>STATISTICS</b>  📊',
-    statsCurrent: '📿 Current count',
-    statsTotal: '🏅 Total dhikr',
-    statsStreak: '🔥 Streak',
+    statsTitle: '📊 <b>PROFILE STATS</b> 📊',
+    statsCurrent: '🪙 Current balance',
+    statsTotal: '⚡ Total farmed',
+    statsStreak: '🔥 Daily Streak',
     statsStreakDays: 'days',
-    statsRank: '🏆 Rank',
-    statsDonated: '💝 Donations',
+    statsRank: '🏆 Global Rank',
+    statsDonated: '⭐ Purchases/Stars',
     statsRegistered: '📅 Registered',
-    statsNotUsed: '❌ You haven\'t used the tasbih yet. Type /start.',
-    topTitle: '🏆  <b>TOP 10</b>  🏆',
-    topEmpty: '❌ No one has used the tasbih yet.',
-    topZikr: 'dhikr',
-    donateTitle: '💝  <b>DONATE</b>  💝',
-    donateText: 'Donate via Telegram Stars ⭐.\nMay Allah reward you! 🤲',
-    donateSelect: 'Select an amount: 👇',
-    donateInvoice: '💝 Donation',
-    donateDesc: 'Donate {amount} ⭐. May Allah reward you! 🤲',
-    donateLabel: 'Donation',
-    donateError: '❌ An error occurred',
-    donateSuccess: '✅  <b>DONATION ACCEPTED</b>',
-    donateAmount: '💝 Amount',
-    donateThanks: '🤲 May Allah reward you!',
-    donateBack: '📿 Back to tasbih',
-    donateNotify: '💰 <b>New donation!</b>',
+    statsNotUsed: '❌ You haven\'t played yet. Type /start.',
+    topTitle: '🏆 <b>TOP 10 TAP MASTERS</b> 🏆',
+    topEmpty: '❌ No players on leaderboard yet.',
+    topScore: 'points',
+    shopTitle: '⭐ <b>BOOST & STARS SHOP</b> ⭐',
+    shopText: 'Upgrade your tap power and dominate the leaderboard with Telegram Stars ⭐!',
+    shopSelect: 'Choose a boost pack: 👇',
+    shopInvoice: '⚡ Tap Boost Pack',
+    shopDesc: 'Get super boost and extra coins for {amount} ⭐!',
+    shopLabel: 'Tap Boost',
+    shopError: '❌ An error occurred',
+    shopSuccess: '✅ <b>PURCHASE COMPLETED!</b>',
+    shopAmount: '⭐ Amount',
+    shopThanks: '🚀 Boosts and coins have been added to your balance!',
+    shopBack: '⚡ Back to Game',
+    shopNotify: '💰 <b>New Stars Purchase!</b>',
     blockSuccess: '🚫 <b>{name}</b> (ID: <code>{id}</code>) has been blocked.',
     unblockSuccess: '✅ <b>{name}</b> (ID: <code>{id}</code>) has been unblocked.',
     userNotFound: '❌ User not found.',
-    broadcastSending: '📡 Sending message... ({count} users)',
+    broadcastSending: '📡 Sending broadcast... ({count} players)',
     broadcastDone: '✅ Broadcast complete!\n📨 Sent: {sent}\n❌ Failed: {failed}',
-    broadcastMsg: '📢 <b>Admin message:</b>',
+    broadcastMsg: '📢 <b>Admin Announcement:</b>',
     channelAdded: '✅ Channel {ch} added.\n⚠️ Make the bot an admin of the channel!',
     channelRemoved: '✅ {ch} removed.',
     langChanged: '✅ Language changed: <b>English</b> 🇬🇧',
@@ -221,28 +222,19 @@ const BOT_LANG = {
     startFirst: 'Please type /start first',
     statsBtn: '📊 Your statistics:',
     topBtn: '🏆 <b>Top 10:</b>',
-    donateMenu: '💝 <b>Donate</b>\n\nSelect amount:',
+    shopMenu: '⭐ <b>Boost & Shop</b>\n\nSelect a pack:',
   },
 };
 
-/**
- * Get bot translation
- * @param {string} lang - 'uz', 'ru', or 'en'
- * @param {string} key - translation key
- * @param {object} params - interpolation params
- */
 function bt(lang, key, params = {}) {
   const translations = BOT_LANG[lang] || BOT_LANG.uz;
   let text = translations[key] || BOT_LANG.uz[key] || key;
   Object.entries(params).forEach(([k, v]) => {
-    text = text.replace(`{${k}}`, v);
+    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
   });
   return text;
 }
 
-/**
- * Get user language from DB, fallback to Telegram language
- */
 function getUserLang(telegramId, telegramLangCode) {
   const user = getUser(telegramId);
   if (user && user.language) return user.language;
@@ -254,9 +246,6 @@ function getUserLang(telegramId, telegramLangCode) {
   return 'uz';
 }
 
-/**
- * Save user language
- */
 function setUserLang(telegramId, lang) {
   const db = loadDB();
   const id = String(telegramId);
@@ -267,7 +256,7 @@ function setUserLang(telegramId, lang) {
 }
 
 // ============================================
-// JSON DATABASE — IN-MEMORY CACHED (MONGODB + DISK FALLBACK)
+// DATABASE — IN-MEMORY CACHED (MONGODB + DISK FALLBACK)
 // ============================================
 const DB_PATH = path.join(__dirname, 'data.json');
 let _dbCache = null;
@@ -276,32 +265,35 @@ let _dbSaveTimer = null;
 let _useMongo = false;
 
 const stateSchema = new mongoose.Schema({
-  docId: { type: String, default: 'main' },
+  docId: { type: String, default: 'tap_bot_main' },
   data: mongoose.Schema.Types.Mixed
-}, { strict: false });
-const AppState = mongoose.models.AppState || mongoose.model('AppState', stateSchema);
+}, { collection: 'tap_bot_state', strict: false });
+const AppState = mongoose.models.TapBotState || mongoose.model('TapBotState', stateSchema);
 
 async function initDB() {
   let loaded = false;
 
-  // 1. Try MongoDB
+  // 1. MongoDB (Fully isolated for Tap Bot)
   if (process.env.MONGODB_URI) {
     try {
-      await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 8000 });
-      console.log('✅ Connected to MongoDB');
+      await mongoose.connect(process.env.MONGODB_URI, {
+        dbName: process.env.MONGODB_DB_NAME || 'tap_bot_db',
+        serverSelectionTimeoutMS: 8000
+      });
+      console.log('✅ Connected to isolated MongoDB (tap_bot_db / tap_bot_state)');
       _useMongo = true;
-      let state = await AppState.findOne({ docId: 'main' });
+      let state = await AppState.findOne({ docId: 'tap_bot_main' });
       if (state && state.data && typeof state.data === 'object') {
         _dbCache = state.data;
         loaded = true;
-        console.log('💾 DB loaded from MongoDB');
+        console.log('💾 DB loaded from isolated MongoDB state');
       }
     } catch (e) {
       console.error('❌ MongoDB connection error:', e.message);
     }
   }
 
-  // 2. Load / Merge with local data.json
+  // 2. Local fallback
   if (fs.existsSync(DB_PATH)) {
     try {
       const localData = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
@@ -310,7 +302,6 @@ async function initDB() {
         loaded = true;
         console.log('💾 DB loaded from local data.json');
       } else if (localData.users) {
-        // Merge local users into MongoDB cache if local had higher counts or missing users
         for (const [uid, lu] of Object.entries(localData.users)) {
           if (!_dbCache.users[uid]) {
             _dbCache.users[uid] = lu;
@@ -329,9 +320,14 @@ async function initDB() {
     _dbCache = {
       users: {},
       admins: [SUPER_ADMIN_ID],
-      settings: { required_channels: [], donation_amounts: [10, 50, 100, 500], donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' }, prayer_times: { enabled: false, location: '', mosque: '', notify_before: 10, times: { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } } },
+      settings: {
+        required_channels: [],
+        donation_amounts: [10, 50, 100, 500],
+        donation_card: { enabled: false, card_number: '', card_holder: '', bank_name: 'Uzcard', card_type: 'uzcard', reason: 'Loyiha rivoji uchun' }
+      },
       donations: [],
-      chats: {}
+      chats: {},
+      archive: { messages: [], card_history: [], logs: [] }
     };
   }
 
@@ -341,21 +337,20 @@ async function initDB() {
   if (!_dbCache.settings) _dbCache.settings = { required_channels: [], donation_amounts: [10, 50, 100, 500] };
   if (!_dbCache.settings.required_channels) _dbCache.settings.required_channels = [];
   if (!_dbCache.settings.donation_amounts) _dbCache.settings.donation_amounts = [10, 50, 100, 500];
-  if (!_dbCache.settings.donation_card) _dbCache.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard', reason: '' };
-  if (!_dbCache.settings.prayer_times) _dbCache.settings.prayer_times = { enabled: false, location: '', mosque: '', notify_before: 10, times: { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } };
+  if (!_dbCache.settings.donation_card) _dbCache.settings.donation_card = { enabled: false, card_number: '', card_holder: '', bank_name: 'Uzcard', card_type: 'uzcard', reason: 'Loyiha rivoji uchun' };
   if (!_dbCache.donations) _dbCache.donations = [];
   if (!_dbCache.chats) _dbCache.chats = {};
+  if (!_dbCache.archive) _dbCache.archive = { messages: [], card_history: [], logs: [] };
   if (!_dbCache.admins.includes(SUPER_ADMIN_ID)) _dbCache.admins.push(SUPER_ADMIN_ID);
-  
-  // Save immediate local snapshot
+
   try {
     fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
     if (_useMongo) {
-      await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+      await AppState.updateOne({ docId: 'tap_bot_main' }, { $set: { data: _dbCache } }, { upsert: true });
     }
   } catch (err) {}
 
-  console.log(`💾 DB initialized: ${Object.keys(_dbCache.users).length} users preserved`);
+  console.log(`💾 DB initialized: ${Object.keys(_dbCache.users).length} players ready`);
 }
 
 function loadDB() {
@@ -378,7 +373,7 @@ function getWebAppUrl() {
 function saveDB(data) {
   _dbCache = data;
   _dbDirty = true;
-  _leaderboardCache = null; // Always clear leaderboard cache on save!
+  _leaderboardCache = null;
 
   if (!_dbSaveTimer) {
     _dbSaveTimer = setTimeout(async () => {
@@ -386,10 +381,9 @@ function saveDB(data) {
       if (_dbDirty) {
         _dbDirty = false;
         try {
-          // Always write to local file as immediate persistence guarantee
           fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
           if (_useMongo) {
-            await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+            await AppState.updateOne({ docId: 'tap_bot_main' }, { $set: { data: _dbCache } }, { upsert: true });
           }
         } catch (e) {
           console.error('DB write error:', e.message);
@@ -405,7 +399,7 @@ async function flushDB() {
     try {
       fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8');
       if (_useMongo) {
-        await AppState.updateOne({ docId: 'main' }, { $set: { data: _dbCache } }, { upsert: true });
+        await AppState.updateOne({ docId: 'tap_bot_main' }, { $set: { data: _dbCache } }, { upsert: true });
       }
       _dbDirty = false;
       console.log('💾 DB flushed safely to disk & Mongo');
@@ -414,15 +408,13 @@ async function flushDB() {
     }
   }
 }
-process.removeAllListeners('SIGINT');
-process.removeAllListeners('SIGTERM');
-process.removeAllListeners('exit');
+
 process.on('SIGINT', async () => { await flushDB(); process.exit(0); });
 process.on('SIGTERM', async () => { await flushDB(); process.exit(0); });
 process.on('exit', () => { if (!_useMongo && _dbDirty) fs.writeFileSync(DB_PATH, JSON.stringify(_dbCache, null, 2), 'utf-8'); });
 
 // ============================================
-// USER FUNCTIONS
+// USER LOGIC
 // ============================================
 function getUser(telegramId) {
   const db = loadDB();
@@ -447,8 +439,9 @@ function upsertUser(userData) {
       photo_url: userData.photo_url || '',
       count: 0,
       total_all_time: 0,
-      streak_days: 0,
-      last_active: '',
+      streak_days: 1,
+      level: 1,
+      last_active: new Date().toISOString().split('T')[0],
       created_at: new Date().toISOString().split('T')[0],
       blocked: false,
       total_donated: 0,
@@ -466,7 +459,7 @@ function incrementUserCount(telegramId, amount = 1) {
   const user = db.users[id];
   if (!user || user.blocked) return null;
 
-  const count = Math.min(Math.max(1, Math.floor(amount)), 100); // Sanitize: 1-100
+  const count = Math.min(Math.max(1, Math.floor(amount)), 200); // 1-200 batch limit
   const today = new Date().toISOString().split('T')[0];
 
   if (user.last_active !== today) {
@@ -480,6 +473,16 @@ function incrementUserCount(telegramId, amount = 1) {
   user.total_all_time = (user.total_all_time || 0) + count;
   user.last_active = today;
 
+  // Level calculation
+  const total = user.total_all_time;
+  if (total >= 100000) user.level = 7; // Legend
+  else if (total >= 50000) user.level = 6; // Master
+  else if (total >= 20000) user.level = 5; // Diamond
+  else if (total >= 10000) user.level = 4; // Platinum
+  else if (total >= 3000) user.level = 3; // Gold
+  else if (total >= 500) user.level = 2; // Silver
+  else user.level = 1; // Bronze
+
   saveDB(db);
   return user;
 }
@@ -491,6 +494,7 @@ function resetUserCount(telegramId, resetTotal = false) {
     db.users[id].count = 0;
     if (resetTotal) {
       db.users[id].total_all_time = 0;
+      user.level = 1;
     }
     _leaderboardCache = null;
     saveDB(db);
@@ -499,10 +503,10 @@ function resetUserCount(telegramId, resetTotal = false) {
   return null;
 }
 
-// Leaderboard cache — avoid sorting on every request
+// Leaderboard cache
 let _leaderboardCache = null;
 let _leaderboardCacheTime = 0;
-const LEADERBOARD_CACHE_TTL = 3000; // 3 seconds
+const LEADERBOARD_CACHE_TTL = 3000;
 
 function getLeaderboard(limit = 50) {
   const now = Date.now();
@@ -531,7 +535,7 @@ function getUserRank(telegramId) {
 }
 
 // ============================================
-// ADMIN FUNCTIONS
+// ADMIN LOGIC
 // ============================================
 function isAdmin(userId) {
   const id = Number(userId);
@@ -638,7 +642,7 @@ function getAdminStats() {
     total_users: users.length,
     active_today: users.filter(u => u.last_active === today).length,
     blocked_users: users.filter(u => u.blocked).length,
-    total_zikr: users.reduce((sum, u) => sum + (u.total_all_time || 0), 0),
+    total_taps: users.reduce((sum, u) => sum + (u.total_all_time || 0), 0),
     required_channels: db.settings.required_channels.length,
     total_donations: db.donations.length,
     total_donated_stars: db.donations.reduce((sum, d) => sum + (d.amount || 0), 0),
@@ -646,16 +650,16 @@ function getAdminStats() {
   };
 }
 
-// ============================================
-// DONATION FUNCTIONS
-// ============================================
 function addDonation(donation) {
   const db = loadDB();
   db.donations.push(donation);
-  // Update user total_donated
   const uid = String(donation.user_id);
   if (db.users[uid]) {
     db.users[uid].total_donated = (db.users[uid].total_donated || 0) + donation.amount;
+    // Reward player with bonus coins for Stars purchase (e.g. 500 coins per 1 Star)
+    const bonus = donation.amount * 500;
+    db.users[uid].count = (db.users[uid].count || 0) + bonus;
+    db.users[uid].total_all_time = (db.users[uid].total_all_time || 0) + bonus;
   }
   saveDB(db);
   return donation;
@@ -687,6 +691,20 @@ function getTopDonors(limit = 10) {
   return users.slice(0, limit);
 }
 
+// Universal Admin Action Logger
+function logAdminAction(actionData) {
+  const db = loadDB();
+  if (!db.archive) db.archive = { messages: [], card_history: [], logs: [] };
+  if (!db.archive.logs) db.archive.logs = [];
+  db.archive.logs.unshift({
+    id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    timestamp: new Date().toISOString(),
+    ...actionData
+  });
+  if (db.archive.logs.length > 500) db.archive.logs = db.archive.logs.slice(0, 500);
+  saveDB(db);
+}
+
 // ============================================
 // TELEGRAM BOT
 // ============================================
@@ -698,7 +716,6 @@ if (BOT_TOKEN) {
   bot.on('error', err => console.error('Bot error:', err.message));
   process.on('unhandledRejection', err => console.error('Unhandled rejection:', err.message || err));
 
-  // Safe send wrapper
   async function safeSend(chatId, text, options = {}) {
     try {
       return await bot.sendMessage(chatId, text, options);
@@ -717,7 +734,6 @@ if (BOT_TOKEN) {
     }
   }
 
-  // Check subscription
   async function checkUserSubscription(userId) {
     const channels = getRequiredChannels();
     if (channels.length === 0) return { subscribed: true, channels: [] };
@@ -737,13 +753,11 @@ if (BOT_TOKEN) {
     return { subscribed: unsubscribed.length === 0, channels: unsubscribed };
   }
 
-  // Check blocked
   function isUserBlocked(userId) {
     const user = getUser(userId);
     return user && user.blocked === true;
   }
 
-  // Send subscription message
   async function sendSubscriptionMessage(chatId, unsubscribedChannels, lang) {
     const channelButtons = unsubscribedChannels.map(ch => ([{
       text: `📢 ${ch}`,
@@ -762,19 +776,25 @@ if (BOT_TOKEN) {
     );
   }
 
-  // ==========================================
   // /start COMMAND
-  // ==========================================
   bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
-    const firstName = msg.from.first_name || 'User';
+    const firstName = msg.from.first_name || 'Player';
     const lang = getUserLang(userId, msg.from.language_code);
+
+    upsertUser({
+      telegram_id: userId,
+      first_name: msg.from.first_name,
+      last_name: msg.from.last_name,
+      username: msg.from.username,
+      language: lang,
+    });
 
     if (isUserBlocked(userId)) {
       safeSend(chatId,
         `╔══════════════════════╗\n` +
-        `        🚫  <b>BLOCKED</b>\n` +
+        `        🚫 <b>BLOCKED</b>\n` +
         `╚══════════════════════╝\n\n` +
         bt(lang, 'blocked'),
         { parse_mode: 'HTML' }
@@ -790,7 +810,7 @@ if (BOT_TOKEN) {
 
     await safeSend(chatId,
       `╔══════════════════════╗\n` +
-      `   🕌  <b>ELEKTRON TASBIH</b>  🕌\n` +
+      `   ⚡ <b>TAP BOT PRO</b> ⚡\n` +
       `╚══════════════════════╝\n\n` +
       bt(lang, 'welcome', { name: firstName }) + `\n\n` +
       bt(lang, 'welcomeFeatures') + `\n\n` +
@@ -801,8 +821,8 @@ if (BOT_TOKEN) {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: bt(lang, 'openTasbih'), web_app: { url: getWebAppUrl() } }],
-            [{ text: bt(lang, 'donate'), callback_data: 'donate_menu' }],
+            [{ text: bt(lang, 'openApp'), web_app: { url: getWebAppUrl() } }],
+            [{ text: bt(lang, 'shop'), callback_data: 'shop_menu' }],
             [
               { text: bt(lang, 'stats'), callback_data: 'my_stats' },
               { text: bt(lang, 'top'), callback_data: 'top_list' },
@@ -814,9 +834,21 @@ if (BOT_TOKEN) {
     );
   });
 
-  // ==========================================
+  // /tap or /play COMMAND
+  bot.onText(/\/(tap|play)/, (msg) => {
+    const chatId = msg.chat.id;
+    const lang = getUserLang(msg.from.id, msg.from.language_code);
+    safeSend(chatId, `⚡ <b>Tap Bot PRO</b>\n\nO'yinni boshlash uchun bosing:`, {
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: bt(lang, 'openApp'), web_app: { url: getWebAppUrl() } }]
+        ]
+      }
+    });
+  });
+
   // /lang COMMAND
-  // ==========================================
   bot.onText(/\/lang/, (msg) => {
     const chatId = msg.chat.id;
     const lang = getUserLang(msg.from.id, msg.from.language_code);
@@ -838,9 +870,7 @@ if (BOT_TOKEN) {
     );
   });
 
-  // ==========================================
   // /admin COMMAND
-  // ==========================================
   bot.onText(/\/admin/, (msg) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
@@ -852,150 +882,37 @@ if (BOT_TOKEN) {
     }
 
     const stats = getAdminStats();
+    const adminUrl = `${getWebAppUrl()}/admin.html?id=${userId}`;
 
     safeSend(chatId,
       `╔══════════════════════╗\n` +
-      `    ${bt(lang, 'adminPanel')}\n` +
+      `   ${bt(lang, 'adminPanel')}\n` +
       `╚══════════════════════╝\n\n` +
-      `${bt(lang, 'adminUsers')}: <b>${stats.total_users}</b>\n` +
-      `${bt(lang, 'adminActiveToday')}: <b>${stats.active_today}</b>\n` +
-      `${bt(lang, 'adminBlocked')}: <b>${stats.blocked_users}</b>\n` +
-      `${bt(lang, 'adminTotalZikr')}: <b>${stats.total_zikr}</b>\n` +
-      `${bt(lang, 'adminDonations')}: <b>${stats.total_donated_stars}⭐</b>\n` +
-      `${bt(lang, 'adminAdmins')}: <b>${stats.admin_count}</b>\n\n` +
-      bt(lang, 'adminOpenWeb'),
+      `👥 ${bt(lang, 'adminUsers')}: <b>${stats.total_users}</b>\n` +
+      `🟢 ${bt(lang, 'adminActiveToday')}: <b>${stats.active_today}</b>\n` +
+      `⚡ ${bt(lang, 'adminTotalTaps')}: <b>${stats.total_taps.toLocaleString()}</b>\n` +
+      `⭐ ${bt(lang, 'adminDonations')}: <b>${stats.total_donated_stars} ⭐</b>\n` +
+      `🚫 ${bt(lang, 'adminBlocked')}: <b>${stats.blocked_users}</b>\n` +
+      `🛡️ ${bt(lang, 'adminAdmins')}: <b>${stats.admin_count}</b>\n\n` +
+      `🖥️ <b>Admin Web Panel:</b>\n` +
+      `${adminUrl}\n\n` +
+      `⚙️ <b>Buyruqlar:</b>\n` +
+      `• /broadcast &lt;xabar&gt; — Barchaga xabar\n` +
+      `• /addchannel &lt;@kanal&gt; — Majburiy kanal\n` +
+      `• /removechannel &lt;@kanal&gt; — Kanalni o'chirish\n` +
+      `• /block &lt;id&gt; — Bloklash\n` +
+      `• /unblock &lt;id&gt; — Blokdan ochish`,
       {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: `${getWebAppUrl()}/admin.html?admin_id=${userId}` } }],
+            [{ text: bt(lang, 'adminPanelBtn'), web_app: { url: adminUrl } }],
           ]
         }
       }
     );
   });
 
-  // ==========================================
-  // /seturl COMMAND (Admin WebApp URL sozlash)
-  // ==========================================
-  bot.onText(/\/seturl(?:\s+(.+))?/, async (msg, match) => {
-    const userId = msg.from.id;
-    const chatId = msg.chat.id;
-    if (!isAdmin(userId)) {
-      return safeSend(chatId, '❌ Bu buyruq faqat adminlar uchun!');
-    }
-    const newUrl = match[1]?.trim();
-    if (!newUrl || !newUrl.startsWith('http')) {
-      return safeSend(chatId, `ℹ️ <b>Hozirgi WebApp havolasi:</b>\n<code>${getWebAppUrl() || 'O\'rnatilmagan'}</code>\n\nO'zgartirish uchun havolani birga yuboring:\n<code>/seturl https://sizning-domen.onrender.com</code>`, { parse_mode: 'HTML' });
-    }
-
-    const cleanUrl = newUrl.replace(/\/$/, '');
-    const db = loadDB();
-    if (!db.settings) db.settings = {};
-    db.settings.web_app_url = cleanUrl;
-    saveDB(db);
-
-    try {
-      await bot.setChatMenuButton({
-        menu_button: {
-          type: 'web_app',
-          text: '📿 Tasbih',
-          web_app: { url: cleanUrl }
-        }
-      });
-    } catch (e) {
-      console.error('Menu button error:', e.message);
-    }
-
-    safeSend(chatId, `✅ <b>WebApp havolasi muvaffaqiyatli saqlandi va Telegram menyusi yangilandi!</b>\n\n🌐 Yangi havola:\n<code>${cleanUrl}</code>`, { parse_mode: 'HTML' });
-  });
-
-  // ==========================================
-  // /stats COMMAND
-  // ==========================================
-  bot.onText(/\/stats$/, (msg) => {
-    const chatId = msg.chat.id;
-    const telegramId = msg.from.id;
-    const lang = getUserLang(telegramId, msg.from.language_code);
-
-    if (isUserBlocked(telegramId)) { safeSend(chatId, bt(lang, 'blockedShort')); return; }
-
-    const user = getUser(telegramId);
-    if (!user) { safeSend(chatId, bt(lang, 'statsNotUsed')); return; }
-
-    const rank = getUserRank(telegramId);
-
-    safeSend(chatId,
-      `╔══════════════════════╗\n` +
-      `    ${bt(lang, 'statsTitle')}\n` +
-      `╚══════════════════════╝\n\n` +
-      `${bt(lang, 'statsCurrent')}: <b>${user.count}</b>\n` +
-      `${bt(lang, 'statsTotal')}: <b>${user.total_all_time}</b>\n` +
-      `${bt(lang, 'statsStreak')}: <b>${user.streak_days} ${bt(lang, 'statsStreakDays')}</b>\n` +
-      `${bt(lang, 'statsRank')}: <b>#${rank}</b>\n` +
-      `${bt(lang, 'statsDonated')}: <b>${user.total_donated || 0}⭐</b>\n` +
-      `${bt(lang, 'statsRegistered')}: <b>${user.created_at}</b>`,
-      { parse_mode: 'HTML' }
-    );
-  });
-
-  // ==========================================
-  // /top COMMAND
-  // ==========================================
-  bot.onText(/\/top/, (msg) => {
-    const chatId = msg.chat.id;
-    const lang = getUserLang(msg.from.id, msg.from.language_code);
-    const { users: topUsers } = getLeaderboard(10);
-
-    if (topUsers.length === 0) { safeSend(chatId, bt(lang, 'topEmpty')); return; }
-
-    const medals = ['🥇', '🥈', '🥉'];
-    let message = `╔══════════════════════╗\n` +
-      `    ${bt(lang, 'topTitle')}\n` +
-      `╚══════════════════════╝\n\n`;
-
-    topUsers.forEach((user, index) => {
-      const medal = medals[index] || `   ${index + 1}.`;
-      const name = user.first_name + (user.last_name ? ` ${user.last_name}` : '');
-      message += `${medal} <b>${name}</b> — ${user.total_all_time} ${bt(lang, 'topZikr')}\n`;
-    });
-
-    safeSend(chatId, message, { parse_mode: 'HTML' });
-  });
-
-  // ==========================================
-  // /ehson COMMAND
-  // ==========================================
-  bot.onText(/\/ehson/, (msg) => {
-    const chatId = msg.chat.id;
-    const userId = msg.from.id;
-    const lang = getUserLang(userId, msg.from.language_code);
-
-    if (isUserBlocked(userId)) { safeSend(chatId, bt(lang, 'blockedShort')); return; }
-
-    const amounts = loadDB().settings.donation_amounts || [10, 50, 100, 500];
-
-    safeSend(chatId,
-      `╔══════════════════════╗\n` +
-      `    ${bt(lang, 'donateTitle')}\n` +
-      `╚══════════════════════╝\n\n` +
-      `${bt(lang, 'donateText')}\n\n` +
-      bt(lang, 'donateSelect'),
-      {
-        parse_mode: 'HTML',
-        reply_markup: {
-          inline_keyboard: [
-            amounts.slice(0, 2).map(a => ({ text: `${a} ⭐`, callback_data: `donate_${a}` })),
-            amounts.slice(2, 4).map(a => ({ text: `${a} ⭐`, callback_data: `donate_${a}` })),
-          ].filter(row => row.length > 0)
-        }
-      }
-    );
-  });
-
-  // ==========================================
-  // Admin text commands
-  // ==========================================
   bot.onText(/\/block (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
     const lang = getUserLang(msg.from.id, msg.from.language_code);
@@ -1050,29 +967,19 @@ if (BOT_TOKEN) {
         sent++;
       } catch (e) {
         failed++;
-        failedUsers.push({ id: user.telegram_id, name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'User' });
+        failedUsers.push({ id: user.telegram_id, name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player' });
       }
       await new Promise(resolve => setTimeout(resolve, 40));
     }
 
-    // Save to archive
-    const db = loadDB();
-    if (!db.archive) db.archive = { messages: [], card_history: [] };
-    if (!db.archive.messages) db.archive.messages = [];
-    db.archive.messages.unshift({
-      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    logAdminAction({
       type: 'broadcast',
       text: broadcastMessage,
       sent_count: sent,
       failed_count: failed,
-      failed_users: failedUsers.slice(0, 50),
-      total_targets: users.length,
-      sent_by: msg.from.id,
-      status: failed === 0 ? 'success' : (sent > 0 ? 'partial' : 'failed'),
-      timestamp: new Date().toISOString()
+      performed_by: msg.from.id,
+      details: `Broadcast yuborildi: ${sent} muvaffaqiyatli, ${failed} xato`
     });
-    if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
-    saveDB(db);
 
     safeSend(chatId, bt(lang, 'broadcastDone', { sent, failed }));
   });
@@ -1097,16 +1004,13 @@ if (BOT_TOKEN) {
     safeSend(chatId, bt(lang, 'channelRemoved', { ch }));
   });
 
-  // ==========================================
   // CALLBACK QUERIES
-  // ==========================================
   bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
     const userId = query.from.id;
     const data = query.data;
     const lang = getUserLang(userId, query.from.language_code);
 
-    // Language selection callbacks
     if (data === 'lang_menu') {
       await safeSend(chatId,
         bt(lang, 'langSelect'),
@@ -1133,11 +1037,10 @@ if (BOT_TOKEN) {
         setUserLang(userId, newLang);
         try { await bot.answerCallbackQuery(query.id, { text: bt(newLang, 'langChanged').replace(/<[^>]*>/g, ''), show_alert: true }); } catch(e) {}
         try { await bot.deleteMessage(chatId, query.message.message_id); } catch(e) {}
-        // Re-send start in new language
-        const firstName = query.from.first_name || 'User';
+        const firstName = query.from.first_name || 'Player';
         await safeSend(chatId,
           `╔══════════════════════╗\n` +
-          `   🕌  <b>ELEKTRON TASBIH</b>  🕌\n` +
+          `   ⚡ <b>TAP BOT PRO</b> ⚡\n` +
           `╚══════════════════════╝\n\n` +
           bt(newLang, 'welcome', { name: firstName }) + `\n\n` +
           bt(newLang, 'welcomeFeatures') + `\n\n` +
@@ -1148,8 +1051,8 @@ if (BOT_TOKEN) {
             parse_mode: 'HTML',
             reply_markup: {
               inline_keyboard: [
-                [{ text: bt(newLang, 'openTasbih'), web_app: { url: getWebAppUrl() } }],
-                [{ text: bt(newLang, 'donate'), callback_data: 'donate_menu' }],
+                [{ text: bt(newLang, 'openApp'), web_app: { url: getWebAppUrl() } }],
+                [{ text: bt(newLang, 'shop'), callback_data: 'shop_menu' }],
                 [
                   { text: bt(newLang, 'stats'), callback_data: 'my_stats' },
                   { text: bt(newLang, 'top'), callback_data: 'top_list' },
@@ -1163,78 +1066,57 @@ if (BOT_TOKEN) {
       return;
     }
 
-    // Check subscription callback
     if (data === 'check_subscription') {
-      const subCheck = await checkUserSubscription(userId);
-      if (subCheck.subscribed) {
-        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'subConfirmed'), show_alert: true }); } catch(e) {}
-        try { await bot.deleteMessage(chatId, query.message.message_id); } catch(e) {}
+      const check = await checkUserSubscription(userId);
+      if (check.subscribed) {
+        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'subConfirmed') }); } catch (e) {}
+        try { await bot.deleteMessage(chatId, query.message.message_id); } catch (e) {}
         await safeSend(chatId,
           bt(lang, 'subOpen'),
           {
             parse_mode: 'HTML',
             reply_markup: {
-              inline_keyboard: [[{ text: bt(lang, 'openTasbih'), web_app: { url: getWebAppUrl() } }]]
+              inline_keyboard: [
+                [{ text: bt(lang, 'openApp'), web_app: { url: getWebAppUrl() } }],
+              ]
             }
           }
         );
       } else {
-        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'subNotYet'), show_alert: true }); } catch(e) {}
+        try {
+          await bot.answerCallbackQuery(query.id, {
+            text: bt(lang, 'subNotYet'),
+            show_alert: true,
+          });
+        } catch (e) {}
       }
       return;
     }
 
-    // My stats callback
     if (data === 'my_stats') {
       const user = getUser(userId);
       if (!user) {
-        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'startFirst'), show_alert: true }); } catch(e) {}
+        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'statsNotUsed'), show_alert: true }); } catch(e) {}
         return;
       }
       const rank = getUserRank(userId);
       await safeSend(chatId,
-        `${bt(lang, 'statsBtn')}\n\n` +
-        `${bt(lang, 'statsCurrent')}: <b>${user.count}</b>\n` +
-        `${bt(lang, 'statsTotal')}: <b>${user.total_all_time}</b>\n` +
-        `${bt(lang, 'statsStreak')}: <b>${user.streak_days} ${bt(lang, 'statsStreakDays')}</b>\n` +
-        `${bt(lang, 'statsRank')}: <b>#${rank}</b>`,
-        { parse_mode: 'HTML' }
-      );
-      try { await bot.answerCallbackQuery(query.id); } catch(e) {}
-      return;
-    }
-
-    // Top list callback
-    if (data === 'top_list') {
-      const { users: topUsers } = getLeaderboard(10);
-      if (topUsers.length === 0) {
-        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'topEmpty').replace(/[❌ ]/g, '').trim(), show_alert: true }); } catch(e) {}
-        return;
-      }
-      const medals = ['🥇', '🥈', '🥉'];
-      let message = `${bt(lang, 'topBtn')}\n\n`;
-      topUsers.forEach((user, i) => {
-        const medal = medals[i] || `${i + 1}.`;
-        const name = user.first_name + (user.last_name ? ` ${user.last_name}` : '');
-        message += `${medal} <b>${name}</b> — ${user.total_all_time}\n`;
-      });
-      await safeSend(chatId, message, { parse_mode: 'HTML' });
-      try { await bot.answerCallbackQuery(query.id); } catch(e) {}
-      return;
-    }
-
-    // Donate menu callback
-    if (data === 'donate_menu') {
-      const amounts = loadDB().settings.donation_amounts || [10, 50, 100, 500];
-      await safeSend(chatId,
-        bt(lang, 'donateMenu'),
+        `╔══════════════════════╗\n` +
+        `   ${bt(lang, 'statsTitle')}\n` +
+        `╚══════════════════════╝\n\n` +
+        `👤 <b>${user.first_name} ${user.last_name || ''}</b>\n` +
+        `🪙 ${bt(lang, 'statsCurrent')}: <b>${(user.count || 0).toLocaleString()}</b>\n` +
+        `⚡ ${bt(lang, 'statsTotal')}: <b>${(user.total_all_time || 0).toLocaleString()}</b>\n` +
+        `🔥 ${bt(lang, 'statsStreak')}: <b>${user.streak_days || 0} ${bt(lang, 'statsStreakDays')}</b>\n` +
+        `🏆 ${bt(lang, 'statsRank')}: <b>#${rank}</b>\n` +
+        `⭐ ${bt(lang, 'statsDonated')}: <b>${user.total_donated || 0} ⭐</b>\n` +
+        `📅 ${bt(lang, 'statsRegistered')}: <code>${user.created_at || '—'}</code>`,
         {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              amounts.slice(0, 2).map(a => ({ text: `${a} ⭐`, callback_data: `donate_${a}` })),
-              amounts.slice(2, 4).map(a => ({ text: `${a} ⭐`, callback_data: `donate_${a}` })),
-            ].filter(row => row.length > 0)
+              [{ text: bt(lang, 'openApp'), web_app: { url: getWebAppUrl() } }],
+            ]
           }
         }
       );
@@ -1242,71 +1124,102 @@ if (BOT_TOKEN) {
       return;
     }
 
-    // Donate amount callback
-    if (data.startsWith('donate_')) {
-      const amount = parseInt(data.replace('donate_', ''));
-      if (!amount || amount <= 0) return;
+    if (data === 'top_list') {
+      const { users, total_users } = getLeaderboard(10);
+      if (users.length === 0) {
+        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'topEmpty'), show_alert: true }); } catch(e) {}
+        return;
+      }
+      const medals = ['🥇', '🥈', '🥉'];
+      let text = `╔══════════════════════╗\n` +
+                 `   ${bt(lang, 'topTitle')}\n` +
+                 `╚══════════════════════╝\n\n`;
 
-      try {
-        await bot.sendInvoice(chatId,
-          bt(lang, 'donateInvoice'),
-          bt(lang, 'donateDesc', { amount }),
-          `donate_${userId}_${Date.now()}`,
-          '', // provider_token — empty for Stars
-          'XTR', // currency — Telegram Stars
-          [{ label: bt(lang, 'donateLabel'), amount: amount }],
-        );
-        try { await bot.answerCallbackQuery(query.id); } catch(e) {}
-      } catch (e) {
-        console.error('Invoice error:', e.message);
-        try { await bot.answerCallbackQuery(query.id, { text: bt(lang, 'donateError'), show_alert: true }); } catch(e2) {}
+      users.forEach((u, i) => {
+        const medal = medals[i] || `<b>${i + 1}.</b>`;
+        const name = `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username || 'Player';
+        text += `${medal} <b>${name}</b> — ${(u.total_all_time || 0).toLocaleString()} ⚡\n`;
+      });
+      text += `\n👥 Jami o'yinchilar: <b>${total_users}</b>`;
+
+      await safeSend(chatId, text, {
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: bt(lang, 'openApp'), web_app: { url: getWebAppUrl() } }],
+          ]
+        }
+      });
+      try { await bot.answerCallbackQuery(query.id); } catch(e) {}
+      return;
+    }
+
+    if (data === 'shop_menu') {
+      const amounts = [10, 50, 100, 500];
+      const buttons = amounts.map(amount => ([{
+        text: `⚡ ${amount} ⭐ Stars Boost`,
+        callback_data: `buy_stars_${amount}`
+      }]));
+
+      await safeSend(chatId,
+        `╔══════════════════════╗\n` +
+        `   ${bt(lang, 'shopTitle')}\n` +
+        `╚══════════════════════╝\n\n` +
+        bt(lang, 'shopText') + `\n\n` +
+        bt(lang, 'shopSelect'),
+        {
+          parse_mode: 'HTML',
+          reply_markup: { inline_keyboard: buttons }
+        }
+      );
+      try { await bot.answerCallbackQuery(query.id); } catch(e) {}
+      return;
+    }
+
+    if (data.startsWith('buy_stars_')) {
+      const amount = Number(data.replace('buy_stars_', ''));
+      if (amount > 0) {
+        try {
+          await bot.sendInvoice(
+            chatId,
+            bt(lang, 'shopInvoice'),
+            bt(lang, 'shopDesc', { amount }),
+            `shop_${userId}_${Date.now()}`,
+            '',
+            'XTR',
+            [{ label: bt(lang, 'shopLabel'), amount: amount }]
+          );
+          try { await bot.answerCallbackQuery(query.id); } catch(e) {}
+        } catch (e) {
+          console.error('Invoice error:', e.message);
+          safeSend(chatId, bt(lang, 'shopError'));
+        }
       }
       return;
     }
   });
 
-  // ==========================================
-  // PAYMENT HANDLERS
-  // ==========================================
+  // PRE-CHECKOUT QUERY (Telegram Stars)
   bot.on('pre_checkout_query', async (query) => {
     try {
       await bot.answerPreCheckoutQuery(query.id, true);
     } catch (e) {
       console.error('Pre-checkout error:', e.message);
+      await bot.answerPreCheckoutQuery(query.id, false, { error_message: 'Xatolik yuz berdi' });
     }
   });
 
-  // Track groups and channels where bot is added/removed
-  bot.on('my_chat_member', (msg) => {
-    const chat = msg.chat;
-    const newStatus = msg.new_chat_member.status;
-    
-    if (chat.type === 'group' || chat.type === 'supergroup' || chat.type === 'channel') {
-      if (!_dbCache.chats) _dbCache.chats = {};
-      if (['administrator', 'creator', 'member'].includes(newStatus)) {
-        _dbCache.chats[chat.id] = {
-          title: chat.title || 'Noma\'lum guruh/kanal',
-          type: chat.type,
-          addedAt: new Date().toISOString()
-        };
-      } else if (['left', 'kicked'].includes(newStatus)) {
-        delete _dbCache.chats[chat.id];
-      }
-      saveDB(_dbCache);
-    }
-  });
-
+  // SUCCESSFUL PAYMENT
   bot.on('message', async (msg) => {
     if (msg.successful_payment) {
       const payment = msg.successful_payment;
       const userId = msg.from.id;
       const amount = payment.total_amount;
-      const firstName = msg.from.first_name || 'User';
+      const firstName = msg.from.first_name || 'Player';
       const lang = getUserLang(userId, msg.from.language_code);
 
-      // Record donation
       const donation = {
-        id: `don_${Date.now()}`,
+        id: `star_${Date.now()}`,
         user_id: userId,
         user_name: firstName,
         amount: amount,
@@ -1321,16 +1234,16 @@ if (BOT_TOKEN) {
 
       await safeSend(msg.chat.id,
         `╔══════════════════════╗\n` +
-        `    ${bt(lang, 'donateSuccess')}\n` +
+        `    ${bt(lang, 'shopSuccess')}\n` +
         `╚══════════════════════╝\n\n` +
-        `${bt(lang, 'donateAmount')}: <b>${amount} ⭐</b>\n` +
-        `${bt(lang, 'donateThanks')}\n\n` +
-        `📿 `,
+        `${bt(lang, 'shopAmount')}: <b>${amount} ⭐</b>\n` +
+        `${bt(lang, 'shopThanks')}\n\n` +
+        `⚡ +${(amount * 500).toLocaleString()} tanga qo'shildi!`,
         {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: bt(lang, 'donateBack'), web_app: { url: getWebAppUrl() } }],
+              [{ text: bt(lang, 'shopBack'), web_app: { url: getWebAppUrl() } }],
             ]
           }
         }
@@ -1342,9 +1255,9 @@ if (BOT_TOKEN) {
         if (adminId !== userId) {
           const adminLang = getUserLang(adminId);
           safeSend(adminId,
-            `${bt(adminLang, 'donateNotify')}\n\n` +
+            `${bt(adminLang, 'shopNotify')}\n\n` +
             `👤 ${firstName}\n` +
-            `💝 ${amount} ⭐`,
+            `⭐ ${amount} Stars`,
             { parse_mode: 'HTML' }
           );
         }
@@ -1352,165 +1265,44 @@ if (BOT_TOKEN) {
     }
   });
 
-  console.log('🤖 Telegram bot ishga tushdi!');
+  console.log('🤖 Telegram Tap Bot ishga tushdi!');
   console.log(`👑 Super Admin ID: ${SUPER_ADMIN_ID}`);
 
-  // ==========================================
-  // TELEGRAM USER PHOTO HELPER
-  // ==========================================
-  async function fetchAndCacheTelegramPhoto(userId) {
-    if (!bot) return null;
-    try {
-      const photos = await bot.getUserProfilePhotos(Number(userId), { limit: 1 });
-      if (photos && photos.total_count > 0 && photos.photos[0] && photos.photos[0].length > 0) {
-        const bestPhoto = photos.photos[0][photos.photos[0].length - 1];
-        const fileLink = await bot.getFileLink(bestPhoto.file_id);
-        if (fileLink) {
-          const db = loadDB();
-          if (db.users[userId]) {
-            db.users[userId].photo_url = fileLink;
-            _leaderboardCache = null;
-            saveDB(db);
-          }
-          return fileLink;
+}
+
+async function fetchAndCacheTelegramPhoto(userId) {
+  if (!bot) return null;
+  try {
+    const photos = await bot.getUserProfilePhotos(Number(userId), { limit: 1 });
+    if (photos && photos.total_count > 0 && photos.photos[0] && photos.photos[0].length > 0) {
+      const bestPhoto = photos.photos[0][photos.photos[0].length - 1];
+      const fileLink = await bot.getFileLink(bestPhoto.file_id);
+      if (fileLink) {
+        const db = loadDB();
+        if (db.users[userId]) {
+          db.users[userId].photo_url = fileLink;
+          _leaderboardCache = null;
+          saveDB(db);
         }
+        return fileLink;
       }
-    } catch (err) {
-      // User privacy settings or bot blocked
     }
-    return null;
-  }
-
-  // ==========================================
-  // PRAYER TIME NOTIFICATION SCHEDULER
-  // ==========================================
-  const PRAYER_NAMES = {
-    uz: { tong: 'Tong / Quyosh', bomdod: 'Bomdod', peshin: 'Peshin', asr: 'Asr', shom: 'Shom', xufton: 'Xufton' },
-    ru: { tong: 'Восход', bomdod: 'Фаджр', peshin: 'Зухр', asr: 'Аср', shom: 'Магриб', xufton: 'Иша' },
-    en: { tong: 'Sunrise', bomdod: 'Fajr', peshin: 'Dhuhr', asr: 'Asr', shom: 'Maghrib', xufton: 'Isha' },
-  };
-
-  const _sentPrayerNotifications = new Set();
-
-  setInterval(async () => {
-    try {
-      const db = loadDB();
-      const pt = db.settings.prayer_times;
-      if (!pt || !pt.enabled || !pt.times) return;
-
-      const nowUTC = new Date();
-      const tashkentTime = new Date(nowUTC.toLocaleString('en-US', { timeZone: 'Asia/Tashkent' }));
-      const notifyBefore = Number(pt.notify_before) || 10;
-      const nowHours = tashkentTime.getHours();
-      const nowMinutes = tashkentTime.getMinutes();
-      const currentTotalMinutes = nowHours * 60 + nowMinutes;
-
-      const yyyy = tashkentTime.getFullYear();
-      const mm = String(tashkentTime.getMonth() + 1).padStart(2, '0');
-      const dd = String(tashkentTime.getDate()).padStart(2, '0');
-      const todayStr = `${yyyy}-${mm}-${dd}`;
-
-      const prayerKeys = ['tong', 'bomdod', 'peshin', 'asr', 'shom', 'xufton'];
-
-      for (const key of prayerKeys) {
-        const timeStrRaw = pt.times[key];
-        if (!timeStrRaw) continue;
-
-        const match = timeStrRaw.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
-        if (!match) continue;
-
-        const hours = Number(match[1]);
-        const minutes = Number(match[2]);
-        const prayerMinutes = hours * 60 + minutes;
-        const diff = prayerMinutes - currentTotalMinutes;
-
-        // 1. Notification BEFORE prayer time (e.g. 10 minutes before)
-        const beforeKey = `before_${key}_${todayStr}`;
-        if (diff <= notifyBefore && diff > 0 && !_sentPrayerNotifications.has(beforeKey)) {
-          _sentPrayerNotifications.add(beforeKey);
-
-          console.log(`🕌 Namoz eslatma yuborilmoqda: ${key} (${timeStrRaw}) - ${diff} daqiqa qoldi`);
-
-          const location = pt.location || '';
-          const mosque = pt.mosque || '';
-          const footer = pt.footer_text ? `\n\n_${pt.footer_text}_` : '';
-
-          const users = Object.values(db.users).filter(u => !u.blocked);
-          for (const user of users) {
-            const lang = user.language || 'uz';
-            const prayerName = (PRAYER_NAMES[lang] || PRAYER_NAMES.uz)[key] || key;
-
-            let message = `🕌  <b>${prayerName} namozi eslatmasi</b>\n\n`;
-            message += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
-            if (location) message += `📍 Hudud: <b>${location}</b>\n`;
-            if (mosque) message += `🕌 Masjid: <b>${mosque}</b>\n`;
-            message += `\n⏳ <b>${diff} daqiqadan so'ng</b> namoz vaqti kiradi!\n`;
-            message += `\n🤲 <i>Alloh ibodatlaringizni qabul qilsin!</i>`;
-            if (footer) message += footer;
-
-            safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
-          }
-        }
-
-        // 2. Notification AT EXACT prayer time (diff === 0)
-        const exactKey = `exact_${key}_${todayStr}`;
-        if (diff === 0 && !_sentPrayerNotifications.has(exactKey)) {
-          _sentPrayerNotifications.add(exactKey);
-
-          console.log(`🕌 Namoz vaqti kirdi: ${key} (${timeStrRaw})`);
-
-          const location = pt.location || '';
-          const mosque = pt.mosque || '';
-          const footer = pt.footer_text ? `\n\n_${pt.footer_text}_` : '';
-
-          const users = Object.values(db.users).filter(u => !u.blocked);
-          for (const user of users) {
-            const lang = user.language || 'uz';
-            const prayerName = (PRAYER_NAMES[lang] || PRAYER_NAMES.uz)[key] || key;
-
-            let message = `🕌  <b>${prayerName} namozi vaqti kirdi!</b>\n\n`;
-            message += `⏰ Vaqti: <b>${timeStrRaw}</b>\n`;
-            if (location) message += `📍 Hudud: <b>${location}</b>\n`;
-            if (mosque) message += `🕌 Masjid: <b>${mosque}</b>\n`;
-            message += `\n🤲 <i>Namozni o'z vaqtida ado etaylik. Alloh qabul qilsin!</i>`;
-            if (footer) message += footer;
-
-            safeSend(user.telegram_id, message, { parse_mode: 'HTML' }).catch(() => {});
-          }
-        }
-      }
-    } catch (e) {
-      console.error('Prayer notification error:', e.message);
-    }
-  }, 15000); // Check every 15 seconds for precision
-
-  console.log('🕌 Namoz eslatma tizimi ishga tushdi!');
-
-} else {
-  console.log('⚠️ BOT_TOKEN topilmadi — bot o\'chirilgan, faqat API ishlaydi.');
+  } catch (err) {}
+  return null;
 }
 
 // ============================================
-// EXPRESS SERVER + API
+// EXPRESS APP
 // ============================================
 const app = express();
 
-// Trust proxy (for rate limiting behind Nginx/Cloudflare)
-app.set('trust proxy', 1);
-
-// Security headers (CSP disabled for seamless Telegram Mini App embedding)
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
-
-// Gzip compression
 app.use(compression());
-
-// JSON body parser
 app.use(express.json({ limit: '2mb' }));
 
-// Explicit Admin route with instant cache-busting
 app.get(['/admin', '/admin.html'], (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
@@ -1518,7 +1310,6 @@ app.get(['/admin', '/admin.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Static files with aggressive no-cache headers for instant updates
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 0,
   etag: false,
@@ -1532,29 +1323,9 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Rate limiting
-const apiLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 200,
-  message: { error: 'Too many requests, please try again later.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const countLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 300,
-  message: { error: 'Too many requests' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const adminLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 300,
-  message: { error: 'Too many admin requests' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const apiLimiter = rateLimit({ windowMs: 60 * 1000, max: 200, message: { error: 'Too many requests' }, standardHeaders: true, legacyHeaders: false });
+const countLimiter = rateLimit({ windowMs: 60 * 1000, max: 400, message: { error: 'Too many taps' }, standardHeaders: true, legacyHeaders: false });
+const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 300, message: { error: 'Too many admin requests' }, standardHeaders: true, legacyHeaders: false });
 
 app.use('/api/', apiLimiter);
 app.use('/api/count', countLimiter);
@@ -1570,7 +1341,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Admin middleware with dual header & query & body authorization
+// Admin middleware
 function adminMiddleware(req, res, next) {
   const adminId = Number(req.headers['x-admin-id'] || req.query.admin_id || req.query.id || req.body?.admin_id);
   if (!adminId || !isAdmin(adminId)) {
@@ -1585,20 +1356,19 @@ function adminMiddleware(req, res, next) {
 }
 
 // ============================================
-// PUBLIC API
+// PUBLIC APIS
 // ============================================
 app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
-// Avatar endpoint — streams direct photo bytes with CORS or serves gradient SVG vector
 app.get('/api/avatar/:telegram_id', async (req, res) => {
   const tid = Number(req.params.telegram_id);
   const user = getUser(tid);
   let photoUrl = user?.photo_url;
-  
+
   if (!photoUrl && bot) {
     photoUrl = await fetchAndCacheTelegramPhoto(tid);
   }
-  
+
   if (photoUrl) {
     try {
       const response = await fetch(photoUrl);
@@ -1609,21 +1379,18 @@ app.get('/api/avatar/:telegram_id', async (req, res) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         return res.send(Buffer.from(buffer));
       }
-    } catch (e) {
-      // Fallback to SVG below
-    }
+    } catch (e) {}
   }
 
-  // Generate ultra-clean SVG initial avatar (handles fancy fonts, numbers, emojis)
   const nameStr = user?.first_name ? String(user.first_name).trim() : '';
   const match = nameStr.match(/[\p{L}\p{N}]/u);
-  const initial = match ? match[0].toUpperCase() : (Array.from(nameStr)[0] || '📿');
+  const initial = match ? match[0].toUpperCase() : (Array.from(nameStr)[0] || '⚡');
   const hue = (((initial.codePointAt(0) || 65) * 37 + (tid || 0) * 19) % 360);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
     <defs>
       <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="hsl(${hue}, 75%, 45%)"/>
-        <stop offset="100%" stop-color="hsl(${(hue + 45) % 360}, 85%, 25%)"/>
+        <stop offset="0%" stop-color="hsl(${hue}, 85%, 55%)"/>
+        <stop offset="100%" stop-color="hsl(${(hue + 55) % 360}, 95%, 35%)"/>
       </linearGradient>
     </defs>
     <circle cx="50" cy="50" r="50" fill="url(#g)"/>
@@ -1657,7 +1424,6 @@ app.post('/api/count', (req, res) => {
   res.json(user);
 });
 
-// Batch count endpoint — accumulates multiple taps in one request
 app.post('/api/count-batch', (req, res) => {
   const { telegram_id, count } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id is required' });
@@ -1677,19 +1443,6 @@ app.post('/api/reset', (req, res) => {
   const user = resetUserCount(telegram_id);
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json(user);
-});
-
-app.post('/api/abuse-lock', (req, res) => {
-  const { telegram_id } = req.body;
-  if (!telegram_id) return res.status(400).json({ error: 'telegram_id is required' });
-  const db = loadDB();
-  const idStr = telegram_id.toString();
-  if (db.users[idStr]) {
-    db.users[idStr].blocked = true;
-    saveDB(db);
-    return res.json({ success: true, message: 'User blocked due to abuse' });
-  }
-  res.status(404).json({ error: 'User not found' });
 });
 
 app.get('/api/leaderboard', (req, res) => {
@@ -1727,7 +1480,6 @@ app.get('/api/top-donors', (req, res) => {
   res.json({ donors: getTopDonors(10) });
 });
 
-// Donation card (public)
 app.get('/api/donation-card', (req, res) => {
   const db = loadDB();
   const card = db.settings.donation_card || { enabled: false };
@@ -1735,15 +1487,6 @@ app.get('/api/donation-card', (req, res) => {
   res.json(card);
 });
 
-// Prayer times (public)
-app.get('/api/prayer-times', (req, res) => {
-  const db = loadDB();
-  const pt = db.settings.prayer_times || { enabled: false };
-  if (!pt.enabled) return res.json({ enabled: false });
-  res.json(pt);
-});
-
-// Create Stars invoice link (for WebApp)
 app.post('/api/create-invoice', async (req, res) => {
   const { amount, telegram_id } = req.body;
   if (!amount || amount <= 0) return res.status(400).json({ error: 'Invalid amount' });
@@ -1753,12 +1496,12 @@ app.post('/api/create-invoice', async (req, res) => {
     const user = getUser(telegram_id);
     const lang = user?.language || 'uz';
     const invoiceLink = await bot.createInvoiceLink(
-      bt(lang, 'donateInvoice'),
-      bt(lang, 'donateDesc', { amount }),
-      `donate_${telegram_id}_${Date.now()}`,
-      '', // provider_token — empty for Stars
-      'XTR', // currency — Telegram Stars
-      [{ label: bt(lang, 'donateLabel'), amount: amount }]
+      bt(lang, 'shopInvoice'),
+      bt(lang, 'shopDesc', { amount }),
+      `shop_${telegram_id}_${Date.now()}`,
+      '',
+      'XTR',
+      [{ label: bt(lang, 'shopLabel'), amount: amount }]
     );
     res.json({ success: true, invoice_url: invoiceLink });
   } catch (e) {
@@ -1768,7 +1511,7 @@ app.post('/api/create-invoice', async (req, res) => {
 });
 
 // ============================================
-// ADMIN API
+// ADMIN APIS
 // ============================================
 app.get('/api/admin/users', adminMiddleware, (req, res) => {
   const users = getAllUsers();
@@ -1779,27 +1522,13 @@ app.get('/api/admin/stats', adminMiddleware, (req, res) => {
   res.json(getAdminStats());
 });
 
-// Universal Admin Action Logger
-function logAdminAction(actionData) {
-  const db = loadDB();
-  if (!db.archive) db.archive = { messages: [], card_history: [], logs: [] };
-  if (!db.archive.logs) db.archive.logs = [];
-  db.archive.logs.unshift({
-    id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-    timestamp: new Date().toISOString(),
-    ...actionData
-  });
-  if (db.archive.logs.length > 500) db.archive.logs = db.archive.logs.slice(0, 500);
-  saveDB(db);
-}
-
 app.post('/api/admin/block', adminMiddleware, (req, res) => {
   const { telegram_id } = req.body;
   if (!telegram_id) return res.status(400).json({ error: 'telegram_id required' });
   const user = blockUser(telegram_id);
   if (!user) return res.status(404).json({ error: 'User not found' });
-  
-  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player';
   logAdminAction({
     type: 'block',
     category: 'block',
@@ -1823,7 +1552,7 @@ app.post('/api/admin/unblock', adminMiddleware, (req, res) => {
   const user = unblockUser(telegram_id);
   if (!user) return res.status(404).json({ error: 'User not found' });
 
-  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player';
   logAdminAction({
     type: 'unblock',
     category: 'block',
@@ -1847,7 +1576,7 @@ app.post('/api/admin/reset-user', adminMiddleware, (req, res) => {
   const user = resetUserCount(telegram_id, true);
   if (!user) return res.status(404).json({ error: 'User not found' });
 
-  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi';
+  const nm = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player';
   logAdminAction({
     type: 'reset',
     category: 'block',
@@ -1855,7 +1584,7 @@ app.post('/api/admin/reset-user', adminMiddleware, (req, res) => {
     target_name: nm,
     target_username: user.username || '',
     performed_by: req.adminId || SUPER_ADMIN_ID,
-    details: 'Hisobi 0 ga qaytarildi (Restart)'
+    details: 'Ochkolari 0 ga qaytarildi (Restart)'
   });
 
   res.json({ success: true, user });
@@ -1921,9 +1650,9 @@ app.post('/api/admin/admins', adminMiddleware, (req, res) => {
     return res.status(403).json({ error: 'Only super admin can add admins' });
   }
   const admins = addAdmin(telegram_id);
-
   const user = getUser(telegram_id);
-  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'ID: ' + telegram_id;
+  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player' : 'ID: ' + telegram_id;
+
   logAdminAction({
     type: 'add_admin',
     category: 'admin',
@@ -1948,9 +1677,9 @@ const handleRemoveAdmin = (req, res) => {
     return res.status(400).json({ error: 'Cannot remove super admin' });
   }
   const admins = removeAdmin(idNum);
-
   const user = getUser(idNum);
-  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'ID: ' + idNum;
+  const nm = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player' : 'ID: ' + idNum;
+
   logAdminAction({
     type: 'remove_admin',
     category: 'admin',
@@ -1975,26 +1704,24 @@ app.get('/api/admin/donations/list', adminMiddleware, (req, res) => {
   res.json({ donations: donations.reverse().slice(0, 100) });
 });
 
-// Admin: Get donation card settings
 app.get('/api/admin/donation-card', adminMiddleware, (req, res) => {
   const db = loadDB();
-  res.json(db.settings.donation_card || { enabled: false, card_number: '', card_holder: '', bank_name: '', card_type: 'uzcard' });
+  res.json(db.settings.donation_card || { enabled: false, card_number: '', card_holder: '', bank_name: 'Uzcard', card_type: 'uzcard', reason: 'Loyiha rivoji uchun' });
 });
 
-// Admin: Update donation card settings + Archive logging
 app.put('/api/admin/donation-card', adminMiddleware, (req, res) => {
-  const { enabled, card_number, card_holder, bank_name, card_type } = req.body;
+  const { enabled, card_number, card_holder, bank_name, card_type, reason } = req.body;
   const db = loadDB();
   db.settings.donation_card = {
     enabled: enabled !== undefined ? enabled : false,
     card_number: card_number || '',
     card_holder: card_holder || '',
-    bank_name: bank_name || '',
+    bank_name: bank_name || 'Uzcard',
     card_type: card_type || 'uzcard',
+    reason: reason || 'Loyiha rivoji uchun'
   };
 
-  // Log to archive
-  if (!db.archive) db.archive = { messages: [], card_history: [] };
+  if (!db.archive) db.archive = { messages: [], card_history: [], logs: [] };
   if (!db.archive.card_history) db.archive.card_history = [];
   db.archive.card_history.unshift({
     id: 'card_' + Date.now(),
@@ -2012,135 +1739,33 @@ app.put('/api/admin/donation-card', adminMiddleware, (req, res) => {
   res.json({ success: true, donation_card: db.settings.donation_card });
 });
 
-// Admin: Get prayer times settings
-app.get('/api/admin/prayer-times', adminMiddleware, (req, res) => {
-  const db = loadDB();
-  res.json(db.settings.prayer_times || { enabled: false, location: '', mosque: '', notify_before: 10, times: { bomdod: '', peshin: '', asr: '', shom: '', xufton: '' } });
-});
-
-// Admin: Get tracked chats (groups/channels)
-app.get('/api/admin/chats', adminMiddleware, (req, res) => {
-  const db = loadDB();
-  res.json({ chats: db.chats || {} });
-});
-
-// Admin: Update prayer times settings
-app.put('/api/admin/prayer-times', adminMiddleware, async (req, res) => {
-  const { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets } = req.body;
-  const db = loadDB();
-  db.settings.prayer_times = {
-    enabled: enabled !== undefined ? enabled : false,
-    location: location || '',
-    mosque: mosque || '',
-    notify_before: notify_before || 10,
-    times: times || { tong: '', bomdod: '', peshin: '', asr: '', shom: '', xufton: '' },
-    footer_text: broadcast_text || ''
-  };
-  saveDB(db);
-  
-  if (broadcast && db.chats) {
-    const pt = db.settings.prayer_times;
-    let msg = `🕌 *${pt.mosque || 'Masjid'}* namoz vaqtlari yangilandi!
-📍 Hudud: *${pt.location || 'Noma\'lum'}*
-
-🌅 Tong/Quyosh: *${pt.times.tong || '-'}*
-🌅 Bomdod: *${pt.times.bomdod || '-'}*
-☀️ Peshin: *${pt.times.peshin || '-'}*
-🌇 Asr: *${pt.times.asr || '-'}*
-🌆 Shom: *${pt.times.shom || '-'}*
-🌃 Xufton: *${pt.times.xufton || '-'}*`;
-
-    if (broadcast_text) {
-      msg += `\n\n_${broadcast_text}_`;
-    }
-    
-    let targetChatIds = Object.keys(db.chats);
-    if (broadcast_targets && broadcast_targets !== 'all') {
-      if (Array.isArray(broadcast_targets)) {
-        targetChatIds = targetChatIds.filter(id => broadcast_targets.includes(id));
-      }
-    }
-
-    let sentCount = 0;
-    for (const chatId of targetChatIds) {
-      try {
-        await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
-        sentCount++;
-      } catch (err) {
-        console.error(`Failed to broadcast prayer times to chat ${chatId}:`, err.message);
-      }
-    }
-    res.json({ success: true, prayer_times: db.settings.prayer_times, broadcastCount: sentCount });
-  } else {
-    res.json({ success: true, prayer_times: db.settings.prayer_times });
-  }
-});
-
-// Admin: Update donation reason
-app.put('/api/admin/donation-reason', adminMiddleware, (req, res) => {
-  const { reason } = req.body;
-  const db = loadDB();
-  if (!db.settings.donation_card) db.settings.donation_card = {};
-  db.settings.donation_card.reason = reason || '';
-  saveDB(db);
-  res.json({ success: true, reason: db.settings.donation_card.reason });
-});
-
-// Admin: Send direct message to a specific user + Archive logging
 app.post('/api/admin/send-message', adminMiddleware, async (req, res) => {
   const { telegram_id, message } = req.body;
   if (!telegram_id || !message) return res.status(400).json({ error: 'telegram_id and message required' });
   if (!bot) return res.status(500).json({ error: 'Bot is not active' });
-  
+
   const user = getUser(telegram_id);
-  const recipientName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Foydalanuvchi' : 'Foydalanuvchi';
+  const recipientName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Player' : 'Player';
 
   try {
     await bot.sendMessage(Number(telegram_id), `📩 <b>Admin xabari:</b>\n\n${message}`, { parse_mode: 'HTML' });
-    
-    // Log archive
-    const db = loadDB();
-    if (!db.archive) db.archive = { messages: [], card_history: [] };
-    if (!db.archive.messages) db.archive.messages = [];
-    db.archive.messages.unshift({
-      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+
+    logAdminAction({
       type: 'direct',
       text: message,
       recipient_id: Number(telegram_id),
       recipient_name: recipientName,
       recipient_username: user?.username || '',
-      sent_by: req.adminId || SUPER_ADMIN_ID,
-      status: 'success',
-      timestamp: new Date().toISOString()
+      performed_by: req.adminId || SUPER_ADMIN_ID,
+      details: 'Foydalanuvchiga to\'g\'ridan-to\'g\'ri xabar yuborildi'
     });
-    if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
-    saveDB(db);
 
     res.json({ success: true });
   } catch (err) {
-    // Log failed message in archive too so admin knows who didn't get it
-    const db = loadDB();
-    if (!db.archive) db.archive = { messages: [], card_history: [] };
-    if (!db.archive.messages) db.archive.messages = [];
-    db.archive.messages.unshift({
-      id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-      type: 'direct',
-      text: message,
-      recipient_id: Number(telegram_id),
-      recipient_name: recipientName,
-      recipient_username: user?.username || '',
-      sent_by: req.adminId || SUPER_ADMIN_ID,
-      status: 'failed',
-      error: err.message,
-      timestamp: new Date().toISOString()
-    });
-    saveDB(db);
-
     res.status(500).json({ error: err.message });
   }
 });
 
-// Admin: Broadcast message to all users + Archive logging
 app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: 'message required' });
@@ -2151,7 +1776,6 @@ app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
     users.push({ telegram_id: SUPER_ADMIN_ID, language: 'uz' });
   }
   let sent = 0, failed = 0;
-  const failedUsers = [];
 
   for (const user of users) {
     try {
@@ -2160,34 +1784,23 @@ app.post('/api/admin/broadcast', adminMiddleware, async (req, res) => {
       sent++;
     } catch (e) {
       failed++;
-      failedUsers.push({ id: user.telegram_id, name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'User' });
     }
     await new Promise(resolve => setTimeout(resolve, 35));
   }
 
-  // Log to archive
-  const db = loadDB();
-  if (!db.archive) db.archive = { messages: [], card_history: [] };
-  if (!db.archive.messages) db.archive.messages = [];
-  db.archive.messages.unshift({
-    id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+  logAdminAction({
     type: 'broadcast',
     text: message,
     sent_count: sent,
     failed_count: failed,
-    failed_users: failedUsers.slice(0, 50),
     total_targets: users.length,
-    sent_by: req.adminId || SUPER_ADMIN_ID,
-    status: failed === 0 ? 'success' : (sent > 0 ? 'partial' : 'failed'),
-    timestamp: new Date().toISOString()
+    performed_by: req.adminId || SUPER_ADMIN_ID,
+    details: `Broadcast: ${sent} yetkazildi, ${failed} xatolik`
   });
-  if (db.archive.messages.length > 500) db.archive.messages = db.archive.messages.slice(0, 500);
-  saveDB(db);
 
   res.json({ success: true, sent, failed, total: users.length });
 });
 
-// Admin: Get Full Archive (Sent Messages, Card History & Admin Action Logs)
 app.get('/api/admin/archive', adminMiddleware, (req, res) => {
   const db = loadDB();
   const archive = db.archive || { messages: [], card_history: [], logs: [] };
@@ -2198,7 +1811,6 @@ app.get('/api/admin/archive', adminMiddleware, (req, res) => {
   });
 });
 
-// Admin: Delete an item from archive
 app.delete('/api/admin/archive/:type/:id', adminMiddleware, (req, res) => {
   const { type, id } = req.params;
   const db = loadDB();
@@ -2214,9 +1826,6 @@ app.delete('/api/admin/archive/:type/:id', adminMiddleware, (req, res) => {
   res.json({ success: true });
 });
 
-// ============================================
-// HEALTH CHECK (for Docker/PM2/monitoring)
-// ============================================
 app.get('/api/health', (req, res) => {
   const db = loadDB();
   res.json({
@@ -2229,21 +1838,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ============================================
-// SERVE PAGES
-// ============================================
-// PWA manifest
 app.get('/manifest.json', (req, res) => {
   res.json({
-    name: 'Elektron Tasbih',
-    short_name: 'Tasbih',
-    description: 'Telegram Elektron Tasbih — Zikr qiling',
+    name: 'Tap Bot PRO',
+    short_name: 'TapBot',
+    description: 'Telegram Tap to Earn WebApp Game',
     start_url: '/',
     display: 'standalone',
     background_color: '#060d1a',
-    theme_color: '#0a1a0f',
+    theme_color: '#10b981',
     icons: [{
-      src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23166534"/><text x="50" y="60" text-anchor="middle" font-size="50">📿</text></svg>'),
+      src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%2310b981"/><text x="50" y="66" text-anchor="middle" font-size="52">⚡</text></svg>'),
       sizes: '192x192',
       type: 'image/svg+xml',
     }],
@@ -2260,23 +1865,19 @@ app.get('*', (req, res) => {
 
 initDB().then(() => {
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server v2.0: http://localhost:${PORT}`);
-    console.log(`📿 Tasbih: http://localhost:${PORT}`);
+    console.log(`🚀 Tap Bot PRO Server: http://localhost:${PORT}`);
+    console.log(`⚡ WebApp: http://localhost:${PORT}`);
     console.log(`🛡️ Admin: http://localhost:${PORT}/admin.html`);
     console.log(`❤️ Health: http://localhost:${PORT}/api/health`);
-    console.log(`📦 Compression: enabled`);
-    console.log(`🔒 Helmet: enabled`);
-    console.log(`⏱ Rate limiting: enabled`);
 
-    // O'z-o'zini uyg'otish va Telegram Menu Buttonni sinxronlash
     const selfUrl = getWebAppUrl();
     if (selfUrl) {
-      console.log(`⏰ WebApp faol havola: ${selfUrl}`);
+      console.log(`⏰ WebApp live URL: ${selfUrl}`);
       if (bot) {
         bot.setChatMenuButton({
           menu_button: {
             type: 'web_app',
-            text: '📿 Tasbih',
+            text: '⚡ Play Tap Bot',
             web_app: { url: selfUrl }
           }
         }).catch(() => {});

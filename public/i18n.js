@@ -1,5 +1,5 @@
 /* ============================================
-   ELEKTRON TASBIH — INTERNATIONALIZATION (i18n)
+   TAP BOT PRO — INTERNATIONALIZATION (i18n)
    Supports: uz (O'zbek), ru (Русский), en (English)
    ============================================ */
 
@@ -8,511 +8,472 @@ const TRANSLATIONS = {
   // O'ZBEK TILI (default)
   // ==========================================
   uz: {
+    // Brand
+    brandTitle: 'TAP BOT PRO',
+    brandSubtitle: 'Tap to Earn Game',
+
     // Tab Navigation
-    tabCounter: 'Tasbih',
-    tabLeaderboard: 'Top',
-    tabDonate: 'Ehson',
+    tabCounter: 'Tap',
+    tabLeaderboard: 'Top 10',
+    tabDonate: 'Do\'kon',
     tabProfile: 'Profil',
 
-    // Zikr types
-    zikrSubhanalloh: 'SubhanAlloh',
-    zikrAlhamdulillah: 'Alhamdulillah',
-    zikrAllohuakbar: 'Allohu Akbar',
-    zikrCustom: 'Boshqa',
+    // Levels / Leagues
+    level1: '🥉 Bronza',
+    level2: '🥈 Kumush',
+    level3: '🥇 Oltin',
+    level4: '💠 Platina',
+    level5: '💎 Olmos',
+    level6: '👑 Master',
+    level7: '⚡ Afsona (Legend)',
 
-    // Counter
-    counterLabel: 'marta',
-    tapText: 'Bosing',
-    tapAriaLabel: 'Hisoblash',
+    // Tap Modes / Multipliers
+    modeClassic: 'Standart (1x)',
+    modeTurbo: '🔥 Turbo (2x)',
+    modeSuper: '⚡ Super (5x)',
+    modeUltra: '🚀 Ultra (10x)',
+
+    // Counter Section
+    counterLabel: 'tanga',
+    tapText: 'TAP!',
+    tapAriaLabel: 'Tangani bosing',
+    energyLabel: 'Energiya',
+    perTap: 'bosish uchun',
 
     // Action buttons
     resetBtn: 'Qayta boshlash',
     vibrationBtn: 'Tebranish',
-    soundBtn: 'Tovush',
+    soundBtn: 'Ovoz',
 
     // Mini stats
     streakLabel: 'kun streak',
-    totalZikrLabel: 'jami zikr',
-    rankLabel: 'reyting',
+    totalTapsLabel: 'jami tangalar',
+    rankLabel: 'global reyting',
 
     // Leaderboard
-    leaderboardTitle: '🏆 Top Foydalanuvchilar',
-    leaderboardSubtitle: 'Eng ko\'p zikr qilganlar',
-    usersCount: 'foydalanuvchi',
-    zikrUnit: 'zikr',
+    leaderboardTitle: 'TOP 10 REYTING',
+    leaderboardSubtitle: 'Eng kuchli va chaqqon o\'yinchilar',
+    usersCount: 'o\'yinchi',
+    scoreUnit: 'tanga',
     youLabel: '(Siz)',
+    topListTitle: 'TOP 4 — 10 RO\'YXATI',
+
+    // Shop / Boosts (Do'kon)
+    shopTitle: 'Do\'kon & Boostlar',
+    shopSubtitle: 'Imkoniyatlarni oshiring va reytingda yetakchi bo\'ling',
+    shopStarsTitle: 'Telegram Stars ⭐ orqali boost',
+    shopCardTitle: 'Karta orqali qo\'llab-quvvatlash',
+    shopCopyBtn: 'Karta raqamidan nusxa olish',
+    shopCopied: 'Karta raqami nusxalandi!',
+    shopNoCard: 'Hozircha karta kiritilmagan',
+    shopBanner: '⭐ Stars orqali xarid qilib hisobingizga bonus tangalarga ega bo\'ling!',
+    buyBtn: 'Xarid qilish',
 
     // Profile
-    profileDefaultName: 'Foydalanuvchi',
-    profileCurrentCount: 'Hozirgi son',
-    profileTotalZikr: 'Jami zikr',
+    profileDefaultName: 'O\'yinchi',
+    profileCurrentCount: 'Hozirgi hisob',
+    profileTotalTaps: 'Jami to\'plangan',
     profileStreak: 'Streak (kun)',
     profileRank: 'Reyting',
-    achievementsTitle: '🎖 Yutuqlar',
-    profileRegistered: '📅 Ro\'yxatdan o\'tgan',
-    profileLastActive: '⏱ Oxirgi faollik',
+    achievementsTitle: 'Yutuqlar & Bosqichlar',
+    profileRegistered: 'Ro\'yxatdan o\'tgan',
+    profileLastActive: 'Oxirgi faollik',
 
     // Achievements
     achFirst: 'Birinchi qadam',
-    achTen: '10 ta zikr',
-    achHundred: 'Yuz marta',
-    achFiveHundred: 'Besh yuz',
-    achThousand: 'Ming marta',
-    achFiveK: 'Besh ming',
-    achTenK: 'O\'n ming',
-    achStreak3: '3 kun streak',
-    achStreak7: 'Haftalik',
-    achStreak30: 'Oylik',
-    achReq1: '1 ta zikr',
+    achTen: '10 ta tap',
+    achHundred: '100 ta tap',
+    achFiveHundred: '500 ta tap',
+    achThousand: '1,000 ta tanga',
+    achFiveK: '5,000 ta tanga',
+    achTenK: '10,000 ta tanga',
+    achFiftyK: '50,000 Master',
+    achHundredK: '100,000 Legend',
+    achStreak3: '3 kunlik streak',
+    achStreak7: 'Haftalik chempion',
+    achStreak30: 'Oylik legend',
+    achVip: 'Stars VIP',
+
+    achReq1: '1 ta tap',
     achReq10: '10 ta',
     achReq100: '100 ta',
     achReq500: '500 ta',
     achReq1000: '1,000 ta',
     achReq5000: '5,000 ta',
     achReq10000: '10,000 ta',
-    achReq3days: '3 kun',
+    achReq50000: '50,000 ta',
+    achReq100000: '100,000 ta',
+    achReq3days: '3 kun streak',
     achReq7days: '7 kun streak',
     achReq30days: '30 kun streak',
+    achReqVip: 'Stars xaridi',
 
     // Celebration
     celebrationTitle: 'Tabriklaymiz!',
-    celebrationText: '{count} marta {zikr} zikr qildingiz!',
-    celebrationBtn: 'Davom etish',
+    celebrationText: '{count} ta tanga to\'pladingiz!',
+    celebrationBtn: 'Ajoyib, davom etish!',
 
     // Subscription overlay
     subTitle: 'Obuna bo\'ling!',
-    subText: 'Botdan foydalanish uchun quyidagi kanallarga obuna bo\'ling:',
-    subCheckBtn: '✅ Tekshirish',
+    subText: 'O\'yinda ishtirok etish uchun quyidagi kanallarga obuna bo\'ling:',
+    subCheckBtn: '✅ A\'zo bo\'ldim',
     subNotSubscribed: '❌ Hali barcha kanallarga obuna bo\'lmagansiz!',
 
     // Blocked overlay
     blockedTitle: 'Hisobingiz bloklangan',
-    blockedText: 'Admin tomonidan bloklangansiz. Botdan foydalana olmaysiz.',
+    blockedText: 'Admin tomonidan bloklangansiz. O\'yinda ishtirok eta olmaysiz.',
 
     // Reset confirm
     resetConfirm: 'Hisoblagichni 0 ga qaytarasizmi?',
-
-    // Donation
-    donateTitle: '💝 Ehson qilish',
-    donateSubtitle: 'Alloh yo\'lida ehson qiling',
-    donateCardTitle: 'Karta orqali o\'tkazish',
-    donateCardNumber: 'Karta raqami',
-    donateCardHolder: 'Karta egasi',
-    donateCopySuccess: '✅ Karta raqami nusxalandi!',
-    donateCopyBtn: 'Nusxalash',
-    donateNoCard: 'Hozircha ehson kartasi qo\'shilmagan',
-    donateStarsTitle: 'Telegram Stars ⭐ orqali',
-    donateDua: '🤲 Alloh sizdan rozi bo\'lsin!',
-    donateReason: 'Ehson sababi',
-
-    // Prayer times
-    tabPrayer: 'Namoz',
-    prayerTitle: '🕌 Namoz vaqtlari',
-    prayerLocation: '📍 Joy',
-    prayerMosque: '🕌 Masjid',
-    prayerBomdod: 'Bomdod',
-    prayerPeshin: 'Peshin',
-    prayerAsr: 'Asr',
-    prayerShom: 'Shom',
-    prayerXufton: 'Xufton',
-    prayerDisabled: 'Namoz vaqtlari hali sozlanmagan',
-    prayerNextIn: 'keyingi',
-    prayerNow: 'hozir!',
-
-    // Language names
-    langName: 'O\'zbekcha',
-    langFlag: '🇺🇿',
   },
 
   // ==========================================
-  // РУССКИЙ ЯЗЫК
+  // RUS TILI (Русский)
   // ==========================================
   ru: {
+    // Brand
+    brandTitle: 'TAP BOT PRO',
+    brandSubtitle: 'Tap to Earn Game',
+
     // Tab Navigation
-    tabCounter: 'Тасбих',
-    tabLeaderboard: 'Топ',
+    tabCounter: 'Тап',
+    tabLeaderboard: 'Топ 10',
+    tabDonate: 'Магазин',
     tabProfile: 'Профиль',
 
-    // Zikr types
-    zikrSubhanalloh: 'СубханАллох',
-    zikrAlhamdulillah: 'Альхамдулиллах',
-    zikrAllohuakbar: 'Аллоху Акбар',
-    zikrCustom: 'Другое',
+    // Levels / Leagues
+    level1: '🥉 Бронза',
+    level2: '🥈 Серебро',
+    level3: '🥇 Золото',
+    level4: '💠 Платина',
+    level5: '💎 Алмаз',
+    level6: '👑 Мастер',
+    level7: '⚡ Легенда (Legend)',
 
-    // Counter
-    counterLabel: 'раз',
-    tapText: 'Нажмите',
-    tapAriaLabel: 'Считать',
+    // Tap Modes
+    modeClassic: 'Стандарт (1x)',
+    modeTurbo: '🔥 Турбо (2x)',
+    modeSuper: '⚡ Супер (5x)',
+    modeUltra: '🚀 Ультра (10x)',
+
+    // Counter Section
+    counterLabel: 'монет',
+    tapText: 'TAP!',
+    tapAriaLabel: 'Кликайте по монете',
+    energyLabel: 'Энергия',
+    perTap: 'за тап',
 
     // Action buttons
-    resetBtn: 'Сбросить',
+    resetBtn: 'Сбросить счёт',
     vibrationBtn: 'Вибрация',
     soundBtn: 'Звук',
 
     // Mini stats
-    streakLabel: 'дней подряд',
-    totalZikrLabel: 'всего зикр',
-    rankLabel: 'рейтинг',
+    streakLabel: 'дней стрик',
+    totalTapsLabel: 'всего монет',
+    rankLabel: 'глобальный ранг',
 
     // Leaderboard
-    leaderboardTitle: '🏆 Топ пользователей',
-    leaderboardSubtitle: 'Больше всего зикров',
-    usersCount: 'пользователей',
-    zikrUnit: 'зикр',
+    leaderboardTitle: 'ТОП 10 РЕЙТИНГ',
+    leaderboardSubtitle: 'Лучшие и самые быстрые игроки',
+    usersCount: 'игроков',
+    scoreUnit: 'монет',
     youLabel: '(Вы)',
+    topListTitle: 'СПИСОК ТОП 4 — 10',
+
+    // Shop / Boosts
+    shopTitle: 'Магазин & Бусты',
+    shopSubtitle: 'Улучшайте силу тапа и становитесь лидером',
+    shopStarsTitle: 'Бусты через Telegram Stars ⭐',
+    shopCardTitle: 'Поддержка проекта по карте',
+    shopCopyBtn: 'Скопировать номер карты',
+    shopCopied: 'Номер карты скопирован!',
+    shopNoCard: 'Карта пока не указана',
+    shopBanner: '⭐ Покупайте бусты за Stars и получайте бонусные монеты!',
+    buyBtn: 'Купить',
 
     // Profile
-    profileDefaultName: 'Пользователь',
-    profileCurrentCount: 'Текущий счёт',
-    profileTotalZikr: 'Всего зикров',
+    profileDefaultName: 'Игрок',
+    profileCurrentCount: 'Текущий баланс',
+    profileTotalTaps: 'Всего добыто',
     profileStreak: 'Стрик (дней)',
     profileRank: 'Рейтинг',
-    achievementsTitle: '🎖 Достижения',
-    profileRegistered: '📅 Регистрация',
-    profileLastActive: '⏱ Последняя активность',
+    achievementsTitle: 'Достижения & Награды',
+    profileRegistered: 'Регистрация',
+    profileLastActive: 'Активность',
 
     // Achievements
-    achFirst: 'Первый шаг',
-    achTen: '10 зикров',
-    achHundred: 'Сто раз',
-    achFiveHundred: 'Пятьсот',
-    achThousand: 'Тысяча',
-    achFiveK: 'Пять тысяч',
-    achTenK: 'Десять тысяч',
-    achStreak3: '3 дня подряд',
-    achStreak7: 'Неделя',
-    achStreak30: 'Месяц',
-    achReq1: '1 зикр',
-    achReq10: '10 зикров',
-    achReq100: '100 зикров',
-    achReq500: '500 зикров',
-    achReq1000: '1,000 зикров',
-    achReq5000: '5,000 зикров',
-    achReq10000: '10,000 зикров',
-    achReq3days: '3 дня',
-    achReq7days: '7 дней подряд',
-    achReq30days: '30 дней подряд',
+    achFirst: 'Первый клик',
+    achTen: '10 тапов',
+    achHundred: '100 тапов',
+    achFiveHundred: '500 тапов',
+    achThousand: '1,000 монет',
+    achFiveK: '5,000 монет',
+    achTenK: '10,000 монет',
+    achFiftyK: '50,000 Мастер',
+    achHundredK: '100,000 Легенда',
+    achStreak3: '3 дня стрик',
+    achStreak7: 'Недельный чемпион',
+    achStreak30: 'Месячная легенда',
+    achVip: 'Stars VIP',
+
+    achReq1: '1 тап',
+    achReq10: '10 тапов',
+    achReq100: '100 тапов',
+    achReq500: '500 тапов',
+    achReq1000: '1,000 монет',
+    achReq5000: '5,000 монет',
+    achReq10000: '10,000 монет',
+    achReq50000: '50,000 монет',
+    achReq100000: '100,000 монет',
+    achReq3days: '3 дня стрик',
+    achReq7days: '7 дней стрик',
+    achReq30days: '30 дней стрик',
+    achReqVip: 'Покупка Stars',
 
     // Celebration
     celebrationTitle: 'Поздравляем!',
-    celebrationText: 'Вы совершили {count} зикров {zikr}!',
-    celebrationBtn: 'Продолжить',
+    celebrationText: 'Вы заработали {count} монет!',
+    celebrationBtn: 'Отлично, продолжить!',
 
     // Subscription overlay
-    subTitle: 'Подпишитесь!',
-    subText: 'Для использования бота подпишитесь на следующие каналы:',
-    subCheckBtn: '✅ Проверить',
+    subTitle: 'Требуется подписка!',
+    subText: 'Для участия в игре подпишитесь на каналы:',
+    subCheckBtn: '✅ Я подписался',
     subNotSubscribed: '❌ Вы ещё не подписались на все каналы!',
 
     // Blocked overlay
     blockedTitle: 'Аккаунт заблокирован',
-    blockedText: 'Вы заблокированы администратором. Доступ к боту ограничен.',
+    blockedText: 'Вы заблокированы администратором.',
 
     // Reset confirm
-    resetConfirm: 'Сбросить счётчик до 0?',
-
-    // Donation
-    donateTitle: '💝 Пожертвование',
-    donateSubtitle: 'Пожертвуйте на пути Аллаха',
-    donateCardTitle: 'Перевод на карту',
-    donateCardNumber: 'Номер карты',
-    donateCardHolder: 'Владелец карты',
-    donateCopySuccess: '✅ Номер карты скопирован!',
-    donateCopyBtn: 'Копировать',
-    donateNoCard: 'Карта для пожертвований пока не добавлена',
-    donateStarsTitle: 'Через Telegram Stars ⭐',
-    donateDua: '🤲 Да вознаградит вас Аллах!',
-    donateReason: 'Причина пожертвования',
-
-    // Prayer times
-    tabPrayer: 'Намаз',
-    prayerTitle: '🕌 Время намаза',
-    prayerLocation: '📍 Место',
-    prayerMosque: '🕌 Мечеть',
-    prayerBomdod: 'Фаджр',
-    prayerPeshin: 'Зухр',
-    prayerAsr: 'Аср',
-    prayerShom: 'Магриб',
-    prayerXufton: 'Иша',
-    prayerDisabled: 'Время намаза ещё не настроено',
-    prayerNextIn: 'через',
-    prayerNow: 'сейчас!',
-
-    // Language names
-    langName: 'Русский',
-    langFlag: '🇷🇺',
+    resetConfirm: 'Сбросить текущий счёт до 0?',
   },
 
   // ==========================================
-  // ENGLISH
+  // INGLIZ TILI (English)
   // ==========================================
   en: {
+    // Brand
+    brandTitle: 'TAP BOT PRO',
+    brandSubtitle: 'Tap to Earn Game',
+
     // Tab Navigation
-    tabCounter: 'Tasbih',
-    tabLeaderboard: 'Top',
+    tabCounter: 'Tap',
+    tabLeaderboard: 'Top 10',
+    tabDonate: 'Shop',
     tabProfile: 'Profile',
 
-    // Zikr types
-    zikrSubhanalloh: 'SubhanAllah',
-    zikrAlhamdulillah: 'Alhamdulillah',
-    zikrAllohuakbar: 'Allahu Akbar',
-    zikrCustom: 'Other',
+    // Levels / Leagues
+    level1: '🥉 Bronze',
+    level2: '🥈 Silver',
+    level3: '🥇 Gold',
+    level4: '💠 Platinum',
+    level5: '💎 Diamond',
+    level6: '👑 Master',
+    level7: '⚡ Legend',
 
-    // Counter
-    counterLabel: 'times',
-    tapText: 'Tap',
-    tapAriaLabel: 'Count',
+    // Tap Modes
+    modeClassic: 'Standard (1x)',
+    modeTurbo: '🔥 Turbo (2x)',
+    modeSuper: '⚡ Super (5x)',
+    modeUltra: '🚀 Ultra (10x)',
+
+    // Counter Section
+    counterLabel: 'coins',
+    tapText: 'TAP!',
+    tapAriaLabel: 'Tap the coin',
+    energyLabel: 'Energy',
+    perTap: 'per tap',
 
     // Action buttons
-    resetBtn: 'Reset',
+    resetBtn: 'Reset Count',
     vibrationBtn: 'Vibration',
     soundBtn: 'Sound',
 
     // Mini stats
-    streakLabel: 'day streak',
-    totalZikrLabel: 'total dhikr',
-    rankLabel: 'rank',
+    streakLabel: 'days streak',
+    totalTapsLabel: 'total coins',
+    rankLabel: 'global rank',
 
     // Leaderboard
-    leaderboardTitle: '🏆 Top Users',
-    leaderboardSubtitle: 'Most dhikr performed',
-    usersCount: 'users',
-    zikrUnit: 'dhikr',
+    leaderboardTitle: 'TOP 10 LEADERBOARD',
+    leaderboardSubtitle: 'Best and fastest players',
+    usersCount: 'players',
+    scoreUnit: 'coins',
     youLabel: '(You)',
+    topListTitle: 'TOP 4 — 10 PLAYERS',
+
+    // Shop / Boosts
+    shopTitle: 'Shop & Boosts',
+    shopSubtitle: 'Boost your tap power and dominate the leaderboard',
+    shopStarsTitle: 'Boost with Telegram Stars ⭐',
+    shopCardTitle: 'Card Support & Sponsorship',
+    shopCopyBtn: 'Copy Card Number',
+    shopCopied: 'Card number copied!',
+    shopNoCard: 'No card info available',
+    shopBanner: '⭐ Buy boosts with Stars and get instant bonus coins!',
+    buyBtn: 'Buy Now',
 
     // Profile
-    profileDefaultName: 'User',
-    profileCurrentCount: 'Current count',
-    profileTotalZikr: 'Total dhikr',
+    profileDefaultName: 'Player',
+    profileCurrentCount: 'Current Coins',
+    profileTotalTaps: 'Total Farmed',
     profileStreak: 'Streak (days)',
     profileRank: 'Rank',
-    achievementsTitle: '🎖 Achievements',
-    profileRegistered: '📅 Registered',
-    profileLastActive: '⏱ Last active',
+    achievementsTitle: 'Achievements & Milestones',
+    profileRegistered: 'Registered',
+    profileLastActive: 'Last Active',
 
     // Achievements
-    achFirst: 'First step',
-    achTen: '10 dhikr',
-    achHundred: 'One hundred',
-    achFiveHundred: 'Five hundred',
-    achThousand: 'One thousand',
-    achFiveK: 'Five thousand',
-    achTenK: 'Ten thousand',
-    achStreak3: '3-day streak',
-    achStreak7: 'Weekly',
-    achStreak30: 'Monthly',
-    achReq1: '1 dhikr',
-    achReq10: '10 dhikr',
-    achReq100: '100 dhikr',
-    achReq500: '500 dhikr',
-    achReq1000: '1,000 dhikr',
-    achReq5000: '5,000 dhikr',
-    achReq10000: '10,000 dhikr',
-    achReq3days: '3 days',
-    achReq7days: '7-day streak',
-    achReq30days: '30-day streak',
+    achFirst: 'First Tap',
+    achTen: '10 Taps',
+    achHundred: '100 Taps',
+    achFiveHundred: '500 Taps',
+    achThousand: '1,000 Coins',
+    achFiveK: '5,000 Coins',
+    achTenK: '10,000 Coins',
+    achFiftyK: '50,000 Master',
+    achHundredK: '100,000 Legend',
+    achStreak3: '3 Days Streak',
+    achStreak7: 'Weekly Champion',
+    achStreak30: 'Monthly Legend',
+    achVip: 'Stars VIP',
+
+    achReq1: '1 tap',
+    achReq10: '10 taps',
+    achReq100: '100 taps',
+    achReq500: '500 taps',
+    achReq1000: '1,000 coins',
+    achReq5000: '5,000 coins',
+    achReq10000: '10,000 coins',
+    achReq50000: '50,000 coins',
+    achReq100000: '100,000 coins',
+    achReq3days: '3 days streak',
+    achReq7days: '7 days streak',
+    achReq30days: '30 days streak',
+    achReqVip: 'Stars purchase',
 
     // Celebration
     celebrationTitle: 'Congratulations!',
-    celebrationText: 'You performed {count} {zikr} dhikr!',
-    celebrationBtn: 'Continue',
+    celebrationText: 'You earned {count} coins!',
+    celebrationBtn: 'Awesome, continue!',
 
     // Subscription overlay
-    subTitle: 'Subscribe!',
-    subText: 'Please subscribe to the following channels to use the bot:',
-    subCheckBtn: '✅ Check',
+    subTitle: 'Subscription Required!',
+    subText: 'Please subscribe to the channels to play:',
+    subCheckBtn: '✅ I Subscribed',
     subNotSubscribed: '❌ You haven\'t subscribed to all channels yet!',
 
     // Blocked overlay
-    blockedTitle: 'Account blocked',
-    blockedText: 'You have been blocked by the admin. Bot access is restricted.',
+    blockedTitle: 'Account Blocked',
+    blockedText: 'You have been blocked by administrator.',
 
     // Reset confirm
-    resetConfirm: 'Reset counter to 0?',
-
-    // Donation
-    donateTitle: '💝 Donate',
-    donateSubtitle: 'Give charity for the sake of Allah',
-    donateCardTitle: 'Transfer to card',
-    donateCardNumber: 'Card number',
-    donateCardHolder: 'Cardholder',
-    donateCopySuccess: '✅ Card number copied!',
-    donateCopyBtn: 'Copy',
-    donateNoCard: 'Donation card has not been added yet',
-    donateStarsTitle: 'Via Telegram Stars ⭐',
-    donateDua: '🤲 May Allah reward you!',
-    donateReason: 'Donation reason',
-
-    // Prayer times
-    tabPrayer: 'Prayer',
-    prayerTitle: '🕌 Prayer Times',
-    prayerLocation: '📍 Location',
-    prayerMosque: '🕌 Mosque',
-    prayerBomdod: 'Fajr',
-    prayerPeshin: 'Dhuhr',
-    prayerAsr: 'Asr',
-    prayerShom: 'Maghrib',
-    prayerXufton: 'Isha',
-    prayerDisabled: 'Prayer times have not been set up yet',
-    prayerNextIn: 'in',
-    prayerNow: 'now!',
-
-    // Language names
-    langName: 'English',
-    langFlag: '🇬🇧',
+    resetConfirm: 'Reset your current tap score to 0?',
   },
 };
 
-// ==========================================
-// ZIKR NAMES per language
-// ==========================================
-const ZIKR_NAMES_I18N = {
-  uz: {
-    subhanalloh: 'SubhanAlloh',
-    alhamdulillah: 'Alhamdulillah',
-    allohuakbar: 'Allohu Akbar',
-    custom: 'Boshqa zikr',
-  },
-  ru: {
-    subhanalloh: 'СубханАллох',
-    alhamdulillah: 'Альхамдулиллах',
-    allohuakbar: 'Аллоху Акбар',
-    custom: 'Другой зикр',
-  },
-  en: {
-    subhanalloh: 'SubhanAllah',
-    alhamdulillah: 'Alhamdulillah',
-    allohuakbar: 'Allahu Akbar',
-    custom: 'Other dhikr',
-  },
-};
-
-// ==========================================
-// ACHIEVEMENTS per language
-// ==========================================
-const ACHIEVEMENTS_I18N = {
-  uz: [
-    { id: 'first', emoji: '🌟', nameKey: 'achFirst', reqKey: 'achReq1', threshold: 1 },
-    { id: 'ten', emoji: '✨', nameKey: 'achTen', reqKey: 'achReq10', threshold: 10 },
-    { id: 'hundred', emoji: '💫', nameKey: 'achHundred', reqKey: 'achReq100', threshold: 100 },
-    { id: 'fivehundred', emoji: '🌙', nameKey: 'achFiveHundred', reqKey: 'achReq500', threshold: 500 },
-    { id: 'thousand', emoji: '⭐', nameKey: 'achThousand', reqKey: 'achReq1000', threshold: 1000 },
-    { id: 'fivek', emoji: '🕌', nameKey: 'achFiveK', reqKey: 'achReq5000', threshold: 5000 },
-    { id: 'tenk', emoji: '🏆', nameKey: 'achTenK', reqKey: 'achReq10000', threshold: 10000 },
-    { id: 'streak3', emoji: '🔥', nameKey: 'achStreak3', reqKey: 'achReq3days', threshold: -3 },
-    { id: 'streak7', emoji: '💎', nameKey: 'achStreak7', reqKey: 'achReq7days', threshold: -7 },
-    { id: 'streak30', emoji: '👑', nameKey: 'achStreak30', reqKey: 'achReq30days', threshold: -30 },
-  ],
-};
-
-// Same structure for all languages — they share the same achievements list
-ACHIEVEMENTS_I18N.ru = ACHIEVEMENTS_I18N.uz;
-ACHIEVEMENTS_I18N.en = ACHIEVEMENTS_I18N.uz;
-
-// ==========================================
-// i18n UTILITY FUNCTIONS
-// ==========================================
+// Current language state
 let currentLanguage = 'uz';
 
-/**
- * Get translation by key
- * @param {string} key — translation key
- * @param {object} params — optional interpolation params like {count: 33, zikr: 'SubhanAlloh'}
- * @returns {string}
- */
-function t(key, params = {}) {
-  const lang = TRANSLATIONS[currentLanguage] || TRANSLATIONS.uz;
-  let text = lang[key] || TRANSLATIONS.uz[key] || key;
-
-  // Interpolation: replace {param} with value
-  Object.entries(params).forEach(([k, v]) => {
-    text = text.replace(`{${k}}`, v);
-  });
-
-  return text;
+function setLanguage(lang) {
+  if (!TRANSLATIONS[lang]) lang = 'uz';
+  currentLanguage = lang;
+  try { localStorage.setItem('tap_bot_lang', lang); } catch (e) {}
+  document.documentElement.lang = lang;
+  applyTranslations();
+  updateLanguageDropdownUI(lang);
 }
 
-/**
- * Detect language from Telegram or browser
- * Priority: localStorage > Telegram language > browser language > 'uz'
- */
-function detectLanguage() {
-  // 1. Check localStorage
-  const saved = localStorage.getItem('tasbih_language');
-  if (saved && TRANSLATIONS[saved]) return saved;
+function getLanguage() {
+  try {
+    const saved = localStorage.getItem('tap_bot_lang');
+    if (saved && TRANSLATIONS[saved]) return saved;
+  } catch (e) {}
 
-  // 2. Check Telegram language
-  const tg = window.Telegram?.WebApp;
-  if (tg?.initDataUnsafe?.user?.language_code) {
-    const tgLang = tg.initDataUnsafe.user.language_code.toLowerCase();
+  if (window.Telegram?.WebApp?.initDataUnsafe?.user?.language_code) {
+    const tgLang = window.Telegram.WebApp.initDataUnsafe.user.language_code.toLowerCase();
     if (tgLang.startsWith('ru')) return 'ru';
     if (tgLang.startsWith('en')) return 'en';
-    if (tgLang.startsWith('uz')) return 'uz';
   }
 
-  // 3. Check browser language
   const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
   if (browserLang.startsWith('ru')) return 'ru';
   if (browserLang.startsWith('en')) return 'en';
 
-  // 4. Default
   return 'uz';
 }
 
-/**
- * Set language and update all UI elements
- * @param {string} lang — 'uz', 'ru', or 'en'
- */
-function setLanguage(lang) {
-  if (!TRANSLATIONS[lang]) lang = 'uz';
-  currentLanguage = lang;
-  localStorage.setItem('tasbih_language', lang);
+function t(key, params = {}) {
+  const langDict = TRANSLATIONS[currentLanguage] || TRANSLATIONS.uz;
+  let text = langDict[key] || TRANSLATIONS.uz[key] || key;
+  Object.entries(params).forEach(([k, v]) => {
+    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+  });
+  return text;
+}
 
-  // Update all elements with data-i18n attribute
+function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
 
-  // Update all elements with data-i18n-placeholder attribute
-  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    el.placeholder = t(key);
-  });
-
-  // Update all elements with data-i18n-aria attribute
   document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
     const key = el.getAttribute('data-i18n-aria');
     el.setAttribute('aria-label', t(key));
   });
 
-  // Update language selector button text
-  const langBtn = document.getElementById('langSwitchBtn');
-  if (langBtn) {
-    langBtn.querySelector('.lang-flag').textContent = t('langFlag');
-    langBtn.querySelector('.lang-name').textContent = t('langName');
-  }
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-title');
+    el.setAttribute('title', t(key));
+  });
 
-  // Update active class on language dropdown items
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.setAttribute('placeholder', t(key));
+  });
+}
+
+function updateLanguageDropdownUI(lang) {
+  const flags = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
+  const names = { uz: 'UZ', ru: 'RU', en: 'EN' };
+
+  const flagEl = document.querySelector('.lang-flag');
+  const nameEl = document.querySelector('.lang-name');
+  if (flagEl) flagEl.textContent = flags[lang] || '🇺🇿';
+  if (nameEl) nameEl.textContent = names[lang] || 'UZ';
+
   document.querySelectorAll('.lang-option').forEach((opt) => {
     opt.classList.toggle('active', opt.dataset.lang === lang);
   });
-
-  // Update HTML lang attribute
-  document.documentElement.lang = lang === 'uz' ? 'uz' : lang === 'ru' ? 'ru' : 'en';
 }
 
-/**
- * Get current language code
- */
-function getLang() {
-  return currentLanguage;
-}
+function initI18n() {
+  const lang = getLanguage();
+  setLanguage(lang);
 
-/**
- * Get zikr name in current language
- */
-function getZikrName(zikrKey) {
-  const names = ZIKR_NAMES_I18N[currentLanguage] || ZIKR_NAMES_I18N.uz;
-  return names[zikrKey] || zikrKey;
+  const switchBtn = document.getElementById('langSwitchBtn');
+  const dropdown = document.getElementById('langDropdown');
+
+  if (switchBtn && dropdown) {
+    switchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+    });
+
+    dropdown.querySelectorAll('.lang-option').forEach((opt) => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedLang = opt.dataset.lang;
+        setLanguage(selectedLang);
+        dropdown.classList.remove('open');
+      });
+    });
+  }
 }

@@ -1,5 +1,54 @@
 {
-  "users": {},
+  "users": {
+    "8809344628": {
+      "telegram_id": 8809344628,
+      "first_name": "𝓙𝓪𝓶𝓼𝓱𝓲𝓭𝓫𝓮𝓴 10kun off",
+      "last_name": "",
+      "username": "xs_vvv",
+      "photo_url": "https://t.me/i/userpic/320/ckeri7sF3_j_WTEj-FEDa2LgWECaVEeLGOZxY4o009PZZlFrUrEAflvH0HiMaPgH.svg",
+      "count": 255,
+      "total_all_time": 305,
+      "streak_days": 1,
+      "level": 1,
+      "last_active": "2026-08-28",
+      "created_at": "2026-08-28",
+      "blocked": false,
+      "total_donated": 0,
+      "language": "uz"
+    },
+    "8832272015": {
+      "telegram_id": 8832272015,
+      "first_name": "Машраббоев ",
+      "last_name": "(Яхши Бола)",
+      "username": "sardorLM",
+      "photo_url": "https://api.telegram.org/file/bot8926333662:AAE7V8KKaOR5hqTGftfmLLXdm4AS9Mp1SBQ/photos/file_1.jpg",
+      "count": 0,
+      "total_all_time": 0,
+      "streak_days": 1,
+      "level": 1,
+      "last_active": "2026-08-28",
+      "created_at": "2026-08-28",
+      "blocked": false,
+      "total_donated": 0,
+      "language": "uz"
+    },
+    "5953303454": {
+      "telegram_id": 5953303454,
+      "first_name": "Машраббоев ",
+      "last_name": "(Яхши Бола)",
+      "username": "yaxshibola",
+      "photo_url": "https://t.me/i/userpic/320/gn6MoZa5Inde9jzLqmrDKC-XlxG-g4uhcJ-VvycZwNzbLg3UBKASeljo9p7tyaw4.svg",
+      "count": 6,
+      "total_all_time": 6,
+      "streak_days": 1,
+      "level": 1,
+      "last_active": "2026-08-28",
+      "created_at": "2026-08-28",
+      "blocked": false,
+      "total_donated": 0,
+      "language": "uz"
+    }
+  },
   "settings": {
     "required_channels": [],
     "donation_amounts": [
@@ -9,29 +58,22 @@
       500
     ],
     "donation_card": {
-      "enabled": true,
-      "card_number": "8600 1234 5678 9012",
-      "card_holder": "RAYIMJONOV ISLOM",
+      "enabled": false,
+      "card_number": "",
+      "card_holder": "",
       "bank_name": "Uzcard",
       "card_type": "uzcard",
-      "reason": "Masjid ta'miri uchun ehson"
-    },
-    "prayer_times": {
-      "enabled": true,
-      "location": "Toshkent shahri",
-      "mosque": "Xazrati Imom masjidi",
-      "notify_before": 10,
-      "times": {
-        "bomdod": "05:15",
-        "peshin": "13:00",
-        "asr": "16:30",
-        "shom": "19:45",
-        "xufton": "21:15"
-      }
+      "reason": "Loyiha rivoji uchun qo'llab-quvvatlash"
     }
   },
   "admins": [
     8809344628
   ],
-  "donations": []
+  "donations": [],
+  "archive": {
+    "messages": [],
+    "card_history": [],
+    "logs": []
+  },
+  "chats": {}
 }

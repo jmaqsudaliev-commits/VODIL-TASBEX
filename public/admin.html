@@ -3,69 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🛡️ Admin Panel PRO MAX — Elektron Tasbih</title>
-  <meta name="description" content="Elektron Tasbih — Admin boshqaruv paneli">
+  <title>🛡️ Admin Panel — TAP BOT PRO</title>
+  <meta name="description" content="Tap Bot PRO — Admin boshqaruv paneli">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* ================================================================
-       ADMIN PANEL PRO MAX — MODERN GLASS DASHBOARD
-       ================================================================ */
     :root {
       --bg-0: #030712;
       --bg-1: #070f1e;
       --bg-2: #0d1a30;
-      --bg-3: #132442;
-      
-      --surface: rgba(255, 255, 255, 0.035);
-      --surface-2: rgba(255, 255, 255, 0.065);
-      --surface-3: rgba(255, 255, 255, 0.1);
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.08);
       --border: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(16, 185, 129, 0.35);
+      --border-glow: rgba(59, 130, 246, 0.35);
       --border-gold: rgba(245, 158, 11, 0.35);
 
       --text-1: #f8fafc;
       --text-2: #94a3b8;
       --text-3: #64748b;
-      --text-4: #475569;
 
       --emerald-400: #34d399;
-      --emerald-500: #10b981;
-      --emerald-600: #059669;
       --gold-400: #fbbf24;
-      --gold-500: #f59e0b;
       --red-400: #f87171;
-      --red-500: #ef4444;
       --blue-400: #60a5fa;
-      --blue-500: #3b82f6;
-      --purple-400: #c084fc;
 
-      --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
       --grad-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde68a 100%);
-      --grad-blue: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
-      --grad-red: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%);
-      --grad-card: linear-gradient(145deg, rgba(16, 185, 129, 0.08) 0%, rgba(7, 15, 30, 0.96) 100%);
+      --grad-primary: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
+      --grad-card: linear-gradient(145deg, rgba(59, 130, 246, 0.08) 0%, rgba(7, 15, 30, 0.96) 100%);
 
-      --r-sm: 10px;
-      --r-md: 14px;
-      --r-lg: 20px;
-      --r-xl: 26px;
+      --r-sm: 8px;
+      --r-md: 12px;
+      --r-lg: 18px;
+      --r-xl: 24px;
       --r-full: 9999px;
       --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: var(--font);
       background: var(--bg-0);
       color: var(--text-1);
       min-height: 100vh;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
     }
 
     .app {
@@ -95,31 +77,28 @@
 
     .admin-shield {
       font-size: 1.8rem;
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: var(--r-md);
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(59, 130, 246, 0.15);
       border: 1px solid var(--border-glow);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     }
 
     .admin-title-h1 {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 900;
       background: var(--grad-gold);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      line-height: 1.2;
     }
 
     .admin-subtitle {
       font-size: 0.72rem;
       color: var(--text-3);
-      font-weight: 500;
     }
 
     .admin-badge-pro {
@@ -130,7 +109,6 @@
       color: var(--gold-400);
       border: 1px solid var(--border-gold);
       border-radius: var(--r-full);
-      letter-spacing: 0.05em;
     }
 
     /* KPI Stats Grid */
@@ -149,2043 +127,576 @@
       background: var(--grad-card);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
-      padding: 14px 12px;
+      padding: 14px 10px;
       text-align: center;
-      transition: all 0.2s var(--ease);
-      position: relative;
-      overflow: hidden;
     }
 
-    .stat-card:hover {
-      border-color: var(--border-glow);
-      transform: translateY(-2px);
-    }
-
-    .stat-icon { font-size: 1.35rem; margin-bottom: 4px; display: block; }
     .stat-val {
-      font-size: 1.45rem;
+      font-size: 1.25rem;
       font-weight: 900;
       color: var(--text-1);
-      line-height: 1.1;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat-lbl {
-      font-size: 0.65rem;
-      color: var(--text-3);
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-top: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    /* Tab Switcher Pills */
-    .tabs-bar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      padding: 4px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .tabs-bar::-webkit-scrollbar { display: none; }
-
-    .tab-btn {
-      flex: 1;
-      min-width: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 10px 6px;
-      border: none;
-      background: transparent;
-      color: var(--text-3);
-      font-family: var(--font);
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: var(--r-md);
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .tab-btn:hover { color: var(--text-1); background: var(--surface-2); }
-    .tab-btn.active {
-      background: var(--grad-emerald);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
-    }
-
-    .tab-btn-icon { font-size: 1.1rem; }
-
-    /* Sections */
-    .section { display: none; animation: secFade 0.3s var(--ease); }
-    .section.active { display: block; }
-
-    @keyframes secFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .sec-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .sec-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sec-badge {
-      padding: 4px 12px;
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--emerald-400);
-      border: 1px solid var(--border-glow);
-      border-radius: var(--r-full);
-      font-size: 0.72rem;
-      font-weight: 800;
-    }
-
-    /* Search & Inputs */
-    .search-container {
-      position: relative;
-      margin-bottom: 14px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 16px 12px 42px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      color: var(--text-1);
-      font-family: var(--font);
-      font-size: 0.88rem;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .search-input:focus {
-      border-color: var(--emerald-500);
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
-    }
-
-    .search-icon-abs {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1rem;
-      color: var(--text-3);
-    }
-
-    /* User List Cards */
-    .user-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: var(--grad-card);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .user-card:hover {
-      border-color: var(--border-glow);
-      transform: translateX(4px);
-    }
-
-    .user-card.blocked {
-      opacity: 0.6;
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    .user-avatar-wrap {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-      border: 2px solid var(--border);
-    }
-
-    .user-info-body { flex: 1; min-width: 0; }
-    .user-title-row { font-size: 0.9rem; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-meta-row { font-size: 0.72rem; color: var(--text-3); display: flex; gap: 10px; margin-top: 2px; }
-    .user-uid-lbl { font-size: 0.65rem; color: var(--text-4); font-family: monospace; }
-
-    /* Buttons & Form Elements */
-    .btn-action {
-      padding: 10px 18px;
-      border: none;
-      border-radius: var(--r-md);
-      font-family: var(--font);
-      font-size: 0.82rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-action:active { transform: scale(0.96); }
-
-    .btn-emerald {
-      background: var(--grad-emerald);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
-    }
-
-    .btn-danger {
-      background: var(--grad-red);
-      color: #fff;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      color: var(--text-1);
-      font-family: var(--font);
-      font-size: 0.88rem;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .input-field:focus {
-      border-color: var(--emerald-500);
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
-    }
-
-    .input-row-group { display: flex; gap: 8px; margin-bottom: 14px; }
-
-    .textarea-box {
-      width: 100%;
-      min-height: 120px;
-      padding: 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      color: var(--text-1);
-      font-family: var(--font);
-      font-size: 0.88rem;
-      outline: none;
-      resize: vertical;
-      margin-bottom: 12px;
-    }
-
-    .textarea-box:focus { border-color: var(--emerald-500); }
-
-    /* Card Settings Container */
-    .card-settings-box {
-      background: var(--grad-card);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      padding: 20px 18px;
-      margin-bottom: 18px;
-    }
-
-    .card-settings-header {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--gold-400);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .form-group-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .form-group-row label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-2);
-      min-width: 90px;
-    }
-
-    .switch-toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .switch-btn {
-      position: relative;
-      width: 48px;
-      height: 26px;
-      border-radius: 13px;
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .switch-btn.on {
-      background: var(--emerald-600);
-      border-color: var(--emerald-400);
-    }
-
-    .switch-btn::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #fff;
-      transition: all 0.2s;
-    }
-
-    .switch-btn.on::after { left: 24px; }
-    .switch-label { font-size: 0.85rem; font-weight: 700; }
-
-    /* Bank Card Preview */
-    .bank-card-preview {
-      background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #022c22 100%);
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      border-radius: var(--r-lg);
-      padding: 18px 16px;
-      color: #fff;
-      margin-top: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-
-    .preview-card-num {
-      font-size: 1.25rem;
-      font-weight: 800;
-      font-family: monospace;
-      letter-spacing: 0.1em;
-      margin: 12px 0 8px;
-    }
-
-    .preview-card-holder {
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    /* User Cards & List */
-    .user-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .user-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .user-card:hover {
-      background: var(--surface-2);
-      border-color: rgba(52, 211, 153, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .user-card:active {
-      transform: scale(0.98);
-    }
-
-    .user-card.blocked {
-      border-color: rgba(239, 68, 68, 0.4);
-      background: rgba(239, 68, 68, 0.05);
-    }
-
-    .pill-filter {
-      padding: 6px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-full);
-      color: var(--text-2);
-      font-size: 0.8rem;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s var(--ease);
-      font-family: var(--font);
-    }
-    .pill-filter:hover {
-      background: var(--surface-2);
-      color: var(--text-1);
-    }
-    .pill-filter.active {
-      background: rgba(52, 211, 153, 0.15);
-      border-color: var(--emerald-400);
-      color: var(--emerald-400);
-    }
-
-    .user-avatar-wrap {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      border-radius: 50%;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .user-info-body {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .user-title-row {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-
-    .user-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.76rem;
-      color: var(--text-3);
       margin-bottom: 2px;
     }
 
-    .user-uid-lbl {
+    .stat-lbl {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+
+    /* Tabs Navigation */
+    .admin-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 18px;
+      padding-bottom: 4px;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-full);
+      color: var(--text-2);
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .tab-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--blue-400);
+      color: var(--blue-400);
+    }
+
+    /* Section Cards */
+    .sec-panel {
+      display: none;
+      background: var(--grad-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .sec-panel.active { display: block; }
+
+    .sec-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-1);
+    }
+
+    /* Inputs & Buttons */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text-1);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--blue-400);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--grad-primary);
+      border: none;
+      border-radius: var(--r-md);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .btn-gold {
+      width: 100%;
+      padding: 12px;
+      background: var(--grad-gold);
+      border: none;
+      border-radius: var(--r-md);
+      color: #000;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    /* User List */
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+    }
+
+    .user-item-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-item-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-size: cover;
+    }
+
+    .user-item-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-1);
+    }
+
+    .user-item-score {
+      font-size: 0.8rem;
+      color: var(--gold-400);
+      font-weight: 700;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .action-btn-sm {
+      padding: 5px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text-2);
       font-size: 0.72rem;
-      color: var(--text-4);
-      font-family: monospace;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .action-btn-sm.danger { color: var(--red-400); border-color: rgba(239, 68, 68, 0.3); }
+
+    /* Archive Logs */
+    .archive-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .archive-card {
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      font-size: 0.8rem;
+    }
+
+    .archive-top {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-3);
+      font-size: 0.7rem;
+      margin-bottom: 4px;
+    }
+
+    .archive-text {
+      color: var(--text-1);
+      font-weight: 600;
     }
 
     /* Modal */
     .modal-overlay {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background: rgba(0, 0, 0, 0.88) !important;
-      backdrop-filter: blur(14px) !important;
-      -webkit-backdrop-filter: blur(14px) !important;
-      z-index: 999999 !important;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .modal-overlay.active { display: flex !important; }
-
-    .modal-body {
-      width: 100%;
-      max-width: 540px;
-      background: #091322 !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      border-radius: var(--r-xl) var(--r-xl) 0 0;
-      padding: 24px 20px 36px;
-      animation: modalSlide 0.25s var(--ease);
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-      z-index: 1000000 !important;
-    }
-
-    /* Dialog Overlay for Confirm / Prompt */
-    .dialog-overlay {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background: rgba(0, 0, 0, 0.9) !important;
-      backdrop-filter: blur(16px) !important;
-      -webkit-backdrop-filter: blur(16px) !important;
-      z-index: 99999999 !important;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
 
-    .dialog-overlay.active { display: flex !important; }
-
-    .dialog-box {
-      width: 100%;
-      max-width: 400px;
-      background: #0d1a30 !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      border-radius: var(--r-xl);
-      padding: 24px 20px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-      animation: modalSlide 0.2s var(--ease);
-      z-index: 100000000 !important;
-    }
-
-    @keyframes modalSlide {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .modal-handle-bar {
-      width: 40px;
-      height: 4px;
-      background: var(--surface-3);
-      border-radius: var(--r-full);
-      margin: 0 auto 16px;
-    }
-
-    .modal-header-block { text-align: center; margin-bottom: 20px; }
-    .modal-avatar-circle { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 10px; overflow: hidden; border: 3px solid var(--emerald-400); }
-    .modal-name-title { font-size: 1.25rem; font-weight: 800; }
-    .modal-user-handle { font-size: 0.82rem; color: var(--text-3); }
-
-    .modal-kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .modal-kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      padding: 10px;
-      text-align: center;
-    }
-
-    .modal-kpi-val { font-size: 1.15rem; font-weight: 800; }
-    .modal-kpi-lbl { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; margin-top: 2px; }
-
-    .modal-details-list { margin-bottom: 20px; }
-    .modal-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-    .modal-detail-lbl { color: var(--text-3); }
-    .modal-detail-val { font-weight: 700; color: var(--text-1); }
-
-    .modal-actions-box { display: flex; flex-direction: column; gap: 10px; }
-    .modal-btn-full {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      border-radius: var(--r-md);
-      font-family: var(--font);
-      font-size: 0.88rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .modal-btn-full:active { transform: scale(0.97); }
-
-    .modal-btn-red { background: var(--grad-red); color: #fff; }
-    .modal-btn-green { background: var(--grad-emerald); color: #fff; }
-    .modal-btn-blue { background: var(--grad-blue); color: #fff; }
-    .modal-btn-gold { background: var(--grad-gold); color: #000; }
-
-    /* Toast */
-    .toast {
-      position: fixed !important;
-      bottom: 24px !important;
-      left: 50% !important;
-      transform: translateX(-50%) translateY(100px);
-      padding: 12px 24px;
-      background: rgba(7, 15, 30, 0.98);
-      color: #fff;
+    .modal-box {
+      background: var(--bg-1);
       border: 1px solid var(--border-glow);
-      border-radius: var(--r-full);
-      font-size: 0.85rem;
-      font-weight: 700;
-      z-index: 999999999 !important;
-      opacity: 0;
-      transition: all 0.3s var(--ease);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-      white-space: nowrap;
-      pointer-events: none;
+      border-radius: var(--r-xl);
+      padding: 20px;
+      max-width: 440px;
+      width: 100%;
     }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-    /* Spinner */
-    .loading-state { text-align: center; padding: 50px 20px; }
-    .spinner-disc { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--emerald-400); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .denied-screen { text-align: center; padding: 80px 20px; }
-    .denied-shield { font-size: 4rem; margin-bottom: 12px; display: block; }
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <!-- Loading State -->
-    <div class="loading-state" id="loadingState">
-      <div class="spinner-disc"></div>
-      <p style="color:var(--text-3);font-size:0.85rem;font-weight:600;">Admin ma'lumotlari yuklanmoqda...</p>
-    </div>
+  <div class="app">
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="admin-brand">
+        <div class="admin-shield">⚡</div>
+        <div>
+          <h1 class="admin-title-h1">TAP BOT ADMIN</h1>
+          <p class="admin-subtitle">Boshqaruv paneli PRO</p>
+        </div>
+      </div>
+      <span class="admin-badge-pro">LIVE</span>
+    </header>
 
-    <!-- Access Denied / Login Screen -->
-    <div class="denied-screen" id="accessDenied" style="display:none">
-      <span class="denied-shield">🛡️</span>
-      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;">Admin Boshqaruv Markazi</h2>
-      <p style="color:var(--text-3);font-size:0.85rem;margin-bottom:18px;">Ushbu sahifaga kirish uchun Telegram ID raqamingizni tasdiqlang:</p>
-      <div style="max-width:320px;margin:0 auto;display:flex;flex-direction:column;gap:10px;">
-        <input type="number" id="manualAdminId" class="input-field" placeholder="Admin Telegram ID..." style="text-align:center;">
-        <button class="btn-action btn-emerald" style="justify-content:center;padding:12px;width:100%;" onclick="tryManualLogin()">Kirish</button>
+    <!-- KPI Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="statUsers">0</div>
+        <div class="stat-lbl">O'yinchilar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statActive">0</div>
+        <div class="stat-lbl">Bugun faol</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statTaps">0</div>
+        <div class="stat-lbl">Jami tangalar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statStars">0 ⭐</div>
+        <div class="stat-lbl">Stars Xaridlari</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statBlocked">0</div>
+        <div class="stat-lbl">Bloklanganlar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statAdmins">1</div>
+        <div class="stat-lbl">Adminlar</div>
       </div>
     </div>
 
-    <!-- Main Admin Dashboard Content -->
-    <div id="adminContent" style="display:none">
-      <!-- Top Brand Bar -->
-      <header class="admin-header">
-        <div class="admin-brand">
-          <div class="admin-shield">🛡️</div>
-          <div>
-            <h1 class="admin-title-h1">Admin Panel</h1>
-            <p class="admin-subtitle">Vodil Tasbih Boshqaruv Markazi</p>
-          </div>
-        </div>
-        <span class="admin-badge-pro">PRO MAX</span>
-      </header>
-
-      <!-- KPI Statistics Grid -->
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-          <span class="stat-icon">👥</span>
-          <div class="stat-val" id="sTotalUsers">0</div>
-          <div class="stat-lbl">Foydalanuvchilar</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🟢</span>
-          <div class="stat-val" id="sActiveToday">0</div>
-          <div class="stat-lbl">Bugun Faol</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">📿</span>
-          <div class="stat-val" id="sTotalZikr">0</div>
-          <div class="stat-lbl">Jami Zikr</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🚫</span>
-          <div class="stat-val" id="sBlocked">0</div>
-          <div class="stat-lbl">Bloklangan</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">⭐</span>
-          <div class="stat-val" id="sTotalDonations">0⭐</div>
-          <div class="stat-lbl">Jami Ehson</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">👑</span>
-          <div class="stat-val" id="sAdminCount">0</div>
-          <div class="stat-lbl">Adminlar</div>
-        </div>
-      </div>
-
-      <!-- Tab Switcher Navigation -->
-      <div class="tabs-bar" id="tabs">
-        <button class="tab-btn active" data-sec="users" onclick="switchSec('users')">
-          <span class="tab-btn-icon">👥</span>
-          <span>Userlar</span>
-        </button>
-        <button class="tab-btn" data-sec="admins" onclick="switchSec('admins')">
-          <span class="tab-btn-icon">👑</span>
-          <span>Adminlar</span>
-        </button>
-        <button class="tab-btn" data-sec="donations" onclick="switchSec('donations')">
-          <span class="tab-btn-icon">💰</span>
-          <span>Ehsonlar</span>
-        </button>
-        <button class="tab-btn" data-sec="channels" onclick="switchSec('channels')">
-          <span class="tab-btn-icon">📢</span>
-          <span>Kanallar</span>
-        </button>
-        <button class="tab-btn" data-sec="prayer" onclick="switchSec('prayer')">
-          <span class="tab-btn-icon">🕌</span>
-          <span>Namoz</span>
-        </button>
-        <button class="tab-btn" data-sec="broadcast" onclick="switchSec('broadcast')">
-          <span class="tab-btn-icon">📡</span>
-          <span>Broadcast</span>
-        </button>
-        <button class="tab-btn" data-sec="archive" onclick="switchSec('archive')">
-          <span class="tab-btn-icon">📦</span>
-          <span>Arxiv</span>
-        </button>
-      </div>
-
-      <!-- ==================== 1. USERS SECTION ==================== -->
-      <div class="section active" id="secUsers">
-        <div class="sec-header">
-          <span class="sec-title">👥 Foydalanuvchilar Ro'yxati</span>
-          <span class="sec-badge" id="userBadge">0 ta</span>
-        </div>
-        <div class="search-container">
-          <span class="search-icon-abs">🔍</span>
-          <input type="text" class="search-input" id="userSearch" placeholder="Ism, username yoki Telegram ID qidirish...">
-        </div>
-        <div id="userList">
-          <div class="loading-state"><div class="spinner-disc"></div></div>
-        </div>
-      </div>
-
-      <!-- ==================== 2. ADMINS SECTION ==================== -->
-      <div class="section" id="secAdmins">
-        <div class="sec-header">
-          <span class="sec-title">👑 Adminlar Boshqaruvi</span>
-          <span class="sec-badge" id="adminBadge">0 ta</span>
-        </div>
-        <div class="input-row-group">
-          <input type="text" class="input-field" id="adminInput" placeholder="Telegram ID kiriting (masalan: 123456789)...">
-          <button class="btn-action btn-emerald" id="addAdminBtn">➕ Qo'shish</button>
-        </div>
-        <div id="adminList">
-          <div class="loading-state"><div class="spinner-disc"></div></div>
-        </div>
-      </div>
-
-      <!-- ==================== 3. DONATIONS SECTION ==================== -->
-      <div class="section" id="secDonations">
-        <div class="sec-header">
-          <span class="sec-title">💰 Ehsonlar & Xayriya</span>
-          <span class="sec-badge" id="donBadge">0 ta</span>
-        </div>
-        
-        <div class="stats-grid" id="donStats" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
-          <div class="stat-card">
-            <span class="stat-icon">💰</span>
-            <div class="stat-val" id="dTotal">0⭐</div>
-            <div class="stat-lbl">Jami Stars</div>
-          </div>
-          <div class="stat-card">
-            <span class="stat-icon">📅</span>
-            <div class="stat-val" id="dToday">0⭐</div>
-            <div class="stat-lbl">Bugun Tushgan</div>
-          </div>
-        </div>
-
-        <!-- Top Donors -->
-        <div class="sec-header"><span class="sec-title">🏆 Eng Saxiy Ehsonchilar</span></div>
-        <div id="topDonorsList" style="margin-bottom:18px;"></div>
-
-        <!-- All Donations -->
-        <div class="sec-header"><span class="sec-title">📋 Barcha Ehsonlar Tarixi</span></div>
-        <div id="donationList" style="margin-bottom:20px;"></div>
-
-        <!-- Bank Card Settings -->
-        <div class="card-settings-box" id="cardSettings">
-          <div class="card-settings-header">💳 Ehson Bank Kartasi Sozlamalari</div>
-          <div class="switch-toggle-row">
-            <div class="switch-btn" id="cardToggle"></div>
-            <span class="switch-label">Kartani botda ko'rsatish</span>
-          </div>
-          <div class="form-group-row">
-            <label>Karta raqami</label>
-            <input type="text" class="input-field" id="cardNumber" placeholder="8600 1234 5678 9012" maxlength="19">
-          </div>
-          <div class="form-group-row">
-            <label>Karta egasi</label>
-            <input type="text" class="input-field" id="cardHolder" placeholder="ISLOM RAYIMJONOV">
-          </div>
-          <div class="form-group-row">
-            <label>Bank nomi</label>
-            <input type="text" class="input-field" id="cardBankName" placeholder="Ipak Yo'li Banki / Uzcard">
-          </div>
-          <div class="form-group-row">
-            <label>Karta turi</label>
-            <select class="input-field" id="cardType">
-              <option value="uzcard">Uzcard</option>
-              <option value="humo">Humo</option>
-              <option value="visa">Visa</option>
-              <option value="mastercard">Mastercard</option>
-            </select>
-          </div>
-
-          <!-- Live Preview -->
-          <div class="bank-card-preview" id="cardPreview">
-            <div style="font-size:0.7rem;text-transform:uppercase;color:rgba(255,255,255,0.6);letter-spacing:0.1em;">Karta Ko'rinishi</div>
-            <div class="preview-card-num" id="previewNumber">•••• •••• •••• ••••</div>
-            <div class="preview-card-holder" id="previewHolder">KARTA EGASI</div>
-          </div>
-          <button class="btn-action btn-emerald" style="width:100%;margin-top:14px;justify-content:center;" id="saveCardBtn">💾 Kartani Saqlash</button>
-        </div>
-      </div>
-
-      <!-- ==================== 4. CHANNELS (MAJBURIIY OBUNA) ==================== -->
-      <div class="section" id="secChannels">
-        <div class="sec-header">
-          <span class="sec-title">📢 Majburiy Obuna Kanallari</span>
-          <span class="sec-badge" id="chBadge">0 ta</span>
-        </div>
-        <div class="input-row-group">
-          <input type="text" class="input-field" id="chInput" placeholder="@kanal_username yoki havola...">
-          <button class="btn-action btn-emerald" id="addChBtn">➕ Qo'shish</button>
-        </div>
-        <div id="chList"></div>
-      </div>
-
-      <!-- ==================== 5. PRAYER TIMES ==================== -->
-      <div class="section" id="secPrayer">
-        <div class="sec-header">
-          <span class="sec-title">🕌 Namoz Vaqtlari & Eslatmalar</span>
-        </div>
-        <div class="card-settings-box">
-          <div class="switch-toggle-row">
-            <div class="switch-btn" id="prayerToggle"></div>
-            <span class="switch-label">Namoz eslatma tizimini yoqish</span>
-          </div>
-          <div class="form-group-row">
-            <label>Hudud / Shahar</label>
-            <input type="text" class="input-field" id="ptLocation" placeholder="Toshkent shahri">
-          </div>
-          <div class="form-group-row">
-            <label>Masjid nomi</label>
-            <input type="text" class="input-field" id="ptMosque" placeholder="Xazrati Imom">
-          </div>
-          <div class="form-group-row">
-            <label>Oldin (daq)</label>
-            <input type="number" class="input-field" id="ptNotify" placeholder="10">
-          </div>
-
-          <div class="card-settings-header" style="margin-top:16px;">⏰ Namoz Vaqtlari (Erkin format)</div>
-          <div class="form-group-row"><label>Tong/Quyosh</label><input type="text" class="input-field" id="ptTong" placeholder="04:30 05:00"></div>
-          <div class="form-group-row"><label>Bomdod</label><input type="text" class="input-field" id="ptBomdod" placeholder="05:15"></div>
-          <div class="form-group-row"><label>Peshin</label><input type="text" class="input-field" id="ptPeshin" placeholder="13:00"></div>
-          <div class="form-group-row"><label>Asr</label><input type="text" class="input-field" id="ptAsr" placeholder="16:45"></div>
-          <div class="form-group-row"><label>Shom</label><input type="text" class="input-field" id="ptShom" placeholder="19:00"></div>
-          <div class="form-group-row"><label>Xufton</label><input type="text" class="input-field" id="ptXufton" placeholder="20:30"></div>
-
-          <!-- Broadcast settings -->
-          <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-md);">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-              <input type="checkbox" id="ptBroadcast" style="width:18px;height:18px;">
-              <span style="font-size:0.88rem;font-weight:800;">Guruh va Kanallarga tarqatish</span>
-            </label>
-            <div id="ptBroadcastOptions" style="display:none;margin-top:12px;padding-left:26px;">
-              <div style="display:flex;gap:14px;margin-bottom:10px;">
-                <label style="font-size:0.85rem;cursor:pointer;"><input type="radio" name="ptTargetType" value="all" checked> Barchaga</label>
-                <label style="font-size:0.85rem;cursor:pointer;"><input type="radio" name="ptTargetType" value="selected"> Tanlab yuborish</label>
-              </div>
-              <div id="ptChatList" style="display:none;max-height:140px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:8px;border-radius:var(--r-sm);margin-bottom:10px;">
-                <div style="font-size:0.8rem;color:var(--text-3);">Yuklanmoqda...</div>
-              </div>
-              <input type="text" class="input-field" id="ptBroadcastText" placeholder="Qo'shimcha tavsif / tabrik matni..." style="font-size:0.85rem;">
-            </div>
-          </div>
-
-          <button class="btn-action btn-emerald" style="width:100%;margin-top:16px;justify-content:center;" id="savePrayerBtn">💾 Namoz Vaqtlarini Saqlash</button>
-        </div>
-      </div>
-
-      <!-- ==================== 6. BROADCAST SECTION ==================== -->
-      <div class="section" id="secBroadcast">
-        <div class="sec-header">
-          <span class="sec-title">📡 Barcha Foydalanuvchilarga Xabar Yuborish</span>
-        </div>
-        <textarea class="textarea-box" id="broadcastMsg" placeholder="Xabaringizni yozing... (HTML teglar: <b>qalin</b>, <i>kursiv</i>, <a href='...'>havola</a> qo'llab-quvvatlanadi)"></textarea>
-        <button class="btn-action btn-emerald" style="width:100%;padding:14px;font-size:0.95rem;justify-content:center;" id="broadcastBtn">📡 Barchaga Xabar Yuborish</button>
-      </div>
-
-      <!-- ==================== 7. ARCHIVE SECTION ==================== -->
-      <div class="section" id="secArchive">
-        <div class="sec-header">
-          <span class="sec-title">📦 Xabarlar va Karta Arxivi</span>
-          <span class="sec-badge" id="archBadge">0 ta</span>
-        </div>
-
-        <!-- Archive Filter Pills -->
-        <div class="filter-pills-row" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none;">
-          <button type="button" class="pill-filter active" id="archFilterAll" onclick="setArchiveFilter('all')">🌟 Barchasi</button>
-          <button type="button" class="pill-filter" id="archFilterAdmins" onclick="setArchiveFilter('admins')">👑 Adminlar</button>
-          <button type="button" class="pill-filter" id="archFilterBlocks" onclick="setArchiveFilter('blocks')">🚫 Bloklar & Restart</button>
-          <button type="button" class="pill-filter" id="archFilterMessages" onclick="setArchiveFilter('messages')">📨 Xabarlar</button>
-          <button type="button" class="pill-filter" id="archFilterCards" onclick="setArchiveFilter('cards')">💳 Karta Tarixi</button>
-          <button type="button" class="pill-filter" id="archFilterChannels" onclick="setArchiveFilter('channels')">📢 Kanallar</button>
-        </div>
-
-        <!-- Archive Search -->
-        <div class="search-container" id="archSearchBox">
-          <span class="search-icon-abs">🔍</span>
-          <input type="text" class="search-input" id="archSearch" placeholder="Arxivdan matn, ism yoki ID bo'yicha qidirish...">
-        </div>
-
-        <!-- Archive Content List -->
-        <div id="archiveList">
-          <div class="loading-state"><div class="spinner-disc"></div></div>
-        </div>
-      </div>
+    <!-- Tabs Navigation -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-sec="secUsers">👥 O'yinchilar</button>
+      <button class="tab-btn" data-sec="secBroadcast">📢 Broadcast</button>
+      <button class="tab-btn" data-sec="secChannels">📢 Kanallar</button>
+      <button class="tab-btn" data-sec="secShop">⭐ Do'kon & Karta</button>
+      <button class="tab-btn" data-sec="secAdmins">🛡️ Adminlar</button>
+      <button class="tab-btn" data-sec="secArchive">📂 Loglar / Arxiv</button>
     </div>
+
+    <!-- Section 1: Users -->
+    <section class="sec-panel active" id="secUsers">
+      <div class="sec-title">👥 O'yinchilarni boshqarish</div>
+      <input type="text" class="form-input" id="userSearch" placeholder="🔍 Qidirish (Ism, Username, ID)...">
+      <div class="user-list" id="userListContainer">
+        <!-- Dynamically loaded -->
+      </div>
+    </section>
+
+    <!-- Section 2: Broadcast -->
+    <section class="sec-panel" id="secBroadcast">
+      <div class="sec-title">📢 Barcha o'yinchilarga xabar (Broadcast)</div>
+      <div class="form-group">
+        <label class="form-label">Xabar matni (HTML teglar qo'llab-quvvatlanadi):</label>
+        <textarea class="form-textarea" id="broadcastText" rows="5" placeholder="Salom! Yangi turnir boshlandi..."></textarea>
+      </div>
+      <button class="btn-primary" id="sendBroadcastBtn">📡 Xabarni Yuborish</button>
+    </section>
+
+    <!-- Section 3: Required Channels -->
+    <section class="sec-panel" id="secChannels">
+      <div class="sec-title">📢 Majburiy obuna kanallari</div>
+      <div class="form-group" style="display: flex; gap: 8px;">
+        <input type="text" class="form-input" id="channelInput" placeholder="@kanal_nomi">
+        <button class="action-btn-sm" id="addChannelBtn" style="white-space:nowrap; padding: 0 16px;">Qo'shish</button>
+      </div>
+      <div class="user-list" id="channelListContainer"></div>
+    </section>
+
+    <!-- Section 4: Shop & Card Settings -->
+    <section class="sec-panel" id="secShop">
+      <div class="sec-title">💳 Ehson & Qo'llab-quvvatlash kartasi</div>
+      <div class="form-group">
+        <label class="form-label">Karta raqami:</label>
+        <input type="text" class="form-input" id="cardNum" placeholder="8600 0000 0000 0000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Karta egasi:</label>
+        <input type="text" class="form-input" id="cardHolder" placeholder="F.I.SH">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bank nomi:</label>
+        <input type="text" class="form-input" id="cardBank" placeholder="Uzcard / Humo">
+      </div>
+      <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" id="cardEnabled">
+        <label for="cardEnabled" class="form-label" style="margin-bottom:0;">Kartani Mini Appda ko'rsatish</label>
+      </div>
+      <button class="btn-gold" id="saveCardBtn">💾 Sozlamalarni Saqlash</button>
+    </section>
+
+    <!-- Section 5: Admins -->
+    <section class="sec-panel" id="secAdmins">
+      <div class="sec-title">🛡️ Adminlarni boshqarish</div>
+      <div class="form-group" style="display: flex; gap: 8px;">
+        <input type="text" class="form-input" id="adminInput" placeholder="Telegram ID raqami">
+        <button class="action-btn-sm" id="addAdminBtn" style="white-space:nowrap; padding: 0 16px;">Qo'shish</button>
+      </div>
+      <div class="user-list" id="adminListContainer"></div>
+    </section>
+
+    <!-- Section 6: Archive -->
+    <section class="sec-panel" id="secArchive">
+      <div class="sec-title">📂 Xabarlar va Admin harakatlari arxivi</div>
+      <div class="archive-list" id="archiveListContainer"></div>
+    </section>
   </div>
-
-  <!-- User Detail Modal -->
-  <div class="modal-overlay" id="userModal">
-    <div class="modal-body">
-      <div class="modal-handle-bar"></div>
-      <div class="modal-header-block">
-        <div class="modal-avatar-circle" id="mAvatar"></div>
-        <div class="modal-name-title" id="mName">—</div>
-        <div class="modal-user-handle" id="mUsername">@username</div>
-      </div>
-      
-      <div class="modal-kpi-grid">
-        <div class="modal-kpi-card">
-          <div class="modal-kpi-val" id="mCount">0</div>
-          <div class="modal-kpi-lbl">Hozirgi</div>
-        </div>
-        <div class="modal-kpi-card">
-          <div class="modal-kpi-val" id="mTotal">0</div>
-          <div class="modal-kpi-lbl">Jami Zikr</div>
-        </div>
-        <div class="modal-kpi-card">
-          <div class="modal-kpi-val" id="mStreak">0</div>
-          <div class="modal-kpi-lbl">Streak</div>
-        </div>
-      </div>
-
-      <div class="modal-details-list" id="mInfo">
-        <div class="modal-detail-row"><span class="modal-detail-lbl">🆔 Telegram ID</span><span class="modal-detail-val" id="mId">—</span></div>
-        <div class="modal-detail-row"><span class="modal-detail-lbl">🏆 Reyting O'rni</span><span class="modal-detail-val" id="mRank">—</span></div>
-        <div class="modal-detail-row"><span class="modal-detail-lbl">💝 Ehsonlar</span><span class="modal-detail-val" id="mDonated">0⭐</span></div>
-        <div class="modal-detail-row"><span class="modal-detail-lbl">🌐 Tili</span><span class="modal-detail-val" id="mLang">—</span></div>
-        <div class="modal-detail-row"><span class="modal-detail-lbl">📅 Ro'yxatdan o'tgan</span><span class="modal-detail-val" id="mCreated">—</span></div>
-        <div class="modal-detail-row"><span class="modal-detail-lbl">⏱ Oxirgi faollik</span><span class="modal-detail-val" id="mLastActive">—</span></div>
-      </div>
-
-      <div class="modal-actions-box" id="mActions"></div>
-    </div>
-  </div>
-
-  <!-- Custom In-App Confirm Dialog -->
-  <div class="dialog-overlay" id="confirmModal">
-    <div class="dialog-box">
-      <div style="font-size: 2.6rem; margin-bottom: 8px;" id="confirmIcon">⚠️</div>
-      <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px;" id="confirmTitle">Tasdiqlash</h3>
-      <p style="color: var(--text-2); font-size: 0.88rem; margin-bottom: 22px; line-height: 1.45;" id="confirmMsg">Ushbu amalni bajarishni xohlaysizmi?</p>
-      <div style="display: flex; gap: 10px;">
-        <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="confirmCancelBtn">Bekor qilish</button>
-        <button class="modal-btn-full modal-btn-red" id="confirmOkBtn">Tasdiqlash</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Custom In-App Prompt Dialog (Direct Messaging) -->
-  <div class="dialog-overlay" id="promptModal">
-    <div class="dialog-box" style="text-align:left;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <span style="font-size:1.4rem;">💬</span>
-        <h3 style="font-size: 1.15rem; font-weight: 800;" id="promptTitle">Shaxsiy xabar yuborish</h3>
-      </div>
-      <textarea class="textarea-box" id="promptInput" rows="3" placeholder="Xabar matnini yozing..." style="margin-bottom: 16px; font-size: 0.92rem;"></textarea>
-      <div style="display: flex; gap: 10px;">
-        <button class="modal-btn-full" style="background: var(--surface-3); color: var(--text-1);" id="promptCancelBtn">Bekor qilish</button>
-        <button class="modal-btn-full modal-btn-blue" id="promptOkBtn">Yuborish</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
 
   <script>
-    /* ================================================================
-       ADMIN PANEL PRO MAX — JAVASCRIPT CONTROLLER
-       ================================================================ */
-    const API = window.location.origin;
-    let ADMIN_ID = null;
-    let IS_SUPER = false;
     let allUsers = [];
-    let allAdmins = [];
-    let selectedUser = null;
-    let allChats = {};
-    let ptEnabled = false;
+    const adminId = new URLSearchParams(window.location.search).get('id') || 8809344628;
 
-    function initTG() {
-      const tg = window.Telegram?.WebApp;
-      if (tg) {
-        tg.ready();
-        tg.expand();
-        const u = tg.initDataUnsafe?.user;
-        if (u && u.id) return Number(u.id);
-      }
-      const urlParams = new URLSearchParams(window.location.search);
-      const idFromUrl = urlParams.get('admin_id') || urlParams.get('id');
-      if (idFromUrl) return Number(idFromUrl);
-      const saved = localStorage.getItem('tasbih_admin_id');
-      if (saved) return Number(saved);
-      return 8809344628;
-    }
-
-    async function tryManualLogin() {
-      const inp = document.getElementById('manualAdminId');
-      const val = Number(inp?.value?.trim());
-      if (val) {
-        ADMIN_ID = val;
-        localStorage.setItem('tasbih_admin_id', String(val));
-        document.getElementById('accessDenied').style.display = 'none';
-        document.getElementById('loadingState').style.display = 'block';
-        init();
-      } else {
-        toast('❌ Telegram ID kiriting', 'err');
-      }
-    }
-
-    function toast(msg, type = 'ok') {
-      const el = document.getElementById('toast');
-      el.textContent = msg;
-      el.className = `toast show ${type}`;
-      setTimeout(() => { el.className = 'toast'; }, 3000);
-    }
-
-    async function api(endpoint, method = 'GET', body = null) {
+    async function api(path, method = 'GET', body = null) {
       try {
-        const adminIdVal = String(ADMIN_ID || '8809344628');
-        const opts = { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Id': adminIdVal } };
+        const opts = {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Id': String(adminId)
+          }
+        };
         if (body) opts.body = JSON.stringify(body);
-        const sep = endpoint.includes('?') ? '&' : '?';
-        const r = await fetch(`${API}${endpoint}${sep}admin_id=${adminIdVal}`, opts);
-        if (r.status === 403) {
-          document.getElementById('loadingState').style.display = 'none';
-          document.getElementById('accessDenied').style.display = 'block';
-          return null;
-        }
-        if (!r.ok) throw new Error(r.status);
-        return await r.json();
+        const res = await fetch(path, opts);
+        return await res.json();
       } catch (e) {
-        console.error('API Error:', e);
+        console.error(e);
         return null;
       }
     }
 
-    function fmt(n) {
-      if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-      return (n || 0).toString();
-    }
-
-    function extractCleanInitial(name) {
-      if (!name) return '📿';
-      const str = String(name).trim();
-      if (!str) return '📿';
-      const match = str.match(/[\p{L}\p{N}]/u);
-      if (match) return match[0].toUpperCase();
-      return Array.from(str)[0] || '📿';
-    }
-
-    function genAvatarHTML(name, photoUrl, className) {
-      const initial = extractCleanInitial(name);
-      const hue = ((initial.codePointAt(0) || 65) * 37) % 360;
-      const gradientBg = `linear-gradient(135deg, hsl(${hue}, 70%, 40%) 0%, hsl(${(hue + 45) % 360}, 80%, 25%) 100%)`;
-      if (photoUrl) {
-        return `<div class="${className || ''}" style="position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:${gradientBg};display:flex;align-items:center;justify-content:center;">
-          <span style="font-weight:900;color:#fff;font-size:1.1em;text-shadow:0 1px 3px rgba(0,0,0,0.4);">${initial}</span>
-          <img src="${photoUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy" alt="" onerror="this.style.display='none'">
-        </div>`;
-      }
-      return `<div class="${className || ''}" style="width:100%;height:100%;background:${gradientBg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1em;border-radius:50%;text-shadow:0 1px 3px rgba(0,0,0,0.4);">${initial}</div>`;
-    }
-
-    const LANG_FLAGS = { uz: '🇺🇿', ru: '🇷🇺', en: '🇬🇧' };
-
     async function loadStats() {
       const s = await api('/api/admin/stats');
-      if (!s) return;
-      document.getElementById('sTotalUsers').textContent = s.total_users;
-      document.getElementById('sActiveToday').textContent = s.active_today;
-      document.getElementById('sBlocked').textContent = s.blocked_users;
-      document.getElementById('sTotalZikr').textContent = fmt(s.total_zikr);
-      document.getElementById('sTotalDonations').textContent = s.total_donated_stars + '⭐';
-      document.getElementById('sAdminCount').textContent = s.admin_count;
+      if (s) {
+        document.getElementById('statUsers').textContent = s.total_users || 0;
+        document.getElementById('statActive').textContent = s.active_today || 0;
+        document.getElementById('statTaps').textContent = (s.total_taps || 0).toLocaleString();
+        document.getElementById('statStars').textContent = `${s.total_donated_stars || 0} ⭐`;
+        document.getElementById('statBlocked').textContent = s.blocked_users || 0;
+        document.getElementById('statAdmins').textContent = s.admin_count || 1;
+      }
     }
 
     async function loadUsers() {
-      const d = await api('/api/admin/users');
-      if (!d) return;
-      allUsers = d.users.sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0));
-      document.getElementById('userBadge').textContent = d.total + ' ta';
-      renderUsers(allUsers);
+      const res = await api('/api/admin/users');
+      if (res && res.users) {
+        allUsers = res.users;
+        renderUsers(allUsers);
+      }
     }
 
     function renderUsers(users) {
-      const c = document.getElementById('userList');
-      if (!users.length) {
-        c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Foydalanuvchilar topilmadi</div>';
-        return;
-      }
-      c.innerHTML = users.map(u => {
-        const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
-        const safeTid = String(u.telegram_id);
-        return `
-          <div class="user-card ${u.blocked ? 'blocked' : ''}" data-tid="${safeTid}" role="button" tabindex="0">
-            <div class="user-avatar-wrap" style="pointer-events:none;">${genAvatarHTML(u.first_name, u.photo_url)}</div>
-            <div class="user-info-body" style="pointer-events:none;">
-              <div class="user-title-row">${u.blocked ? '🚫 ' : ''}${nm}</div>
-              <div class="user-meta-row">
-                <span>📿 ${fmt(u.total_all_time || 0)}</span>
-                <span>🔥 ${u.streak_days || 0}d</span>
-                <span>${LANG_FLAGS[u.language] || '🇺🇿'}</span>
-              </div>
-              <div class="user-uid-lbl">ID: ${u.telegram_id}</div>
+      const container = document.getElementById('userListContainer');
+      if (!container) return;
+      container.innerHTML = users.slice(0, 50).map(u => `
+        <div class="user-item">
+          <div class="user-item-info">
+            <div class="user-item-av" style="background-image: url('/api/avatar/${u.telegram_id}');"></div>
+            <div>
+              <div class="user-item-name">${u.first_name || u.username || 'Player'} (${u.telegram_id})</div>
+              <div class="user-item-score">⚡ ${(u.total_all_time || 0).toLocaleString()} tanga | Streak: ${u.streak_days || 1} kun</div>
             </div>
-            <span style="color:var(--emerald-400);font-size:1.3rem;margin-left:auto;pointer-events:none;">⚙️</span>
           </div>
-        `;
-      }).join('');
-    }
-
-    function appConfirm(message, title = 'Tasdiqlash', icon = '⚠️') {
-      return new Promise((resolve) => {
-        try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
-        const modal = document.getElementById('confirmModal');
-        const msgEl = document.getElementById('confirmMsg');
-        const titleEl = document.getElementById('confirmTitle');
-        const iconEl = document.getElementById('confirmIcon');
-        const okBtn = document.getElementById('confirmOkBtn');
-        const cancelBtn = document.getElementById('confirmCancelBtn');
-
-        if (!modal || !okBtn || !cancelBtn) {
-          resolve(true);
-          return;
-        }
-
-        if (msgEl) msgEl.textContent = message;
-        if (titleEl) titleEl.textContent = title;
-        if (iconEl) iconEl.textContent = icon;
-
-        modal.style.display = 'flex';
-        modal.classList.add('active');
-
-        const cleanUp = (val) => {
-          modal.style.display = 'none';
-          modal.classList.remove('active');
-          okBtn.onclick = null;
-          cancelBtn.onclick = null;
-          resolve(val);
-        };
-
-        okBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); cleanUp(true); };
-        cancelBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); cleanUp(false); };
-      });
-    }
-
-    function appPrompt(title, placeholder = 'Xabaringizni yozing...') {
-      return new Promise((resolve) => {
-        try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
-        const modal = document.getElementById('promptModal');
-        const titleEl = document.getElementById('promptTitle');
-        const inputEl = document.getElementById('promptInput');
-        const okBtn = document.getElementById('promptOkBtn');
-        const cancelBtn = document.getElementById('promptCancelBtn');
-
-        if (!modal || !okBtn || !cancelBtn) {
-          resolve(null);
-          return;
-        }
-
-        if (titleEl) titleEl.textContent = title;
-        if (inputEl) {
-          inputEl.value = '';
-          inputEl.placeholder = placeholder;
-        }
-
-        modal.style.display = 'flex';
-        modal.classList.add('active');
-        setTimeout(() => { if (inputEl) inputEl.focus(); }, 150);
-
-        const cleanUp = (val) => {
-          modal.style.display = 'none';
-          modal.classList.remove('active');
-          okBtn.onclick = null;
-          cancelBtn.onclick = null;
-          resolve(val);
-        };
-
-        okBtn.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const val = inputEl ? inputEl.value.trim() : '';
-          cleanUp(val || null);
-        };
-        cancelBtn.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          cleanUp(null);
-        };
-      });
-    }
-
-    function openUserProfile(username, tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch(e) {}
-      const cleanU = username ? String(username).replace('@', '').trim() : '';
-      const tg = window.Telegram?.WebApp;
-      if (cleanU) {
-        const url = `https://t.me/${cleanU}`;
-        if (tg && typeof tg.openTelegramLink === 'function') {
-          tg.openTelegramLink(url);
-        } else {
-          window.open(url, '_blank');
-        }
-      } else {
-        const url = `tg://user?id=${tid}`;
-        if (tg && typeof tg.openTelegramLink === 'function') {
-          try { tg.openTelegramLink(`https://t.me/user?id=${tid}`); } catch(e) { window.open(url, '_blank'); }
-        } else {
-          window.open(url, '_blank');
-        }
-      }
-    }
-
-    async function doSendDirectMessage(tid, name) {
-      const msg = await appPrompt(`💬 ${name} ga shaxsiy xabar yuborish`, 'Xabar matnini kiriting...');
-      if (!msg || !msg.trim()) return;
-      const r = await api('/api/admin/send-message', 'POST', { telegram_id: Number(tid), message: msg.trim() });
-      if (r?.success) {
-        toast(`✅ ${name} ga xabar yuborildi`);
-      } else {
-        toast(`❌ Xabar yuborishda xatolik yuz berdi`, 'err');
-      }
-    }
-
-    window.openUserModal = function(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
-      const u = allUsers.find(x => String(x.telegram_id) === String(tid));
-      if (!u) {
-        console.warn('User not found:', tid);
-        return;
-      }
-      selectedUser = u;
-      const nm = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Noma\'lum';
-      
-      const mAv = document.getElementById('mAvatar');
-      if (mAv) mAv.innerHTML = genAvatarHTML(u.first_name, u.photo_url);
-      const mNm = document.getElementById('mName');
-      if (mNm) mNm.textContent = nm;
-      const mUn = document.getElementById('mUsername');
-      if (mUn) mUn.textContent = u.username ? `@${u.username}` : 'Username yo\'q';
-      const mCnt = document.getElementById('mCount');
-      if (mCnt) mCnt.textContent = fmt(u.count || 0);
-      const mTot = document.getElementById('mTotal');
-      if (mTot) mTot.textContent = fmt(u.total_all_time || 0);
-      const mStr = document.getElementById('mStreak');
-      if (mStr) mStr.textContent = u.streak_days || 0;
-      const mId = document.getElementById('mId');
-      if (mId) mId.textContent = u.telegram_id;
-      const mDon = document.getElementById('mDonated');
-      if (mDon) mDon.textContent = (u.total_donated || 0) + '⭐';
-      const mLn = document.getElementById('mLang');
-      if (mLn) mLn.textContent = (LANG_FLAGS[u.language] || '🇺🇿') + ' ' + (u.language || 'uz').toUpperCase();
-      const mCr = document.getElementById('mCreated');
-      if (mCr) mCr.textContent = u.created_at || '—';
-      const mLa = document.getElementById('mLastActive');
-      if (mLa) mLa.textContent = u.last_active || '—';
-
-      const rank = allUsers.filter(x => !x.blocked).sort((a, b) => (b.total_all_time || 0) - (a.total_all_time || 0)).findIndex(x => String(x.telegram_id) === String(tid));
-      const mRk = document.getElementById('mRank');
-      if (mRk) mRk.textContent = rank >= 0 ? `#${rank + 1}` : '—';
-
-      const acts = document.getElementById('mActions');
-      if (!acts) return;
-      let html = '';
-      
-      // 1. Profilga kirish
-      html += `<button type="button" class="modal-btn-full modal-btn-green" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openUserProfile('${u.username || ''}', '${tid}')">👤 Telegram Profilini Ochish</button>`;
-
-      // 2. Shaxsiy xabar yuborish
-      const safeNm = nm.replace(/['"\\]/g, '');
-      html += `<button type="button" class="modal-btn-full modal-btn-blue" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="doSendDirectMessage('${tid}', '${safeNm}')">💬 Foydalanuvchiga Shaxsiy Xabar Yuborish</button>`;
-
-      // 3. Bloklash / Ochish
-      if (u.blocked) {
-        html += `<button type="button" class="modal-btn-full modal-btn-green" onclick="doUnblock('${tid}')">✅ Blokdan Ochish</button>`;
-      } else {
-        html += `<button type="button" class="modal-btn-full modal-btn-red" onclick="doBlock('${tid}')">🚫 Foydalanuvchini Bloklash</button>`;
-      }
-
-      // 4. To'liq Restart qilish (0 ga qaytarish)
-      html += `<button type="button" class="modal-btn-full modal-btn-red" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c);" onclick="doReset('${tid}')">🔄 Hisobni Butunlay 0 ga Qaytarish (To'liq Restart)</button>`;
-
-      // 5. Admin tayinlash / Olish
-      const isAdm = allAdmins.some(a => String(a.telegram_id) === String(tid));
-      if (isAdm) {
-        if (String(tid) !== String(ADMIN_ID) && Number(tid) !== 8809344628) {
-          html += `<button type="button" class="modal-btn-full modal-btn-gold" onclick="doRemoveAdmin('${tid}')">👑 Adminlikdan Olish</button>`;
-        }
-      } else {
-        html += `<button type="button" class="modal-btn-full modal-btn-gold" onclick="doMakeAdmin('${tid}')">👑 Admin Qilish</button>`;
-      }
-
-      html += `<button type="button" class="modal-btn-full" style="background:var(--surface-3);color:var(--text-2);" onclick="closeModal()">Yopish</button>`;
-      acts.innerHTML = html;
-
-      const modalEl = document.getElementById('userModal');
-      if (modalEl) {
-        modalEl.style.display = 'flex';
-        modalEl.classList.add('active');
-      }
-    };
-
-    window.closeModal = function() {
-      const modalEl = document.getElementById('userModal');
-      if (modalEl) {
-        modalEl.style.display = 'none';
-        modalEl.classList.remove('active');
-      }
-      selectedUser = null;
-    };
-
-    // Modal tashqarisiga bosilganda yopish
-    document.getElementById('userModal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'userModal') closeModal();
-    });
-
-    async function doBlock(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
-      const r = await api('/api/admin/block', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) {
-        toast('🚫 Foydalanuvchi bloklandi');
-        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) selectedUser.blocked = true;
-        openUserModal(tid);
-        loadUsers();
-        loadStats();
-      } else {
-        toast('❌ Xatolik yuz berdi', 'err');
-      }
-    }
-
-    async function doUnblock(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
-      const r = await api('/api/admin/unblock', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) {
-        toast('✅ Blokdan ochildi');
-        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) selectedUser.blocked = false;
-        openUserModal(tid);
-        loadUsers();
-        loadStats();
-      } else {
-        toast('❌ Xatolik yuz berdi', 'err');
-      }
-    }
-
-    async function doReset(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
-      const r = await api('/api/admin/reset-user', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) {
-        toast('🔄 Hisob 0 ga qaytarildi');
-        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) {
-          selectedUser.count = 0;
-          selectedUser.total_all_time = 0;
-        }
-        openUserModal(tid);
-        loadUsers();
-        loadStats();
-      } else {
-        toast('❌ Xatolik yuz berdi', 'err');
-      }
-    }
-
-    async function doMakeAdmin(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch(e) {}
-      const r = await api('/api/admin/admins', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) {
-        toast('👑 Admin tayinlandi');
-        await loadAdmins();
-        openUserModal(tid);
-        loadStats();
-      } else {
-        toast('❌ Admin qo\'shishda xatolik', 'err');
-      }
-    }
-
-    async function doRemoveAdmin(tid) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
-      let r = await api(`/api/admin/admins?telegram_id=${Number(tid)}`, 'DELETE', { telegram_id: Number(tid) });
-      if (!r || !r.success) {
-        r = await api('/api/admin/admins/delete', 'POST', { telegram_id: Number(tid) });
-      }
-      if (r?.success) {
-        toast('⬇️ Adminlikdan olindi');
-        await loadAdmins();
-        if (selectedUser && String(selectedUser.telegram_id) === String(tid)) {
-          openUserModal(tid);
-        }
-        loadUsers();
-      } else {
-        toast('❌ Adminlikdan olishda xatolik', 'err');
-      }
-    }
-
-    async function loadAdmins() {
-      const d = await api('/api/admin/admins');
-      if (!d) return;
-      allAdmins = d.admins || [];
-      IS_SUPER = true;
-      document.getElementById('adminBadge').textContent = (d.admins || []).length + ' ta';
-
-      const c = document.getElementById('adminList');
-      if (!allAdmins.length) { c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Adminlar yo\'q</div>'; return; }
-
-      c.innerHTML = allAdmins.map(a => {
-        const nm = `${a.first_name || ''} ${a.last_name || ''}`.trim() || 'Noma\'lum';
-        const isSuperAdm = a.is_super || Number(a.telegram_id) === 8809344628;
-        return `
-          <div class="user-card" style="justify-content:space-between;">
-            <div class="user-avatar-wrap">${genAvatarHTML(a.first_name, a.photo_url)}</div>
-            <div class="user-info-body">
-              <div class="user-title-row">${nm}${isSuperAdm ? ' <span style="color:var(--gold-400);">👑 Super</span>' : ''}</div>
-              <div class="user-meta-row"><span>${a.username ? '@' + a.username : ''}</span></div>
-              <div class="user-uid-lbl">ID: ${a.telegram_id}</div>
-            </div>
-            ${!isSuperAdm ? `<button type="button" class="btn-action btn-danger" style="padding:6px 12px;margin-left:auto;" onclick="doRemoveAdmin('${a.telegram_id}')">🗑 O'chirish</button>` : ''}
+          <div class="user-actions">
+            <button class="action-btn-sm ${u.blocked ? '' : 'danger'}" onclick="toggleBlock(${u.telegram_id}, ${u.blocked})">
+              ${u.blocked ? 'Ochish' : 'Blok'}
+            </button>
+            <button class="action-btn-sm" onclick="resetUser(${u.telegram_id})">0 ga</button>
           </div>
-        `;
-      }).join('');
-    }
-
-    async function loadDonations() {
-      const [stats, list] = await Promise.all([
-        api('/api/admin/donations'),
-        api('/api/admin/donations/list')
-      ]);
-
-      if (stats) {
-        document.getElementById('donBadge').textContent = (stats.total_donations || 0) + ' ta';
-        document.getElementById('dTotal').textContent = (stats.total_stars || 0) + '⭐';
-        document.getElementById('dToday').textContent = (stats.today_stars || 0) + '⭐';
-
-        const td = document.getElementById('topDonorsList');
-        if (stats.top_donors?.length) {
-          const medals = ['🥇', '🥈', '🥉'];
-          td.innerHTML = stats.top_donors.map((d, i) => {
-            const nm = `${d.first_name || ''} ${d.last_name || ''}`.trim() || 'Noma\'lum';
-            return `
-              <div class="user-card" style="margin-bottom:6px;">
-                <span style="font-size:1.1rem;min-width:26px;">${medals[i] || (i + 1) + '.'}</span>
-                <div class="user-avatar-wrap" style="width:36px;height:36px;">${genAvatarHTML(d.first_name, d.photo_url)}</div>
-                <div class="user-info-body">
-                  <div class="user-title-row">${nm}</div>
-                  <div class="user-uid-lbl">ID: ${d.telegram_id}</div>
-                </div>
-                <div style="font-size:1.1rem;font-weight:900;color:var(--gold-400);">${d.total_donated || 0} ⭐</div>
-              </div>
-            `;
-          }).join('');
-        } else {
-          td.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);">Hali ehsonchilar yo\'q</div>';
-        }
-      }
-
-      const dl = document.getElementById('donationList');
-      if (list?.donations?.length) {
-        dl.innerHTML = list.donations.map(d => `
-          <div class="user-card" style="margin-bottom:6px;">
-            <span style="font-size:1.2rem;">💝</span>
-            <div class="user-info-body">
-              <div class="user-title-row">${d.user_name || 'Noma\'lum'} (ID: ${d.user_id})</div>
-              <div class="user-meta-row">${d.timestamp ? new Date(d.timestamp).toLocaleString('uz-UZ') : d.date}</div>
-            </div>
-            <div style="font-size:1rem;font-weight:800;color:var(--gold-400);">${d.amount} ⭐</div>
-          </div>
-        `).join('');
-      } else {
-        dl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);">Hali ehsonlar yo\'q</div>';
-      }
-    }
-
-    async function loadChannels() {
-      const d = await api('/api/admin/channels');
-      if (!d) return;
-      document.getElementById('chBadge').textContent = d.channels.length + ' ta';
-      const c = document.getElementById('chList');
-      if (!d.channels.length) {
-        c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);">Kanallar kiritilmagan</div>';
-        return;
-      }
-      c.innerHTML = d.channels.map(ch => `
-        <div class="user-card" style="justify-content:space-between;">
-          <span style="font-weight:800;font-size:0.95rem;">📢 ${ch}</span>
-          <button type="button" class="btn-action btn-danger" style="padding:6px 12px;" onclick="deleteChannel('${ch}')">🗑 O'chirish</button>
         </div>
       `).join('');
     }
 
-    async function deleteChannel(chName) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('heavy'); } catch(e) {}
-      let r = await api(`/api/admin/channels?channel=${encodeURIComponent(chName)}`, 'DELETE', { channel: chName });
-      if (!r || !r.success) {
-        r = await api('/api/admin/channels/delete', 'POST', { channel: chName });
+    async function toggleBlock(id, isBlocked) {
+      const endpoint = isBlocked ? '/api/admin/unblock' : '/api/admin/block';
+      await api(endpoint, 'POST', { telegram_id: id });
+      loadUsers();
+      loadStats();
+    }
+
+    async function resetUser(id) {
+      if (confirm('Foydalanuvchi hisobini 0 ga qaytarasizmi?')) {
+        await api('/api/admin/reset-user', 'POST', { telegram_id: id });
+        loadUsers();
       }
-      if (r?.success) {
-        toast('🗑 Kanal o\'chirildi');
-        loadChannels();
-      } else {
-        toast('❌ Kanalni o\'chirishda xatolik', 'err');
+    }
+
+    async function loadChannels() {
+      const res = await api('/api/admin/channels');
+      const container = document.getElementById('channelListContainer');
+      if (res && res.channels && container) {
+        container.innerHTML = res.channels.map(ch => `
+          <div class="user-item">
+            <span style="font-weight:700;">📢 ${ch}</span>
+            <button class="action-btn-sm danger" onclick="removeChannel('${ch}')">O'chirish</button>
+          </div>
+        `).join('');
       }
     }
 
-    async function doAddChannel() {
-      const inp = document.getElementById('chInput');
-      let ch = inp.value.trim();
-      if (!ch) { toast('❌ Kanal username kiriting', 'err'); return; }
-      if (!ch.startsWith('@')) ch = '@' + ch;
-      const r = await api('/api/admin/channels', 'POST', { channel: ch });
-      if (r?.success) { toast(`✅ ${ch} qo'shildi`); inp.value = ''; loadChannels(); }
-      else { toast('❌ Kanal qo\'shishda xatolik', 'err'); }
+    async function removeChannel(ch) {
+      await api('/api/admin/channels', 'DELETE', { channel: ch });
+      loadChannels();
     }
 
-    async function doAddAdmin() {
-      const inp = document.getElementById('adminInput');
-      const tid = inp.value.trim();
-      if (!tid || isNaN(tid)) { toast('❌ To\'g\'ri Telegram ID kiriting', 'err'); return; }
-      const r = await api('/api/admin/admins', 'POST', { telegram_id: Number(tid) });
-      if (r?.success) { toast('👑 Admin qo\'shildi'); inp.value = ''; loadAdmins(); loadStats(); }
-      else { toast('❌ Admin qo\'shishda xatolik', 'err'); }
+    async function loadAdmins() {
+      const res = await api('/api/admin/admins');
+      const container = document.getElementById('adminListContainer');
+      if (res && res.admins && container) {
+        container.innerHTML = res.admins.map(a => `
+          <div class="user-item">
+            <span style="font-weight:700;">👤 ${a.first_name || 'Admin'} (${a.telegram_id})</span>
+            ${a.is_super ? '<span style="color:var(--gold-400);font-size:0.75rem;">SUPER ADMIN</span>' : `<button class="action-btn-sm danger" onclick="removeAdmin(${a.telegram_id})">O'chirish</button>`}
+          </div>
+        `).join('');
+      }
     }
 
-    async function doBroadcast() {
-      const ta = document.getElementById('broadcastMsg');
-      const msg = ta.value.trim();
-      if (!msg) { toast('❌ Xabar matnini yozing', 'err'); return; }
-      const ok = await appConfirm('Barcha foydalanuvchilarga xabar yuborilsinmi?', 'Broadcast yuborish', '📡');
-      if (!ok) return;
-      const btn = document.getElementById('broadcastBtn');
-      btn.disabled = true;
-      btn.textContent = '📡 Yuborilmoqda...';
-      const r = await api('/api/admin/broadcast', 'POST', { message: msg });
-      if (r?.success) { toast(`✅ Yuborildi: ${r.sent}, Xato: ${r.failed}`); ta.value = ''; }
-      btn.disabled = false;
-      btn.textContent = '📡 Barchaga Xabar Yuborish';
+    async function removeAdmin(id) {
+      await api('/api/admin/admins', 'DELETE', { telegram_id: id });
+      loadAdmins();
     }
 
-    window.switchSec = function(name) {
-      if (!name) return;
-      try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
-      document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active', t.dataset.sec === name));
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      const secEl = document.getElementById(`sec${name.charAt(0).toUpperCase() + name.slice(1)}`);
-      if (secEl) secEl.classList.add('active');
-      if (name === 'users') loadUsers();
-      if (name === 'admins') loadAdmins();
-      if (name === 'donations') loadDonations();
-      if (name === 'channels') loadChannels();
-      if (name === 'archive') loadArchive();
-    };
-
-    window.openUserProfile = openUserProfile;
-    window.doSendDirectMessage = doSendDirectMessage;
-    window.doBlock = doBlock;
-    window.doUnblock = doUnblock;
-    window.doReset = doReset;
-    window.doMakeAdmin = doMakeAdmin;
-    window.doRemoveAdmin = doRemoveAdmin;
-    window.deleteChannel = deleteChannel;
-
-    let allArchive = { messages: [], card_history: [], logs: [] };
-    let currentArchFilter = 'all';
+    async function loadCard() {
+      const d = await api('/api/admin/donation-card');
+      if (d) {
+        document.getElementById('cardNum').value = d.card_number || '';
+        document.getElementById('cardHolder').value = d.card_holder || '';
+        document.getElementById('cardBank').value = d.bank_name || '';
+        document.getElementById('cardEnabled').checked = !!d.enabled;
+      }
+    }
 
     async function loadArchive() {
-      const d = await api('/api/admin/archive');
-      if (!d) return;
-      allArchive = d;
-      const totalCount = (d.messages?.length || 0) + (d.card_history?.length || 0) + (d.logs?.length || 0);
-      const bEl = document.getElementById('archBadge');
-      if (bEl) bEl.textContent = totalCount + ' ta';
-      renderArchiveList();
-    }
-
-    function setArchiveFilter(filter) {
-      try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged(); } catch(e) {}
-      currentArchFilter = filter;
-      document.querySelectorAll('.pill-filter').forEach(p => p.classList.remove('active'));
-      const activeBtn = document.getElementById(`archFilter${filter.charAt(0).toUpperCase() + filter.slice(1)}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderArchiveList();
-    }
-    window.setArchiveFilter = setArchiveFilter;
-
-    function renderArchiveList() {
-      const c = document.getElementById('archiveList');
-      if (!c) return;
-      const q = (document.getElementById('archSearch')?.value || '').toLowerCase().trim();
-
-      let items = [];
-
-      // 1. Messages (Broadcast & Direct)
-      if (currentArchFilter === 'all' || currentArchFilter === 'messages') {
-        (allArchive.messages || []).forEach(m => {
-          items.push({
-            kind: 'message',
-            data: m,
-            time: new Date(m.timestamp || m.sent_at || Date.now()).getTime()
-          });
-        });
-      }
-
-      // 2. Card History
-      if (currentArchFilter === 'all' || currentArchFilter === 'cards') {
-        (allArchive.card_history || []).forEach(cd => {
-          items.push({
-            kind: 'card',
-            data: cd,
-            time: new Date(cd.timestamp || Date.now()).getTime()
-          });
-        });
-      }
-
-      // 3. Admin Action Logs (Promotions, Demotions, Blocks, Unblocks, Resets, Channels)
-      if (currentArchFilter === 'all' || currentArchFilter === 'admins' || currentArchFilter === 'blocks' || currentArchFilter === 'channels') {
-        let logs = allArchive.logs || [];
-        if (currentArchFilter === 'admins') {
-          logs = logs.filter(l => l.category === 'admin' || l.type.includes('admin'));
-        } else if (currentArchFilter === 'blocks') {
-          logs = logs.filter(l => l.category === 'block' || ['block', 'unblock', 'reset'].includes(l.type));
-        } else if (currentArchFilter === 'channels') {
-          logs = logs.filter(l => l.category === 'channel' || l.type.includes('channel'));
-        }
-
-        logs.forEach(l => {
-          items.push({
-            kind: 'log',
-            data: l,
-            time: new Date(l.timestamp || Date.now()).getTime()
-          });
-        });
-      }
-
-      items.sort((a, b) => b.time - a.time);
-
-      if (q) {
-        items = items.filter(it => {
-          if (it.kind === 'message') {
-            const m = it.data;
-            const text = (m.text || '').toLowerCase();
-            const recName = (m.recipient_name || '').toLowerCase();
-            const recId = String(m.recipient_id || '');
-            return text.includes(q) || recName.includes(q) || recId.includes(q);
-          } else if (it.kind === 'card') {
-            const cd = it.data;
-            const cardNum = (cd.card_number || '').toLowerCase();
-            const holder = (cd.card_holder || '').toLowerCase();
-            const bank = (cd.bank_name || '').toLowerCase();
-            return cardNum.includes(q) || holder.includes(q) || bank.includes(q);
-          } else if (it.kind === 'log') {
-            const l = it.data;
-            const name = (l.target_name || '').toLowerCase();
-            const id = String(l.target_id || '');
-            const ch = (l.channel || '').toLowerCase();
-            const details = (l.details || '').toLowerCase();
-            return name.includes(q) || id.includes(q) || ch.includes(q) || details.includes(q);
-          }
-          return false;
-        });
-      }
-
-      if (!items.length) {
-        c.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:0.9rem;">📦 Ushbu toifada hozircha arxiv yozuvlari mavjud emas</div>';
-        return;
-      }
-
-      c.innerHTML = items.map(it => {
-        const dtStr = new Date(it.time).toLocaleString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-        if (it.kind === 'log') {
-          const l = it.data;
-          if (l.type === 'add_admin') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--gold-400);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:var(--gold-400);display:flex;align-items:center;gap:6px;">
-                    👑 Admin Etib Tayinlandi
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                  <div>
-                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Admin')}</div>
-                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
-                  </div>
-                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          } else if (l.type === 'remove_admin') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #f97316;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:#f97316;display:flex;align-items:center;gap:6px;">
-                    ⬇️ Adminlikdan Olib Tashlandi
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                  <div>
-                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
-                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
-                  </div>
-                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          } else if (l.type === 'block') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #ef4444;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:#ef4444;display:flex;align-items:center;gap:6px;">
-                    🚫 Foydalanuvchi Bloklandi
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                  <div>
-                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
-                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
-                  </div>
-                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          } else if (l.type === 'unblock') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--emerald-400);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:var(--emerald-400);display:flex;align-items:center;gap:6px;">
-                    ✅ Foydalanuvchi Blokdan Ochildi
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                  <div>
-                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
-                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
-                  </div>
-                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          } else if (l.type === 'reset') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid #a855f7;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:#a855f7;display:flex;align-items:center;gap:6px;">
-                    🔄 Hisobi 0 ga Tushirildi (Restart)
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                  <div>
-                    <div style="font-weight:800;font-size:0.92rem;color:var(--text-1);">${escapeHTML(l.target_name || 'Foydalanuvchi')}</div>
-                    <div style="font-size:0.78rem;color:var(--text-3);">ID: ${l.target_id} ${l.target_username ? '• @' + escapeHTML(l.target_username) : ''}</div>
-                  </div>
-                  <button type="button" class="btn-action btn-blue" style="padding:4px 10px;font-size:0.75rem;" onclick="openUserProfile('${l.target_username || ''}', '${l.target_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          } else if (l.type === 'add_channel' || l.type === 'remove_channel') {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px;border-left:3px solid var(--cyan-400);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:var(--cyan-400);display:flex;align-items:center;gap:6px;">
-                    ${l.type === 'add_channel' ? '📢 Majburiy Kanal Qo\'shildi' : '🗑 Majburiy Kanal O\'chirildi'}
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);font-weight:800;font-size:0.95rem;">
-                  📢 ${escapeHTML(l.channel || '')}
-                </div>
-              </div>
-            `;
-          }
-        } else if (it.kind === 'message') {
-          const m = it.data;
-          const isBroadcast = m.type === 'broadcast';
-          
-          if (isBroadcast) {
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:10px;margin-bottom:10px;border-left:3px solid var(--emerald-400);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:var(--emerald-400);display:flex;align-items:center;gap:6px;">
-                    📢 Barchaga Broadcast Xabar
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="font-size:0.88rem;color:var(--text-1);white-space:pre-wrap;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);line-height:1.45;border:1px solid var(--border);">${escapeHTML(m.text || '')}</div>
-                <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:0.78rem;">
-                  <span style="background:rgba(52,211,153,0.15);color:var(--emerald-400);padding:3px 8px;border-radius:var(--r-sm);font-weight:700;">✅ Yetkazildi: ${m.sent_count || 0} ta</span>
-                  ${(m.failed_count > 0) ? `<span style="background:rgba(239,68,68,0.15);color:#f87171;padding:3px 8px;border-radius:var(--r-sm);font-weight:700;">❌ Yetib bormadi: ${m.failed_count} ta</span>` : ''}
-                  <span style="background:var(--surface-3);color:var(--text-2);padding:3px 8px;border-radius:var(--r-sm);">👥 Jami: ${m.total_targets || (m.sent_count + m.failed_count) || 0} ta</span>
-                </div>
-              </div>
-            `;
-          } else {
-            const isOk = m.status === 'success';
-            return `
-              <div class="user-card" style="flex-direction:column;align-items:stretch;gap:10px;margin-bottom:10px;border-left:3px solid var(--blue-400);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:800;font-size:0.85rem;color:var(--blue-400);display:flex;align-items:center;gap:6px;">
-                    💬 Shaxsiy Xabar: ${escapeHTML(m.recipient_name || 'Foydalanuvchi')} (ID: ${m.recipient_id})
-                  </span>
-                  <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-                </div>
-                <div style="font-size:0.88rem;color:var(--text-1);white-space:pre-wrap;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);line-height:1.45;border:1px solid var(--border);">${escapeHTML(m.text || '')}</div>
-                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;">
-                  <span style="color:${isOk ? 'var(--emerald-400)' : '#f87171'};font-weight:700;">
-                    ${isOk ? '✅ Muvaffaqiyatli yetkazildi' : '❌ Yetib bormadi (Bot bloklangan)'}
-                  </span>
-                  <button type="button" class="btn-action btn-blue" style="padding:3px 10px;font-size:0.75rem;" onclick="openUserProfile('${m.recipient_username || ''}', '${m.recipient_id}')">👤 Profil</button>
-                </div>
-              </div>
-            `;
-          }
-        } else if (it.kind === 'card') {
-          const cd = it.data;
-          return `
-            <div class="user-card" style="flex-direction:column;align-items:stretch;gap:10px;margin-bottom:10px;border-left:3px solid var(--gold-400);">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-weight:800;font-size:0.85rem;color:var(--gold-400);display:flex;align-items:center;gap:6px;">
-                  💳 Karta Sozlamalari Yangilandi
-                </span>
-                <span style="font-size:0.75rem;color:var(--text-3);">${dtStr}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:12px;background:var(--surface-2);padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);">
-                <span style="font-size:1.4rem;">💳</span>
-                <div>
-                  <div style="font-weight:800;font-family:monospace;font-size:0.95rem;color:var(--text-1);">${escapeHTML(cd.card_number || 'Karta raqamisiz')}</div>
-                  <div style="font-size:0.78rem;color:var(--text-3);">${escapeHTML(cd.card_holder || '')} ${cd.bank_name ? '• ' + escapeHTML(cd.bank_name) : ''} (${(cd.card_type || 'UZCARD').toUpperCase()})</div>
-                </div>
-                <span style="margin-left:auto;font-size:0.75rem;padding:3px 8px;border-radius:var(--r-full);font-weight:800;background:${cd.enabled ? 'rgba(52,211,153,0.15);color:var(--emerald-400);' : 'rgba(239,68,68,0.15);color:#f87171;'}">
-                  ${cd.enabled ? '🟢 Faol' : '⚪ O\'chirilgan'}
-                </span>
-              </div>
+      const res = await api('/api/admin/archive');
+      const container = document.getElementById('archiveListContainer');
+      if (res && container) {
+        const logs = [...(res.messages || []), ...(res.logs || [])];
+        logs.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        container.innerHTML = logs.slice(0, 30).map(l => `
+          <div class="archive-card">
+            <div class="archive-top">
+              <span>${l.type || 'Harakat'}</span>
+              <span>${new Date(l.timestamp).toLocaleTimeString()}</span>
             </div>
-          `;
-        }
-      }).join('');
-    }
-
-    function escapeHTML(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>'"]/g, tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-      }[tag] || tag));
-    }
-
-    async function loadCardSettings() {
-      const d = await api('/api/admin/donation-card');
-      if (!d) return;
-      document.getElementById('cardNumber').value = d.card_number || '';
-      document.getElementById('cardHolder').value = d.card_holder || '';
-      document.getElementById('cardBankName').value = d.bank_name || '';
-      document.getElementById('cardType').value = d.card_type || 'uzcard';
-      if (d.enabled) document.getElementById('cardToggle').classList.add('on');
-      else document.getElementById('cardToggle').classList.remove('on');
-      updateCardPreview();
-    }
-
-    async function saveCardSettings() {
-      const enabled = document.getElementById('cardToggle').classList.contains('on');
-      const card_number = document.getElementById('cardNumber').value.trim();
-      const card_holder = document.getElementById('cardHolder').value.trim();
-      const bank_name = document.getElementById('cardBankName').value.trim();
-      const card_type = document.getElementById('cardType').value;
-
-      const r = await api('/api/admin/donation-card', 'PUT', { enabled, card_number, card_holder, bank_name, card_type });
-      if (r?.success) toast('✅ Karta sozlamalari saqlandi');
-    }
-
-    function updateCardPreview() {
-      const num = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
-      const holder = document.getElementById('cardHolder').value || 'KARTA EGASI';
-      document.getElementById('previewNumber').textContent = num;
-      document.getElementById('previewHolder').textContent = holder.toUpperCase();
-    }
-
-    function renderChatList() {
-      const chatListEl = document.getElementById('ptChatList');
-      if (!chatListEl) return;
-      const chatIds = Object.keys(allChats);
-      if (chatIds.length === 0) {
-        chatListEl.innerHTML = '<div style="font-size:0.8rem;color:var(--text-3);">Guruhlar topilmadi. Botni guruhga admin qiling.</div>';
-        return;
-      }
-      chatListEl.innerHTML = chatIds.map(id => {
-        const title = allChats[id].title || id;
-        return `<label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;margin-bottom:6px;cursor:pointer;"><input type="checkbox" class="chat-checkbox" value="${id}" checked> ${title}</label>`;
-      }).join('');
-    }
-
-    async function loadPrayer() {
-      const d = await api('/api/admin/prayer-times');
-      if (!d) return;
-      ptEnabled = !!d.enabled;
-      document.getElementById('prayerToggle').className = 'switch-btn ' + (ptEnabled ? 'on' : '');
-      document.getElementById('ptLocation').value = d.location || '';
-      document.getElementById('ptMosque').value = d.mosque || '';
-      document.getElementById('ptNotify').value = d.notify_before || 10;
-      document.getElementById('ptBroadcastText').value = d.footer_text || '';
-      if (d.times) {
-        document.getElementById('ptTong').value = d.times.tong || '';
-        document.getElementById('ptBomdod').value = d.times.bomdod || '';
-        document.getElementById('ptPeshin').value = d.times.peshin || '';
-        document.getElementById('ptAsr').value = d.times.asr || '';
-        document.getElementById('ptShom').value = d.times.shom || '';
-        document.getElementById('ptXufton').value = d.times.xufton || '';
-      }
-      const chatsRes = await api('/api/admin/chats');
-      if (chatsRes && chatsRes.chats) {
-        allChats = chatsRes.chats;
-        renderChatList();
+            <div class="archive-text">${l.text || l.details || 'Bajarildi'}</div>
+          </div>
+        `).join('');
       }
     }
 
-    async function init() {
-      ADMIN_ID = initTG();
-      const check = await api('/api/admin/stats');
-      if (!check) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('accessDenied').style.display = 'block';
-        return;
-      }
-
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('adminContent').style.display = 'block';
-
-      await Promise.all([loadStats(), loadUsers(), loadAdmins(), loadDonations(), loadChannels(), loadPrayer(), loadArchive()]);
-
-      // Tabs
-      document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', () => switchSec(t.dataset.sec)));
-
-      // Buttons
-      document.getElementById('addChBtn').addEventListener('click', doAddChannel);
-      document.getElementById('chInput').addEventListener('keypress', e => { if (e.key === 'Enter') doAddChannel(); });
-      document.getElementById('addAdminBtn').addEventListener('click', doAddAdmin);
-      document.getElementById('adminInput').addEventListener('keypress', e => { if (e.key === 'Enter') doAddAdmin(); });
-      document.getElementById('broadcastBtn').addEventListener('click', doBroadcast);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.sec-panel').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.sec)?.classList.add('active');
+        });
+      });
 
       // Search
-      document.getElementById('userSearch').addEventListener('input', e => {
+      document.getElementById('userSearch')?.addEventListener('input', (e) => {
         const q = e.target.value.toLowerCase();
-        if (!q) { renderUsers(allUsers); return; }
-        renderUsers(allUsers.filter(u => {
-          const nm = `${u.first_name || ''} ${u.last_name || ''}`.toLowerCase();
-          return nm.includes(q) || String(u.telegram_id).includes(q) || (u.username || '').toLowerCase().includes(q);
-        }));
+        renderUsers(allUsers.filter(u => `${u.first_name || ''} ${u.username || ''} ${u.telegram_id}`.toLowerCase().includes(q)));
       });
 
-      // Archive Search
-      document.getElementById('archSearch')?.addEventListener('input', renderArchiveList);
-
-      // Delegated User List Click Handler
-      document.getElementById('userList')?.addEventListener('click', (e) => {
-        const card = e.target.closest('.user-card');
-        if (card && card.dataset.tid) {
-          openUserModal(card.dataset.tid);
-        }
-      });
-
-      // Card settings
-      loadCardSettings();
-      document.getElementById('cardToggle').addEventListener('click', function() { this.classList.toggle('on'); });
-      document.getElementById('cardNumber').addEventListener('input', updateCardPreview);
-      document.getElementById('cardHolder').addEventListener('input', updateCardPreview);
-      document.getElementById('saveCardBtn').addEventListener('click', saveCardSettings);
-
-      document.getElementById('cardNumber').addEventListener('input', function(e) {
-        let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-        e.target.value = val.replace(/(\d{4})/g, '$1 ').trim();
-        updateCardPreview();
-      });
-
-      // Prayer broadcast toggle
-      document.getElementById('ptBroadcast')?.addEventListener('change', (e) => {
-        document.getElementById('ptBroadcastOptions').style.display = e.target.checked ? 'block' : 'none';
-      });
-
-      document.querySelectorAll('input[name="ptTargetType"]').forEach(r => {
-        r.addEventListener('change', (e) => {
-          document.getElementById('ptChatList').style.display = e.target.value === 'selected' ? 'block' : 'none';
-        });
-      });
-
-      document.getElementById('prayerToggle').addEventListener('click', () => {
-        ptEnabled = !ptEnabled;
-        document.getElementById('prayerToggle').className = 'switch-btn ' + (ptEnabled ? 'on' : '');
-      });
-
-      document.getElementById('savePrayerBtn').addEventListener('click', async () => {
-        const enabled = ptEnabled;
-        const location = document.getElementById('ptLocation').value.trim();
-        const mosque = document.getElementById('ptMosque').value.trim();
-        const notify_before = Number(document.getElementById('ptNotify').value) || 10;
-        const footer_text = document.getElementById('ptBroadcastText').value.trim();
-        const times = {
-          tong: document.getElementById('ptTong').value,
-          bomdod: document.getElementById('ptBomdod').value,
-          peshin: document.getElementById('ptPeshin').value,
-          asr: document.getElementById('ptAsr').value,
-          shom: document.getElementById('ptShom').value,
-          xufton: document.getElementById('ptXufton').value
-        };
-
-        const broadcast = document.getElementById('ptBroadcast')?.checked;
-        const broadcast_text = document.getElementById('ptBroadcastText')?.value.trim();
-        let broadcast_targets = 'all';
-
-        if (document.querySelector('input[name="ptTargetType"]:checked')?.value === 'selected') {
-          const checkboxes = document.querySelectorAll('.chat-checkbox:checked');
-          broadcast_targets = Array.from(checkboxes).map(cb => cb.value);
-          if (broadcast_targets.length === 0 && broadcast) {
-            toast('Kamida 1 ta guruh tanlang yoki "Barchaga" ni tanlang');
-            return;
-          }
-        }
-
-        const r = await api('/api/admin/prayer-times', 'PUT', { enabled, location, mosque, notify_before, times, broadcast, broadcast_text, broadcast_targets });
-        if (r && r.success) {
-          toast(r.broadcastCount > 0 ? `✅ Saqlandi va ${r.broadcastCount} ta guruhga yuborildi` : '✅ Namoz vaqtlari saqlandi');
-          if (document.getElementById('ptBroadcast')) {
-            document.getElementById('ptBroadcast').checked = false;
-            document.getElementById('ptBroadcastOptions').style.display = 'none';
+      // Broadcast
+      document.getElementById('sendBroadcastBtn')?.addEventListener('click', async () => {
+        const text = document.getElementById('broadcastText')?.value.trim();
+        if (!text) return alert('Xabar matnini kiriting');
+        if (confirm('Barcha o\'yinchilarga yuborilsinmi?')) {
+          const res = await api('/api/admin/broadcast', 'POST', { message: text });
+          if (res?.success) {
+            alert(`✅ Xabar ${res.sent} ta o'yinchiga yetkazildi!`);
+            document.getElementById('broadcastText').value = '';
+            loadArchive();
           }
         }
       });
 
-      document.getElementById('userModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-    }
+      // Add Channel
+      document.getElementById('addChannelBtn')?.addEventListener('click', async () => {
+        const ch = document.getElementById('channelInput')?.value.trim();
+        if (ch) {
+          await api('/api/admin/channels', 'POST', { channel: ch });
+          document.getElementById('channelInput').value = '';
+          loadChannels();
+        }
+      });
 
-    document.addEventListener('DOMContentLoaded', init);
+      // Add Admin
+      document.getElementById('addAdminBtn')?.addEventListener('click', async () => {
+        const id = document.getElementById('adminInput')?.value.trim();
+        if (id) {
+          await api('/api/admin/admins', 'POST', { telegram_id: id });
+          document.getElementById('adminInput').value = '';
+          loadAdmins();
+        }
+      });
+
+      // Save Card
+      document.getElementById('saveCardBtn')?.addEventListener('click', async () => {
+        const card_number = document.getElementById('cardNum')?.value.trim();
+        const card_holder = document.getElementById('cardHolder')?.value.trim();
+        const bank_name = document.getElementById('cardBank')?.value.trim();
+        const enabled = document.getElementById('cardEnabled')?.checked;
+
+        await api('/api/admin/donation-card', 'PUT', { card_number, card_holder, bank_name, enabled });
+        alert('✅ Karta sozlamalari saqlandi!');
+      });
+
+      loadStats();
+      loadUsers();
+      loadChannels();
+      loadAdmins();
+      loadCard();
+      loadArchive();
+    });
   </script>
 </body>
 </html>
